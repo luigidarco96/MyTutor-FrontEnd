@@ -24,7 +24,7 @@ import Maps from "views/Maps.jsx";
 import Notifications from "views/Notifications.jsx";
 import Upgrade from "views/Upgrade.jsx";
 import Notices from "views/Notices";
-import DetailsNotice  from "views/DetailsNotice.jsx";
+import DetailsNotice from "views/DetailsNotice.jsx";
 
 const dashboardRoutes = [
   {
@@ -59,7 +59,7 @@ const dashboardRoutes = [
     path: "/DetailsNotice",
     name: "DetailsNotice",
     icon: "pe-7s-news-paper",
-    component: Typography,
+    component: DetailsNotice,
     layout: "/admin"
   },
   {
