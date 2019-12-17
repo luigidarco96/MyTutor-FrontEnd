@@ -22,8 +22,6 @@ import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
 import sidebarRoutes from '../../routes/sidebar';
 
-import logo from "assets/img/reactlogo.png";
-
 class Sidebar extends Component {
   constructor(props) {
     super(props);
@@ -63,14 +61,14 @@ class Sidebar extends Component {
             className="simple-text logo-mini"
           >
             <div className="logo-img">
-              <img src={logo} alt="logo_image" />
+              <img src="/image/logo_progetto_tutorato_light.png" alt="logo_image" />
             </div>
           </a>
           <a
-            href="https://www.creative-tim.com?ref=lbd-sidebar"
+            href="http://localhost:3000/admin/notices"
             className="simple-text logo-normal"
           >
-            Creative Tim
+            MyTutor
           </a>
         </div>
         <div className="sidebar-wrapper">
