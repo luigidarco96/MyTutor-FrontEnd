@@ -20,6 +20,8 @@ import { NavLink } from "react-router-dom";
 
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
+import sidebarRoutes from '../../routes/sidebar';
+
 import logo from "assets/img/reactlogo.png";
 
 class Sidebar extends Component {
@@ -74,7 +76,7 @@ class Sidebar extends Component {
         <div className="sidebar-wrapper">
           <ul className="nav">
             {this.state.width <= 991 ? <AdminNavbarLinks /> : null}
-            {this.props.routes.map((prop, key) => {
+            {sidebarRoutes.map((prop, key) => {
               if (!prop.redirect)
                 return (
                   <li
@@ -86,7 +88,7 @@ class Sidebar extends Component {
                     key={key}
                   >
                     <NavLink
-                      to={prop.layout + prop.path}
+                      to={prop.path}
                       className="nav-link"
                       activeClassName="active"
                     >
