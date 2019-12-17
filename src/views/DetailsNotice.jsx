@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import NoticeInformation from "../components/NoticeInformation/NoticeInformation";
+import Upload from "../components/UploadDocuments/Upload";
 
 class DetailsNotice extends Component {
     render() {
         return(<NoticeInformation notice={notice}/>)
+        return <Upload />;
     }
 }
-export default DetailsNotice;
 
 const notice = {
     name: "Bando numero 1",
@@ -25,3 +26,4 @@ const notice = {
         }
     ]
 }
+export default DetailsNotice;
