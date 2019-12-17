@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Card } from "../Card/Card";
-import Axios, { post } from "axios";
+import { post } from "axios";
 
 class Upload extends Component {
   constructor(props) {
@@ -35,11 +35,15 @@ class Upload extends Component {
 
   render() {
     return (
-      <form onSubmit={this.onFormSubmit}>
-        <h1>File Upload</h1>
-        <input type="file" onChange={this.onChange} />
-        <button type="submit">Upload</button>
-      </form>
+      <Card
+        content={
+          <form onSubmit={this.onFormSubmit}>
+            <h1>File Upload</h1>
+            <input type="file" onChange={this.onChange} />
+            <button type="submit">Upload</button>
+          </form>
+        }
+      />
     );
   }
 }
