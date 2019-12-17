@@ -7,7 +7,7 @@ class Upload extends Component {
             <Card
                   title="Carica Documenti della Domanda"
                   content = {
-                    <img src="public\image\upload.jpg"></img>
+                    <img src="..\..\..\public\image\upload.jpg"></img>
                   }
                  />
               )
