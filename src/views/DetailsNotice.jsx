@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Grid } from 'react-bootstrap';
 import CustomButton from '../components/CustomButton/CustomButton';
 import Upload from '../components/UploadDocuments/Upload';
 import TextField from '../components/TextField/TextField';
@@ -67,63 +67,69 @@ class DetailsNotice extends Component {
     const { notice } = this.state;
 
     return (
-      <Card
-        title={notice.protocol}
-        ctTableResponsive
-        ctTableFullWidth={false}
-        content={
-          <div className='container'>
-            <Row>
-              <Col xs={8}>
-                <TextField heading='Descrizione' text={notice.description} />
-                <TextField heading='Oggetto del bando' text={notice.subject} />
-                <TextField
-                  heading='Requisiti di ammissione'
-                  text={notice.admissionRequirements}
-                />
-                <TextField
-                  heading='Titoli imponibili'
-                  text={notice.assessableTitles}
-                />
-                <TextField
-                  heading='Come sottomettere le applicazioni'
-                  text={notice.howToSubmitApplications}
-                />
-                <TextField
-                  heading='Tabella delle selezioni'
-                  text={notice.selectionBoard}
-                />
-                <TextField heading='Accettazioni' text={notice.acceptance} />
-                <TextField
-                  heading='Incompatibilità'
-                  text={notice.incompatibility}
-                />
-                <TextField
-                  heading='Termine del bando'
-                  text={notice.terminationOfTheAssignment}
-                />
-                <TextField
-                  heading="Natura dell'assegno"
-                  text={notice.natureOfAssignement}
-                />
-              </Col>
-              <Col xs={4}>
-                <Row>
-                  <CustomButton fill={true}>Scarica bando</CustomButton>
-                </Row>
-                <Row>
-                  <CustomButton fill={true}>Scarica graduatoria</CustomButton>
-                </Row>
-              </Col>
+      <Grid style={{ margin: '20px' }} fluid>
+        <Row>
+          <Col xs={8}>
+            <Card
+              title={notice.protocol}
+              ctTableResponsive
+              ctTableFullWidth={false}
+              content={
+                <div>
+                  <TextField heading='Descrizione' text={notice.description} />
+                  <TextField
+                    heading='Oggetto del bando'
+                    text={notice.subject}
+                  />
+                  <TextField
+                    heading='Requisiti di ammissione'
+                    text={notice.admissionRequirements}
+                  />
+                  <TextField
+                    heading='Titoli imponibili'
+                    text={notice.assessableTitles}
+                  />
+                  <TextField
+                    heading='Come sottomettere le applicazioni'
+                    text={notice.howToSubmitApplications}
+                  />
+                  <TextField
+                    heading='Tabella delle selezioni'
+                    text={notice.selectionBoard}
+                  />
+                  <TextField heading='Accettazioni' text={notice.acceptance} />
+                  <TextField
+                    heading='Incompatibilità'
+                    text={notice.incompatibility}
+                  />
+                  <TextField
+                    heading='Termine del bando'
+                    text={notice.terminationOfTheAssignment}
+                  />
+                  <TextField
+                    heading="Natura dell'assegno"
+                    text={notice.natureOfAssignement}
+                  />
+                </div>
+              }
+            />
+          </Col>
+          <Col xs={4}>
+            <Row md={4}>
+              <CustomButton fill={true}>Scarica bando</CustomButton>
             </Row>
+            <br />
             <Row>
-              <Col xs={12}>
-                <Card content={<Upload />} />
-              </Col>
+              <CustomButton fill={true}>Scarica graduatoria</CustomButton>
             </Row>
-          </div>
-        }
-      />
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <Card content={<Upload />} />
+          </Col>
+        </Row>
+      </Grid>
     );
   }
 }
