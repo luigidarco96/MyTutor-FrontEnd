@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import { Grid, Row, Col, Table } from "react-bootstrap";    
 import Card from "components/Card/Card.jsx";
-import { tdArray } from "variables/Variables.jsx";
+import { notices } from "../static/notices";
 
 class Notices extends Component {
 
@@ -38,7 +38,6 @@ class Notices extends Component {
                         <Col md={12}>
                             <Card
                                 title="Lista Bandi"
-                                category="Here is a subtitle for this table"
                                 ctTableFullWidth
                                 ctTableResponsive
                                 content={
@@ -51,11 +50,11 @@ class Notices extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {tdArray.map((prop, key) => {
+                                            {notices.map((element) => {
                                                 return (
-                                                    <tr key={key}>
-                                                        {prop.map((prop, key) => {
-                                                            return <td key={key}>{prop}</td>;
+                                                    <tr>
+                                                        {Object.keys(element).map((key) => {
+                                                            return <td>{element[key]}</td>;
                                                         })}
                                                     </tr>
                                                 );

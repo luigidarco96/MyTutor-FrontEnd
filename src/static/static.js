@@ -1,5 +1,5 @@
 //the object that contains the effective notice
-export const notice = {
+const notice = {
     name: "Bando numero 1",
     director: "",
     decrees: "",
