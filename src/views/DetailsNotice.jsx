@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from "react";
 import NoticeInformation from "../components/NoticeInformation/NoticeInformation";
 import Upload from "../components/UploadDocuments/Upload";
-import notice from "../static/static"
+import notice from "../static/notice"
 
 class DetailsNotice extends Component {
     constructor(props) {
