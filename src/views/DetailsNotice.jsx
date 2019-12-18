@@ -12,6 +12,7 @@ class DetailsNotice extends Component {
           noticeJSON: {}
         };
     }
+    
 
     componentDidMount() {
         //Fetch file notice.json from Back-end github project
