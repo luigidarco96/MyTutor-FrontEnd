@@ -803,3 +803,8 @@
 .sidebar .logo .simple-text, body > .navbar-collapse .logo .simple-text{
   line-height: 40px;
 }
+  
+.caret{
+  margin-bottom: 4px;  
+  
+}
