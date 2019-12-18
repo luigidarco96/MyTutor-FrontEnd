@@ -21,7 +21,7 @@ import { NavLink } from "react-router-dom";
 import AdminNavbarLinks from "../Navbars/AdminNavbarLinks.jsx";
 
 import sidebarRoutes from '../../routes/sidebar';
-
+//import siderbar_background_image from "../../logoUnisa.png";
 class Sidebar extends Component {
   constructor(props) {
     super(props);
@@ -41,34 +41,32 @@ class Sidebar extends Component {
   }
   render() {
     const sidebarBackground = {
-      backgroundImage: "url(" + this.props.image + ")"
+      backgroundImage: `url(${"/assets/images/logo_unisa.png"})`,
+      zIndex: 3,
+      backgroundPositionX: "initial"
     };
     return (
       <div
         id="sidebar"
         className="sidebar"
         data-color={this.props.color}
-        data-image={this.props.image}
+        data-image= "/assets/images/logo_unisa.png"
       >
-          {this.props.hasImage ? (
-            <div className="sidebar-background" style={sidebarBackground} />
-          ) : (
-            null
-          )}
+        <div className="sidebar-background" style={sidebarBackground} />
         <div className="logo">
           <a
             href="https://www.creative-tim.com?ref=lbd-sidebar"
             className="simple-text logo-mini"
           >
             <div className="logo-img">
-              <img src="/image/logo_progetto_tutorato_light.png" alt="logo_image" />
+              <img src="/assets/images/logo_progetto_tutorato_light.png" alt="logo_image" />
             </div>
-          </a>
+          </a> 
           <a
             href="http://localhost:3000/admin/notices"
-            className="simple-text logo-normal"
+            className="logo-text"
           >
-            MyTutor
+            MYTUTOR
           </a>
         </div>
         <div className="sidebar-wrapper">

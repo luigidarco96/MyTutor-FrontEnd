@@ -802,9 +802,29 @@
 }
 .sidebar .logo .simple-text, body > .navbar-collapse .logo .simple-text{
   line-height: 40px;
+  
 }
-  
+.sidebar .logo, body > .navbar-collapse .logo{
+  padding: 13px 30px;
+}
+.pe-custom-32px {
+  font-size: 32px;
+}
 .caret{
-  margin-bottom: 4px;  
+  margin-bottom: 18px;  
+  margin-left: 0px;
   
+}
+.logo-text{
+  line-height: 50px;
+  color: white;
+
+}
+.logo-text:hover{
+  color: white;
+}
+
+
+.navbar-header{
+  margin-top: 9px;
 }

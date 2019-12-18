@@ -35,7 +35,6 @@ class Admin extends Component {
     super(props);
     this.state = {
       _notificationSystem: null,
-      image: "/image/logo_progetto_tutorato_light.png",
       color: "black",
       hasImage: true,
       fixedClasses: "dropdown show-dropdown open"

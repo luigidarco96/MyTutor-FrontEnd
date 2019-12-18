@@ -26,7 +26,7 @@ class AdminNavbarLinks extends Component {
           <NavDropdown
             eventKey={2}
             title= {
-              <span><i className="pe-7s-user"/></span>
+              <span><i className="pe-7s-user pe-custom-32px"/></span>
             } 
             
             id="basic-nav-dropdown-right"
