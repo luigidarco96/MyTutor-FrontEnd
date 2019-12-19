@@ -1,26 +1,60 @@
 import React, { Component, useCallback, useState } from "react";
-import { Card } from "../Card/Card";
+import { useDropzone } from "react-dropzone";
+import Card from "../Card/Card";
 import Button from "components/CustomButton/CustomButton";
-import Dropzone from "../Dropzone/Dropzone";
-import cuid from "cuid";
 
-class Upload extends Component {
-  render() {
-    return (
-      <Card
-        content={
-          <div>
-            <h1> Carica Documenti</h1>
-            <Button bsStyle="primary" round>
-              Carica
-              <i className="pe-7s-cloud-upload pe-personal-icon"></i>
-            </Button>
-            <Dropzone />
+const Upload = props => {
+  const maxSize = 1048576;
+
+  const onDrop = useCallback(acceptedFiles => {
+    console.log(acceptedFiles);
+  }, []);
+
+  const {
+    isDragActive,
+    getRootProps,
+    getInputProps,
+    isDragReject,
+    acceptedFiles,
+    rejectedFiles
+  } = useDropzone({
+    onDrop,
+    accept: "application/pdf",
+    minSize: 0,
+    maxSize
+  });
+
+  const isFileTooLarge =
+    rejectedFiles.length > 0 && rejectedFiles[0].size > maxSize;
+
+  return (
+    <Card
+      title="Craica Documenti Candidatura"
+      content={
+        <div className="text-center">
+          <div {...getRootProps()}>
+            <input {...getInputProps()} />
+            {!isDragActive && "Click here or drop a file to upload!"}
+            {isDragActive && !isDragReject && "Drop it like it's hot!"}
+            {isDragReject && "File type not accepted, sorry!"}
+            {isFileTooLarge && (
+              <div className="text-danger mt-2">File is too large.</div>
+            )}
           </div>
-        }
-      />
-    );
-  }
-}
+
+          <ul className="list-group mt-2">
+            {acceptedFiles.length > 0 &&
+              acceptedFiles.map(acceptedFile => (
+                <li className="list-group-item list-group-item-success">
+                  {acceptedFile.name}
+                </li>
+              ))}
+          </ul>
+          <Button bsStyle="primary">Invia Candidatura</Button>
+        </div>
+      }
+    />
+  );
+};
 
 export default Upload;

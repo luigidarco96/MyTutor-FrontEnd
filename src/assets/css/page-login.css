@@ -1,0 +1,14 @@
+@media all and (min-width: 480px) {
+  .Login {
+    font-size: 30px;
+  }
+
+  .Login_Card {
+    padding: 150px 0;
+  }
+
+  .Login form {
+    margin: 0 auto;
+    max-width: 320px;
+  }
+}
