@@ -77,9 +77,11 @@ class DetailsNotice extends Component {
             <NoticeInformation notice={notice} />
           </Col>
           <Col xs={2}>
-            <CustomButton style={buttonStyle}>Scarica bando</CustomButton>
+            <CustomButton bsStyle='primary' style={buttonStyle}>
+              Scarica bando
+            </CustomButton>
             <br></br>
-            <CustomButton style={buttonStyle} disabled>
+            <CustomButton bsStyle='primary' style={buttonStyle} disabled>
               Scarica graduatoria
             </CustomButton>
           </Col>
