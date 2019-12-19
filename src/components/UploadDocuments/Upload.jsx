@@ -1,24 +1,45 @@
 import React, { Component, useCallback, useState } from "react";
-import { Card } from "../Card/Card";
-import Button from "components/CustomButton/CustomButton";
 import Dropzone from "../Dropzone/Dropzone";
-import cuid from "cuid";
 
 class Upload extends Component {
+  onDrop = acceptedFiles => {
+    console.log(acceptedFiles);
+  };
+
   render() {
+    const maxSize = 1048576;
     return (
-      <Card
-        content={
-          <div>
-            <h1> Carica Documenti</h1>
-            <Button bsStyle="primary" round>
-              Carica
-              <i className="pe-7s-cloud-upload pe-personal-icon"></i>
-            </Button>
-            <Dropzone />
-          </div>
-        }
-      />
+      <div className="text-center mt-5">
+        <Dropzone
+          onDrop={this.onDrop}
+          accept="image/png"
+          minSize={0}
+          maxSize={maxSize}
+          multiple
+        >
+          {({
+            getRootProps,
+            getInputProps,
+            isDragActive,
+            isDragReject,
+            rejectedFiles
+          }) => {
+            const isFileTooLarge =
+              rejectedFiles.length > 0 && rejectedFiles[0].size > maxSize;
+            return (
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                {!isDragActive && "Click here or drop a file to upload!"}
+                {isDragActive && !isDragReject && "Drop it like it's hot!"}
+                {isDragReject && "File type not accepted, sorry!"}
+                {isFileTooLarge && (
+                  <div className="text-danger mt-2">File is too large.</div>
+                )}
+              </div>
+            );
+          }}
+        </Dropzone>
+      </div>
     );
   }
 }
