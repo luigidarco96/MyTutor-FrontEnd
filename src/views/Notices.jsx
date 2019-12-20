@@ -12,17 +12,15 @@ class Notices extends Component {
     }
 
     componentDidMount() {
-        setTimeout(() => {
-            this.setState({
-                header: [
-                    "id",
-                    "nome",
-                    "datascadenza",
-                    "graduatoria",
-                    "stato"
-                ]
-            });
-        }, 10000);
+        this.setState({
+            header: [
+                "id",
+                "nome",
+                "datascadenza",
+                "graduatoria",
+                "stato"
+            ]
+        });
     }
 
     render() {
