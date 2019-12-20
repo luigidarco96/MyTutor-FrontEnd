@@ -47,6 +47,7 @@ const Upload = props => {
               acceptedFiles.map(acceptedFile => (
                 <li className="list-group-item list-group-item-success">
                   {acceptedFile.name}
+                  <i className="pe-7s-close" onClick="elimina"></i>
                 </li>
               ))}
           </ul>
