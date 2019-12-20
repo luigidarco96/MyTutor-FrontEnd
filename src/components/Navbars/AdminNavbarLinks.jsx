@@ -31,13 +31,9 @@ class AdminNavbarLinks extends Component {
             
             id="basic-nav-dropdown-right"
           >
-            <MenuItem eventKey={2.1}>Action</MenuItem>
-            <MenuItem eventKey={2.2}>Another action</MenuItem>
-            <MenuItem eventKey={2.3}>Something</MenuItem>
-            <MenuItem eventKey={2.4}>Another action</MenuItem>
-            <MenuItem eventKey={2.5}>Something</MenuItem>
+            <MenuItem eventKey={2.1}>Visualizza Profilo</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey={2.5}>Separated link</MenuItem>
+            <MenuItem eventKey={2.5}>Logout</MenuItem>
           </NavDropdown>
          
         </Nav>

@@ -26,13 +26,69 @@ import Upgrade from "views/Upgrade.jsx";
 import Notices from "views/Notices";
 import DetailsNotice from "views/DetailsNotice.jsx";
 
+const dashboardRoutes = {
+  "student": [
+    {
+      path: "/notices",
+      component: Notices,
+    },
+
+    {
+      path: "/incarichi",
+      component: Notices,
+    },
+
+    {
+      path:"/candidature",
+      component: Notices,
+    }
+  ],
+
+  "professor": [
+    {
+      path: "/notices",
+      component: Notices,
+    }
+  ],
+
+  "ddi": [
+    {
+      path: "/notices",
+      component: Notices,
+    },
+    {
+      path: "/graduatorie",
+      component: Notices,
+    }
+  ],
+
+  "admin": [
+    {
+      path:"/notices",
+      component: Notices,
+    },
+    {
+      path:"/users",
+      component: Notices,
+    },
+    {
+      path:"/assegni",
+      component: Notices,
+    },
+    
+    
+  ]
+}
+
+/*
 const dashboardRoutes = [
+  //Admin
   {
     path: "/notices",
-    name: "Notices",
+    name: "Bandi",
     icon: "pe-7s-graph",
     component: Notices,
-    layout: "/admin"
+    layout: "/student"
   },
   {
     path: "/dashboard",
@@ -92,7 +148,7 @@ const dashboardRoutes = [
     component: Upgrade,
     layout: "/admin"
   }
-  */
 ];
+*/
 
 export default dashboardRoutes;

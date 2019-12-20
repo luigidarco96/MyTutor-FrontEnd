@@ -828,3 +828,15 @@
 .navbar-header{
   margin-top: 9px;
 }
+.sidebar:before, body > .navbar-collapse:before {
+  opacity: .33;
+  background: #274F77;
+}
+
+.sidebar:after, body > .navbar-collapse:after {
+  /* background: #282828; */
+  background: linear-gradient(to bottom, #274F77 40%, #100 100%);
+  background-size: 150% 150%;
+  z-index: 3;
+ 
+}
