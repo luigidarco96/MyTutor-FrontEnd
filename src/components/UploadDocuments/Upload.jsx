@@ -29,7 +29,7 @@ const Upload = props => {
 
   return (
     <Card
-      title="Craica Documenti Candidatura"
+      title="Carica Documenti Candidatura"
       content={
         <div className="text-center">
           <div {...getRootProps()}>

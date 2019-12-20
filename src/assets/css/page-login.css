@@ -11,4 +11,10 @@
     margin: 0 auto;
     max-width: 320px;
   }
+
+  .sfondo {
+    background-image: url("/public/assets/images/logo_progetto_tutorato_blue.png");
+    -webkit-transform: rotateY(130deg);
+    transform: rotateY(130deg);
+  }
 }
