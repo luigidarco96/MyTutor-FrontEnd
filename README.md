@@ -4,17 +4,13 @@
 
 # MyTutor-FrontEnd
 
-**MyTutor's front-end.**
-We manage the visual aspect of the platform.
-Used technology:
-
-- [ReactJS](https://it.reactjs.org/)
-
 ### 1. Requirements
 
 - [Node.js](https://nodejs.org/)
   > Latest version should be fine.
 - [Git](https://git-scm.com/)
+
+<a name="How-to-download"></a>
 
 ### 2. How to download
 
