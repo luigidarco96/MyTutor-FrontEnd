@@ -29,7 +29,7 @@ import "./assets/css/pe-icon-7-stroke.css";
 import Notices from 'views/Notices';
 import AdminLayout from "layouts/Admin.jsx";
 import Login from "./views/Login";
-import SignUp from "./views/Login";
+import SignUp from "./views/SignUp";
 
 ReactDOM.render(
   <BrowserRouter>
