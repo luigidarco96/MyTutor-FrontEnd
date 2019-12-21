@@ -1,33 +1,43 @@
-<img src="./public/assets/images/logo_progetto_tutorato_blue.png" width="300px" alt="logo_progetto">
+<div style="">
+<img src="./public/assets/images/logo_progetto_tutorato_blue.png" width="300">
+</div>
 
 # MyTutor-FrontEnd
 
-## 1. Requirements
+**MyTutor's front-end.**
+We manage the visual aspect of the platform.
+Used technology:
 
-- Node.js (latest should be fine)
-- Git
+- [ReactJS](https://it.reactjs.org/)
 
-## 2. How to download
+### 1. Requirements
 
-<div style="text-align: center">
-<img src="./public/assets/images/tut_download.png" alt="screenshot_clone_link">
-</div>
+- [Node.js](https://nodejs.org/)
+  > Latest version should be fine.
+- [Git](https://git-scm.com/)
+
+### 2. How to download
+
+![screenshot_git_url](./public/assets/images/tut_download.png)
 
 1. Copy the Git URL or click on the button next to the URL text field.
 2. Open the terminal, write `git clone` and paste the git URL as shown below:
 
 ```
-git clone https://github.com/luigidarco96/MyTutor-FrontEnd.git
+> git clone https://github.com/luigidarco96/MyTutor-FrontEnd.git
 ```
 
-3. Hit enter and it will start to download the files.
+3. Hit enter and the download will start.
+   > You will found a folder named "MyTutor-FrontEnd"
 
-## 3. How to install
-
-1. Navigate to the downloaded folder.
-2. Open the terminal and type: `npm install`. This command will start the installation of all dipendencies.
-
-## 4. How to start
+### 3. How to install
 
 1. Navigate to the downloaded folder.
-2. Open the terminal and type: `npm start`. This command will start the server and open the browser.
+   > Folder from [How to download](#How-to-download)
+2. Open the terminal and type: `> npm install`. This command will start the installation of all dipendencies.
+
+### 4. How to start
+
+1. Navigate to the downloaded folder.
+   > Folder from [How to download](#How-to-download)
+2. Open the terminal and type: `> npm start`. This command will start the server and open the browser.
