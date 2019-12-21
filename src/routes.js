@@ -26,6 +26,11 @@ import Upgrade from "views/Upgrade.jsx";
 import Notices from "views/Notices";
 import DetailsNotice from "views/DetailsNotice.jsx";
 import Error404 from "./views/Error404";
+import Candidature from "./views/Candidature";
+import Rankings from "./views/Rankings";
+import Users from "./views/Users";
+import Assignmets from "./views/Assignments";
+import Tasks from "./views/Tasks";
 
 const dashboardRoutes = {
   "student": [
@@ -36,21 +41,21 @@ const dashboardRoutes = {
     },
 
     {
-      path: "/detailNotices",
+      path: "/detailNotices/:id",
       name: "Dettaglio Bando",
       component: DetailsNotice,
     },
 
     {
-      path: "/incarichi",
+      path: "/tasks",
       name:"Incarichi",
-      component: Notices,
+      component: Tasks,
     },
 
     {
       path:"/candidature",
       name:"Candidature",
-      component: Notices,
+      component: Candidature,
     },
     {
       path: "/*",
@@ -66,7 +71,7 @@ const dashboardRoutes = {
     },
     
     {
-      path: "/detailNotices",
+      path: "/detailNotices/:id",
       name: "Dettaglio Bando",
       component: DetailsNotice,
     },
@@ -85,15 +90,15 @@ const dashboardRoutes = {
     },
     
     {
-      path: "/detailNotices",
+      path: "/detailNotices/:id",
       name: "Dettaglio Bando",
       component: DetailsNotice,
     },
 
     {
-      path: "/graduatorie",
+      path: "/rankings",
       name: "Graduatorie",
-      component: Notices,
+      component: Rankings,
     },
     {
       path: "/*",
@@ -109,7 +114,7 @@ const dashboardRoutes = {
     },
     
     {
-      path: "/detailNotices",
+      path: "/detailNotices/:id",
       name: "Dettaglio Bando",
       component: DetailsNotice,
     },
@@ -117,12 +122,12 @@ const dashboardRoutes = {
     {
       path: "/users",
       name: "Utenti",
-      component: Notices,
+      component: Users,
     },
     {
       path:"/assignments",
       name: "Assegni",
-      component: Notices,
+      component: Assignmets,
     },
     {
       path: "/*",

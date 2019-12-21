@@ -5,7 +5,7 @@ const studentSidebar = [
         icon: "pe-7s-news-paper",
     },
     {
-        path: "/student/incarichi",
+        path: "/student/tasks",
         name: "Incarichi",
         icon: "pe-7s-news-paper",
     },
@@ -31,7 +31,7 @@ const ddiSidebar = [
         icon: "pe-7s-news-paper",
     },
     {
-        path: "/ddi/graduatorie",
+        path: "/ddi/rankings",
         name: "Graduatorie",
         icon: "pe-7s-news-paper",
     },
