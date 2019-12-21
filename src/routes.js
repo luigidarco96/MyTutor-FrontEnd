@@ -25,11 +25,13 @@ import Notifications from "views/Notifications.jsx";
 import Upgrade from "views/Upgrade.jsx";
 import Notices from "views/Notices";
 import DetailsNotice from "views/DetailsNotice.jsx";
+import Error404 from "./views/Error404";
 
 const dashboardRoutes = {
   "student": [
     {
       path: "/notices",
+      name:"Bandi",
       component: Notices,
     },
 
@@ -41,14 +43,22 @@ const dashboardRoutes = {
     {
       path:"/candidature",
       component: Notices,
-    }
+    },
+    {
+      path: "/*",
+      component: Error404,
+    },
   ],
 
   "professor": [
     {
       path: "/notices",
       component: Notices,
-    }
+    },
+    {
+      path: "/*",
+      component: Error404,
+    },
   ],
 
   "ddi": [
@@ -59,7 +69,11 @@ const dashboardRoutes = {
     {
       path: "/graduatorie",
       component: Notices,
-    }
+    },
+    {
+      path: "/*",
+      component: Error404,
+    },
   ],
 
   "admin": [
@@ -75,7 +89,10 @@ const dashboardRoutes = {
       path:"/assegni",
       component: Notices,
     },
-    
+    {
+      path: "/*",
+      component: Error404,
+    },
     
   ]
 }

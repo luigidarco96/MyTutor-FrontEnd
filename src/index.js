@@ -29,19 +29,20 @@ import "./assets/css/pe-icon-7-stroke.css";
 import Notices from 'views/Notices';
 import AdminLayout from "layouts/Admin.jsx";
 import Login from "./views/Login";
+import SignUp from "./views/Login";
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route exact path="/login" render=""/>
-      <Route exact path="/registration" render=""/>
+    <Route exact path="/signin"render={props => <Login {...props} />}/>
+    <Route exact path="/signup" render={props => <SignUp {...props} />}/>
 <Route exact path="/home"  render={props => <Notices {...props} />}/>
 
       <Route path="/student" render={props => <AdminLayout {...props} />} />
       <Route path="/professor" render={props => <AdminLayout {...props} />}/>
       <Route path="/ddi" render={props => <AdminLayout {...props} />}/>
       <Route path="/admin" render={props => <AdminLayout {...props} />}/>
-
+     
       <Redirect from="/" to="/home" />
     </Switch>
   </BrowserRouter>,
