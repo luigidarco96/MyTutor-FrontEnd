@@ -30,6 +30,7 @@ import routes from "routes.js";
 
 import image from "assets/img/sidebar-3.jpg";
 import { studentSidebar, professorSidebar, ddiSidebar, adminSidebar } from "../routes/sidebar.js"
+
 class Admin extends Component {
   constructor(props) {
     super(props);
@@ -59,16 +60,14 @@ class Admin extends Component {
   };
 
   getBrandText = path => {
-    for (let i = 0; i < routes.length; i++) {
-      if (
-        this.props.location.pathname.indexOf(
-          routes[i].path
-        ) !== -1
-      ) {
-        return routes[i].name;
-      }
+    const pathnameRoule = this.props.location.pathname.split("/")[1];
+    const pathnameView = this.props.location.pathname.split("/")[2];
+    let list = routes[pathnameRoule];
+    for(let i = 0; i<list.length; i++){
+      console.log(list[i]);
+      if(list[i].path.split("/")[1] === pathnameView)
+        return list[i].name;
     }
-    return "Brand";
   };
 
   componentDidUpdate(e) {
@@ -88,6 +87,7 @@ class Admin extends Component {
 
   getSidebarNames = () => {
     const pathname = this.props.location.pathname.split("/")[1];
+    
     switch (pathname) {
       case "student": return studentSidebar;
       case "professor": return professorSidebar;

@@ -49,7 +49,7 @@ const adminSidebar = [
         icon: "pe-7s-news-paper",
     },
     {
-        path: "/admin/assegni",
+        path: "/admin/assignments",
         name: "Assegni",
         icon: "pe-7s-news-paper",
     },
