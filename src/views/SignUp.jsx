@@ -1,56 +1,83 @@
-import React, {Component} from 'react';
-import {
-    Col,
-    TabContent,
-    TabContainer,
-    Row,
-    Nav,
-    NavItem,
-    TabPane
-} from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import React, { Component, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { SignUpStudent } from '../components/SignUp/SignUpStudent';
-import '../../src/assets/css/Tabs.css'
+import { SignUpProfessor } from '../components/SignUp/SignUpProfessor';
+import Card from "components/Card/Card.jsx";
+import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 
-export class SignUp extends Component{
+export class SignUp extends Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            activeTab: '1'
+        }
+    }
 
     render() {
-        return(
-            <TabContainer 
-                id='registrationTabs' 
-                defaultActiveKey="student"
-                style={{'margin':'2rem'}}>
+        const { activeTab } = this.state;
+
+
+        const setActiveTab = tab => {
+            this.setState({
+                activeTab: tab
+            });
+        }
+
+        return (
+            <div style={{
+                position: 'absolute',
+                width: '98vw',
+                padding: '3vw 0',
+                margin: '0'
+            }}>
                 <Row>
-                    <Col>
-                        <Nav variant='tabs'>
-                            <NavItem className='tabItem'>
-                                <NavLink
-                                    className='tabLink'
-                                    eventKey="student" 
-                                    to='student'>
-                                    Studente</NavLink>
-                            </NavItem>
-                            <NavItem className='tabItem'>
-                                <NavLink
-                                    className='tabLink'
-                                    eventKey="professor"
-                                    to='professor'>
-                                    Docente</NavLink>
-                            </NavItem>
-                        </Nav>
-                        <TabContent className='tabContent'>
-                            <TabPane eventKey='student' id='student' className='tabPane'>
-                                <SignUpStudent/>
-                            </TabPane>
-                            <TabPane eventKey='professor' id ='professor' className='tabPane'>
-                                <SignUpStudent/>
-                            </TabPane>
-                        </TabContent>
+                    <Col md="2"></Col>
+                    <Col md="8">
+                        <Card
+                            title='Registrati alla piattaforma'
+                            content={
+                                <div>
+                                    <Nav tabs>
+                                        <NavItem>
+                                            <NavLink
+                                                onClick={() => { setActiveTab('1'); }}
+                                            >
+                                                Studente
+                                    </NavLink>
+                                        </NavItem>
+                                        <NavItem>
+                                            <NavLink
+                                                onClick={() => { setActiveTab('2'); }}
+                                            >
+                                                Docente
+                                    </NavLink>
+                                        </NavItem>
+                                    </Nav>
+                                    <TabContent id='tabContent' activeTab={activeTab}>
+                                        <TabPane tabId="1">
+                                            <Row>
+                                                <Col sm="12">
+                                                    <SignUpStudent />
+                                                </Col>
+                                            </Row>
+                                        </TabPane>
+                                        <TabPane tabId="2">
+                                            <Row>
+                                                <Col sm="12">
+                                                    <SignUpProfessor />
+                                                </Col>
+                                            </Row>
+                                        </TabPane>
+                                    </TabContent>
+                                </div>
+                            }
+                        />
                     </Col>
                 </Row>
-            </TabContainer>
-        )}
+            </div>
+        )
+    }
 }
 
 export default SignUp;
