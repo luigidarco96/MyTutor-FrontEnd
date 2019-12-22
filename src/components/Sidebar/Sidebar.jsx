@@ -54,7 +54,7 @@ class Sidebar extends Component {
         <div className="sidebar-background" style={sidebarBackground} />
         <div className="logo">
           <a
-            href="http://localhost:3000/admin/notices"
+            href=""
             className="simple-text logo-mini"
           >
             <div className="logo-img">
@@ -62,7 +62,7 @@ class Sidebar extends Component {
             </div>
           </a> 
           <a
-            href="http://localhost:3000/admin/notices"
+            href=""
             className="logo-text"
           >
             MYTUTOR
