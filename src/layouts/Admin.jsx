@@ -15,38 +15,43 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
-import NotificationSystem from "react-notification-system";
+import React, { Component } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import NotificationSystem from 'react-notification-system';
 
-import AdminNavbar from "components/Navbars/AdminNavbar";
-import Footer from "components/Footer/Footer";
-import Sidebar from "components/Sidebar/Sidebar";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
+import AdminNavbar from 'components/Navbars/AdminNavbar';
+import Footer from 'components/Footer/Footer';
+import Sidebar from 'components/Sidebar/Sidebar';
+import FixedPlugin from 'components/FixedPlugin/FixedPlugin.jsx';
 
-import { style } from "variables/Variables.jsx";
+import { style } from 'variables/Variables.jsx';
 
-import routes from "routes.js";
+import routes from 'routes.js';
 
-import image from "assets/img/sidebar-3.jpg";
-import { studentSidebar, professorSidebar, ddiSidebar, adminSidebar } from "../routes/sidebar.js"
+import image from 'assets/img/sidebar-3.jpg';
+import {
+  studentSidebar,
+  professorSidebar,
+  ddiSidebar,
+  adminSidebar
+} from '../routes/sidebar.js';
 
 class Admin extends Component {
   constructor(props) {
     super(props);
     this.state = {
       hasImage: true,
-      fixedClasses: "dropdown show-dropdown open"
+      fixedClasses: 'dropdown show-dropdown open'
     };
   }
 
   getRoutes = routes => {
-    const pathname = this.props.location.pathname.split("/")[1];
+    const pathname = this.props.location.pathname.split('/')[1];
     let list = routes[pathname];
     return list.map((prop, key) => {
       return (
         <Route
-          path={"/" + pathname + prop.path}
+          path={'/' + pathname + prop.path}
           render={props => (
             <prop.component
               {...props}
@@ -60,13 +65,12 @@ class Admin extends Component {
   };
 
   getBrandText = path => {
-    const pathnameRoule = this.props.location.pathname.split("/")[1];
-    const pathnameView = this.props.location.pathname.split("/")[2];
+    const pathnameRoule = this.props.location.pathname.split('/')[1];
+    const pathnameView = this.props.location.pathname.split('/')[2];
     let list = routes[pathnameRoule];
-    for(let i = 0; i<list.length; i++){
+    for (let i = 0; i < list.length; i++) {
       console.log(list[i]);
-      if(list[i].path.split("/")[1] === pathnameView)
-        return list[i].name;
+      if (list[i].path.split('/')[1] === pathnameView) return list[i].name;
     }
   };
 
@@ -74,11 +78,11 @@ class Admin extends Component {
     if (
       window.innerWidth < 993 &&
       e.history.location.pathname !== e.location.pathname &&
-      document.documentElement.className.indexOf("nav-open") !== -1
+      document.documentElement.className.indexOf('nav-open') !== -1
     ) {
-      document.documentElement.classList.toggle("nav-open");
+      document.documentElement.classList.toggle('nav-open');
     }
-    if (e.history.action === "PUSH") {
+    if (e.history.action === 'PUSH') {
       document.documentElement.scrollTop = 0;
       document.scrollingElement.scrollTop = 0;
       this.refs.mainPanel.scrollTop = 0;
@@ -86,34 +90,42 @@ class Admin extends Component {
   }
 
   getSidebarNames = () => {
-    const pathname = this.props.location.pathname.split("/")[1];
-    
+    const pathname = this.props.location.pathname.split('/')[1];
+
     switch (pathname) {
-      case "student": return studentSidebar;
-      case "professor": return professorSidebar;
-      case "ddi": return ddiSidebar;
-      case "admin": return adminSidebar;
+      case 'student':
+        return studentSidebar;
+      case 'professor':
+        return professorSidebar;
+      case 'ddi':
+        return ddiSidebar;
+      case 'admin':
+        return adminSidebar;
     }
-  }
+  };
 
   render() {
-
     return (
-      <div className="wrapper">
-        <Sidebar {...this.props}
+      <div className='wrapper'>
+        <Sidebar
+          {...this.props}
           routes={this.getSidebarNames()}
           image={this.state.image}
           color={this.state.color}
-          hasImage={this.state.hasImage} />
+          hasImage={this.state.hasImage}
+        />
 
-        <div id="main-panel" className="main-panel" ref="mainPanel">
+        <div
+          id='main-panel'
+          className='main-panel'
+          ref='mainPanel'
+          style={{ height: '100%' }}
+        >
           <AdminNavbar
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
-          <Switch>
-            {this.getRoutes(routes)}
-          </Switch>
+          <Switch>{this.getRoutes(routes)}</Switch>
           <Footer />
         </div>
       </div>
