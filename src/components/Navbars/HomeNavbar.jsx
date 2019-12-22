@@ -67,7 +67,7 @@ class HeaderHome extends Component {
             style={positionImgStyle}
           > 
               <img style={{height: "50px"}}src="/assets/images/logo_progetto_tutorato_light.png" alt="logo_image" />
-             <span style={{fontSize:"15px", marginTop: "30px", marginLeft: "4px",position: "fixed"}}> MYTUTOR</span> 
+             <span style={{fontSize:"15px", marginTop: "30px", marginLeft: "4px",position: "absolute"}}> MYTUTOR</span> 
           </a> 
           </div>
           <Navbar.Toggle onClick={this.mobileSidebarToggle} />
