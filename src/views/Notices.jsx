@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 
 import { Grid, Row, Col, Table } from 'react-bootstrap';
 import Card from 'components/Card/Card.jsx';
+const dictionaryState={
+  Draft: "Bozza",
+  Published: "Pubblicato",
+
+}
 
 class Notices extends Component {
   state = {
@@ -73,11 +78,12 @@ class Notices extends Component {
                             <tr
                               key={element.protocol}
                               onClick={() => this.getDetailNotice(element)}
+
                             >
                               <td>{element.protocol}</td>
                               <td>{element.deadline.split('T')[0]}</td>
                               <td>{element.type}</td>
-                              <td>{element.state}</td>
+                              <td>{dictionaryState[element.state]}</td>
                             </tr>
                           );
                         })}
