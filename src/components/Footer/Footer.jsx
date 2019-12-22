@@ -20,9 +20,12 @@ import React, { Component } from 'react';
 class Footer extends Component {
   render() {
     return (
-      <footer className='footer'>
-        <p className='copyright pull-right'>
-          &copy; {new Date().getFullYear()} <a href='/'>MyTutor</a>
+      <footer className='footer' style={{ backgroundColor: '#274f77' }}>
+        <p className='copyright' style={{ color: '#FFFFFF' }}>
+          &copy; {new Date().getFullYear()}{' '}
+          <a href='/' style={{ color: '#FFFFFF' }}>
+            MyTutor
+          </a>
         </p>
       </footer>
     );

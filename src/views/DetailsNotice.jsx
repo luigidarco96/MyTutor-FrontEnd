@@ -5,10 +5,6 @@ import notice from '../static/notice';
 import { Col, Row, Grid } from 'react-bootstrap';
 import CustomButton from '../components/CustomButton/CustomButton';
 
-const buttonStyle = {
-  margin: '5px'
-};
-
 class DetailsNotice extends Component {
   constructor(props) {
     super(props);
@@ -20,10 +16,12 @@ class DetailsNotice extends Component {
   }
 
   componentDidMount() {
+    const {
+      match: { params }
+    } = this.props;
+
     //Fetch file notice.json from Back-end github project
-    fetch(
-      'https://raw.githubusercontent.com/fabiolademarco/MyTutorBack-End/master/static/notice.json'
-    )
+    fetch(`localhost:3001/api/notices/${params.id}`)
       //Transform response text in json object
       .then(blob => blob.json())
       //set the json object in the state
@@ -46,6 +44,7 @@ class DetailsNotice extends Component {
   render() {
     const { noticeJSON, isLoaded } = this.state;
 
+    // TODO Change json management
     //check if the fetch of the JSON file it was successfull
     if (isLoaded) {
       //fill the notice object with the field of the JSON object
@@ -77,11 +76,11 @@ class DetailsNotice extends Component {
             <NoticeInformation notice={notice} />
           </Col>
           <Col xs={2}>
-            <CustomButton bsStyle='primary' style={buttonStyle}>
+            <CustomButton bsStyle='primary' block={true}>
               Scarica bando
             </CustomButton>
             <br></br>
-            <CustomButton bsStyle='primary' style={buttonStyle} disabled>
+            <CustomButton bsStyle='primary' block={true} disabled>
               Scarica graduatoria
             </CustomButton>
           </Col>
