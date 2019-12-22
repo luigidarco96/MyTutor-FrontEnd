@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Navbar } from "react-bootstrap";
+import HomeNavbarLinks from "./HomeNavbarLinks.jsx";
 
 export class GuestNavbar extends Component {
     render() {
@@ -31,6 +32,7 @@ export class GuestNavbar extends Component {
                     <Navbar.Toggle onClick={this.mobileSidebarToggle} />
                 </Navbar.Header>
                 <Navbar.Collapse>
+                    <HomeNavbarLinks/>
                 </Navbar.Collapse>
             </Navbar>
         )

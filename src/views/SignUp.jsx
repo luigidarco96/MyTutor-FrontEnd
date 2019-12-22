@@ -49,12 +49,7 @@ const SignUp = (props) => {
             document.getElementById('1').style.borderRadius = '3px'
         }
     }
-    const mainBg = {
-        backgroundImage: 'url('+bg+')',
-        backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }
+
     const setBackground = ()=>{
         document.body.style.backgroundImage = 'url('+bg+')'
         document.body.style.backgroundRepeat = 'no-repeat'

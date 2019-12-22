@@ -9,6 +9,8 @@ import {
 import "../assets/css/page-login.css";
 import Card from "../components/Card/Card";
 import Button from "components/CustomButton/CustomButton";
+import bg from '../assets/img/background-image.jpg'
+import GuestNavbar from "../components/Navbars/GuestNavbar";
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -22,12 +24,28 @@ export default function Login(props) {
     event.preventDefault();
   }
 
+  const setBackground = () => {
+    document.body.style.backgroundImage = 'url(' + bg + ')'
+    document.body.style.backgroundRepeat = 'no-repeat'
+    document.body.style.backgroundSize = 'cover'
+    document.body.style.backgroundPosition = 'center'
+  }
   return (
-    <div>
-      <div className="sfondo" />
-      <Row className="Login_Card">
+    <div onLoad={() => { setBackground() }}>
+      <GuestNavbar />
+      <div
+        style={{
+          position: 'absolute',
+          width: '98vw'
+        }} />
+      <Row className="Login_Card" style={{
+        width: '100%',
+        overflowY: 'hidden',
+        maxHeight: '550px',
+        padding: '1px',
+      }}>
         <Col md="4"></Col>
-        <Col md="4">
+        <Col md="4" style={{marginTop:'6vw'}}>
           <Card
             content={
               <div className="Login">
