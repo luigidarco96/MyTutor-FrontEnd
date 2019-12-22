@@ -10,7 +10,10 @@ class Notices extends Component {
         header: [],
         content: [],
     }
-
+    constructor(props) {
+        super(props);
+        this.getDetailNotice = this.getDetailNotice.bind(this);
+      }
     componentDidMount() {
         this.setState({
             header: [
@@ -22,9 +25,17 @@ class Notices extends Component {
             ]
         });
     }
-
+   
+    getDetailNotice = (e) => {
+        let pathname = this.props.location.pathname;
+        let path = "http://localhost:3000/";
+        path = path.concat(pathname.split("/")[1]+"/detailNotices/"+e.id);
+        window.location.replace(path);
+        alert('this is bando:'+e.id+" "+path);
+      }
     render() {
-
+                                                   
+   
         const {
             header
         } = this.state;
@@ -50,11 +61,14 @@ class Notices extends Component {
                                         <tbody>
                                             {notices.map((element) => {
                                                 return (
-                                                    <tr>
-                                                        {Object.keys(element).map((key) => {
+                                                
+                                                   <tr onClick={()=>this.getDetailNotice(element)}>
+                                                        
+                                                        {Object.keys(element).map((key) => {            
                                                             return <td>{element[key]}</td>;
                                                         })}
                                                     </tr>
+                                                 
                                                 );
                                             })}
                                         </tbody>
