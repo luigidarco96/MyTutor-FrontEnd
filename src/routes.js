@@ -33,6 +33,20 @@ import Assignmets from "./views/Assignments";
 import Tasks from "./views/Tasks";
 
 const dashboardRoutes = {
+  "home":[
+    {
+      path: "/detailNotices",
+      name:"Dettaglio bando",
+      component: DetailsNotice,
+    },
+
+    {
+      path: "",
+      name:"Bandi",
+      component: Notices,
+    },
+
+  ],
   "student": [
     {
       path: "/notices",

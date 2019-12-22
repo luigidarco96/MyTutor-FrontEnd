@@ -28,6 +28,7 @@ import "./assets/css/pe-icon-7-stroke.css";
 
 import Notices from 'views/Notices';
 import AdminLayout from "layouts/Admin.jsx";
+import HomeLayout from "layouts/Home.jsx";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
 
@@ -36,7 +37,7 @@ ReactDOM.render(
     <Switch>
     <Route exact path="/signin"render={props => <Login {...props} />}/>
     <Route exact path="/signup" render={props => <SignUp {...props} />}/>
-<Route exact path="/home"  render={props => <Notices {...props} />}/>
+    <Route  path="/home"  render={props => <HomeLayout {...props} />}/>
 
       <Route path="/student" render={props => <AdminLayout {...props} />} />
       <Route path="/professor" render={props => <AdminLayout {...props} />}/>

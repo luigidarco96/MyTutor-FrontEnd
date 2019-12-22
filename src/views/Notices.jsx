@@ -31,7 +31,7 @@ class Notices extends Component {
         let path = "http://localhost:3000/";
         path = path.concat(pathname.split("/")[1]+"/detailNotices/"+e.id);
         window.location.replace(path);
-        alert('this is bando:'+e.id+" "+path);
+       
       }
     render() {
                                                    
