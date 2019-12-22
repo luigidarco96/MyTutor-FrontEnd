@@ -74,7 +74,7 @@ class DetailsNotice extends Component {
         </Grid>
       );
     } else {
-      return <h1>Errore</h1>;
+      return <h1>Caricamento...</h1>;
     }
   }
 }
