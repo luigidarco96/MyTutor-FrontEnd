@@ -41,32 +41,41 @@ class DetailsNotice extends Component {
   }
 
   render() {
-    const { noticeJSON } = this.state;
+    const {
+      noticeJSON: { notice },
+      isLoaded
+    } = this.state;
 
-    console.log(noticeJSON);
-    return (
-      <Grid style={{ margin: '20px 0' }} fluid>
-        <Row>
-          <Col xs={10}>
-            <NoticeInformation notice={noticeJSON} />
-          </Col>
-          <Col xs={2}>
-            <CustomButton bsStyle='primary' block={true}>
-              Scarica bando
-            </CustomButton>
-            <br></br>
-            <CustomButton bsStyle='primary' block={true} disabled>
-              Scarica graduatoria
-            </CustomButton>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <Upload />
-          </Col>
-        </Row>
-      </Grid>
-    );
+    if (isLoaded && notice) {
+      console.log(notice);
+      var { articles, evaluation_criterions, assignments } = notice;
+
+      return (
+        <Grid style={{ margin: '20px 0' }} fluid>
+          <Row>
+            <Col xs={10}>
+              <NoticeInformation noticeJSON={notice} />
+            </Col>
+            <Col xs={2}>
+              <CustomButton bsStyle='primary' block={true}>
+                Scarica bando
+              </CustomButton>
+              <br></br>
+              <CustomButton bsStyle='primary' block={true} disabled>
+                Scarica graduatoria
+              </CustomButton>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <Upload />
+            </Col>
+          </Row>
+        </Grid>
+      );
+    } else {
+      return <h1>Errore</h1>;
+    }
   }
 }
 

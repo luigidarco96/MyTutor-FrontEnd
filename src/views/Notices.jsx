@@ -16,7 +16,7 @@ class Notices extends Component {
 
   componentDidMount() {
     this.setState({
-      header: ['protocollo', 'datascadenza', 'stato']
+      header: ['protocollo', 'data scadenza', 'tipo', 'stato']
     });
     fetch('http://localhost:3001/api/notices')
       .then(blob => blob.json())
@@ -75,7 +75,8 @@ class Notices extends Component {
                               onClick={() => this.getDetailNotice(element)}
                             >
                               <td>{element.protocol}</td>
-                              <td>{element.deadline}</td>
+                              <td>{element.deadline.split('T')[0]}</td>
+                              <td>{element.type}</td>
                               <td>{element.state}</td>
                             </tr>
                           );

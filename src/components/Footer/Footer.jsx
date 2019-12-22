@@ -23,13 +23,10 @@ class Footer extends Component {
       <footer
         className='footer'
         style={{
-          backgroundColor: '#274f77',
-          position: 'absolute',
-          bottom: '0',
-          width: '100%'
+          backgroundColor: '#274f77'
         }}
       >
-        <p className='copyright' style={{ color: '#FFFFFF' }}>
+        <p className='copyright' style={{ color: '#FFFFFF', margin: 0 }}>
           &copy; {new Date().getFullYear()}{' '}
           <a href='/' style={{ color: '#FFFFFF' }}>
             MyTutor
