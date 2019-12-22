@@ -12,17 +12,19 @@ export class SignUpProfessor extends Component {
         return (
             <Form>
                     <FormGroup>
-                        <Col md={6} lg={6} sm={6}>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
                             <ControlLabel style={{ 'margin-top': '3px' }}>Nome</ControlLabel>
                             <FormControl
+                                style={{width:'400px'}}
                                 required
                                 type="text"
                                 placeholder="Scrivi il tuo nome.."
                             />
                         </Col>
-                        <Col md={6} lg={6} sm={6}>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
                             <ControlLabel style={{ 'margin-top': '3px' }}>Cognome</ControlLabel>
                             <FormControl
+                                style={{width:'400px'}}
                                 required
                                 type="text"
                                 placeholder="Scrivi il tuo cognome.."
@@ -30,9 +32,10 @@ export class SignUpProfessor extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup>
-                        <Col md={6} lg={6} sm={6}>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
                             <ControlLabel style={{ 'margin-top': '3px' }}>Data Di Nascita</ControlLabel>
                             <FormControl
+                                style={{width:'400px'}}
                                 required
                                 type="text"
                                 placeholder="La tua data di nascita.."
@@ -40,17 +43,19 @@ export class SignUpProfessor extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup>
-                        <Col md={6} lg={6} sm={6}>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
                             <ControlLabel style={{ 'margin-top': '3px' }}>Email</ControlLabel>
                             <FormControl
+                                style={{width:'400px'}}
                                 required
                                 type="text"
                                 placeholder="Scrivi la tua email.."
                             />
                         </Col>
-                        <Col md={6} lg={6} sm={6}>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
                             <ControlLabel style={{ 'margin-top': '3px' }}>Conferma Email</ControlLabel>
                             <FormControl
+                                style={{width:'400px'}}
                                 required
                                 type="text"
                                 placeholder="Conferma la tua email.."
@@ -58,17 +63,19 @@ export class SignUpProfessor extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup>
-                        <Col md={6} lg={6} sm={6}>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
                             <ControlLabel style={{ 'margin-top': '3px' }}>Password</ControlLabel>
                             <FormControl
+                                style={{width:'400px'}}
                                 required
                                 type="password"
                                 placeholder="Scrivi la tua password.."
                             />
                         </Col>
-                        <Col md={6} lg={6} sm={6}>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
                             <ControlLabel style={{ 'margin-top': '3px' }}>Conferma password</ControlLabel>
                             <FormControl
+                                style={{width:'400px'}}
                                 required
                                 type="password"
                                 placeholder="Conferma la tua password.."
@@ -76,9 +83,10 @@ export class SignUpProfessor extends Component {
                         </Col>
                     </FormGroup>
                     <FormGroup>
-                        <Col md={6} lg={6} sm={6}>
-                        <ControlLabel style={{ visibility: 'hidden' }}>Conferma password</ControlLabel>
-                        <FormControl style={{ visibility: 'hidden' }}/>
+                        <Col md={6} lg={6} sm={6} style={{padding:'6px'}}>
+                        <ControlLabel style={{ visibility: 'hidden','margin-top': '3px' }}>Conferma password</ControlLabel>
+                        <FormControl
+                        style={{width:'400px'}}    style={{ visibility: 'hidden' }}/>
                         </Col>
                     </FormGroup>
                 <Button
