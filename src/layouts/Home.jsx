@@ -19,9 +19,8 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import NotificationSystem from "react-notification-system";
 
-import AdminNavbar from "components/Navbars/AdminNavbar";
+import HomeNavbar from "components/Navbars/HomeNavbar";
 import Footer from "components/Footer/Footer";
-import Sidebar from "components/Sidebar/Sidebar";
 import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
 
 import { style } from "variables/Variables.jsx";
@@ -29,8 +28,6 @@ import { style } from "variables/Variables.jsx";
 import routes from "routes.js";
 
 import image from "assets/img/sidebar-3.jpg";
-import { studentSidebar, professorSidebar, ddiSidebar, adminSidebar } from "../routes/sidebar.js"
-
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -90,7 +87,7 @@ class Home extends Component {
 
     return (
         <div>
-          <AdminNavbar
+          <HomeNavbar
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
