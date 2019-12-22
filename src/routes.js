@@ -35,7 +35,7 @@ import Tasks from "./views/Tasks";
 const dashboardRoutes = {
   "home":[
     {
-      path: "/detailNotices",
+      path: "/detailNotices/:id",
       name:"Dettaglio bando",
       component: DetailsNotice,
     },
