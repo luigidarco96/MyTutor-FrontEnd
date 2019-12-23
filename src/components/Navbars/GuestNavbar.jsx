@@ -17,7 +17,7 @@ export class GuestNavbar extends Component {
             marginBottom: "12px",
           }
         return (
-            <Navbar fluid style={{ backgroundColor: "#274F77"}}>
+            <Navbar fluid style={{ backgroundColor: "#274F77", marginBottom:'1vw'}}>
                 <Navbar.Header>
 
                     <div style={spanStyle}>

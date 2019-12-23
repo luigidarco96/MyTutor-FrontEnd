@@ -62,13 +62,12 @@ const SignUp = (props) => {
             <GuestNavbar />
             <div style={{
                 position: 'absolute',
-                width: '98vw'
+                width: '98vw',
+                margin:'auto'
             }}>
                 <Row style={{
                     width: '100%',
-                    overflowY: 'hidden',
-                    maxHeight: '550px',
-                    padding: '1px'
+                    overflowY: 'hidden'
                 }}>
                     <Col md="2"></Col>
                     <Col md="8">
@@ -77,7 +76,7 @@ const SignUp = (props) => {
                             content={
                                 <div>
                                     <Nav tabs>
-                                        <NavItem id='1' className='tabItem'>
+                                        <NavItem id='1'>
                                             <NavLink
                                                 className={classnames({ active: activeTab === '1' }), 'tabLink'}
                                                 onClick={() => { toggle('1'); }}
@@ -85,7 +84,7 @@ const SignUp = (props) => {
                                                 Studente
                                                     </NavLink>
                                         </NavItem>
-                                        <NavItem id='2' className='tabItem'>
+                                        <NavItem id='2'>
                                             <NavLink
                                                 className={classnames({ active: activeTab === '2' }), 'tabLink'}
                                                 onClick={() => { toggle('2'); }}
