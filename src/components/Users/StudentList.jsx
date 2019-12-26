@@ -1,6 +1,7 @@
 import React,{Component} from 'react';
 import {Grid, Row, Table, Col} from 'react-bootstrap';
 import { students } from 'static/students';
+import PopupDelete from '../Popups/PopupDelete'
 
 
 
@@ -8,7 +9,8 @@ export class StudentList extends Component{
     state={
         header:[],
         content:[],
-        isLoading: true
+        isLoading: true,
+        showPopupDelete: false,
     }
 
     constructor(props){
@@ -17,12 +19,17 @@ export class StudentList extends Component{
 
     componentDidMount(){
         
-        this.setState({
+            this.setState({
             header:['E-mail','Nome','Cognome','Matricola','Data di Nascita']
         });
     }
     render(){
-        const {
+      const togglePopupDelete=()=>{
+        this.setState({
+          showPopupDelete: !this.state.showPopupDelete
+        });
+      }          
+    const {
             header,
         }=this.state;
        const styleIconTrash={
@@ -35,7 +42,7 @@ export class StudentList extends Component{
                 <div>   
                   <input className='inputSearchBar' type='text' placeholder='Cerca...'/>
                   <span><i className='pe-7s-search iconSearchBar'></i></span>
-                </div> 
+                </div>
                 <Row>
                   <Col md={12}>
                         <Table hover>
@@ -59,14 +66,23 @@ export class StudentList extends Component{
                                     <td>{element.surname}</td>                                    
                                     <td>{element.serialNumber}</td>
                                     <td>{element.birthDate}</td>
-                                    <td><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
+                                    <td onClick={()=>{togglePopupDelete();}}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
                                   </tr>
                                 );
+                                
                               })}
                           </tbody>
                         </Table>
                   </Col>
                 </Row>
+                  {
+                    this.state.showPopupDelete ?
+                      <PopupDelete
+                        text="Confermare l'eliminazione?"
+                        closePopup={()=>{togglePopupDelete();}}
+                      />
+                      :null
+                  }
               </Grid>
             </div>
           );

@@ -3,12 +3,16 @@ import {Grid, Row, Table, Col} from 'react-bootstrap';
 import { students } from "static/students";
 import { professors } from '../../static/professors';
 import Button from '../CustomButton/CustomButton';
+import PopupDelete from '../Popups/PopupDelete'
+import PopupInsertEmail from '../Popups/PopupInsertEmail'
 
 export class ProfessorList extends Component{
     state={
         header:[],
         content:[],
-        isLoading: true
+        isLoading: true,
+        showPopupDelete: false,
+        showPopupInsertEmail: false,
     }
 
     constructor(props){
@@ -22,6 +26,16 @@ export class ProfessorList extends Component{
         });
     }
     render(){
+      const togglePopupDelete=()=>{
+        this.setState({
+          showPopupDelete: !this.state.showPopupDelete
+        });
+      }          
+      const togglePopupInsertEmail=()=>{
+        this.setState({
+          showPopupInsertEmail: !this.state.showPopupInsertEmail
+        });
+      }          
         const {
             header,
         }=this.state;
@@ -35,7 +49,9 @@ export class ProfessorList extends Component{
               <div>   
                   <input className='inputSearchBar' type='text' placeholder='Cerca...'/>
                   <span><i className='pe-7s-search iconSearchBar'></i></span>
-                  <span style={{position:"absolute",right:"40px"}}><Button bsStyle="primary"  bsSize="xs">Inserisci professore</Button></span>
+                  <span style={{position:"absolute",right:"40px"}}>
+                    <Button style={{border:'1px solid #274F77'}} className='buttonHover' onClick={()=>{togglePopupInsertEmail();}} bsStyle="primary"  bsSize="xs">Inserisci professore</Button>
+                  </span>
 
                 </div> 
 
@@ -62,7 +78,7 @@ export class ProfessorList extends Component{
                                     <td>{element.surname}</td>                                    
                                     <td>{element.serialNumber}</td>
                                     <td>{element.birthDate}</td>
-                                    <td><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
+                                    <td onClick={()=>{togglePopupDelete();}}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
                                   </tr>
                                 );
                               })}
@@ -70,6 +86,23 @@ export class ProfessorList extends Component{
                         </Table>
                   </Col>
                 </Row>
+                {
+                    this.state.showPopupDelete ?
+                      <PopupDelete
+                        text="Confermare l'eliminazione?"
+                        closePopup={()=>{togglePopupDelete();}}
+                      />
+                      :null
+                  }
+                  {
+                    this.state.showPopupInsertEmail ?
+                      <PopupInsertEmail
+                        text="Inserire e-mail professore"
+                        closePopup={()=>{togglePopupInsertEmail();}}
+                      />
+                      :null
+                  }
+                    
               </Grid>
             </div>
           );
