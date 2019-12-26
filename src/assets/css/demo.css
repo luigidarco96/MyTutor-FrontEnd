@@ -871,3 +871,26 @@ a:hover{
   padding: 12px 15px;
   font-size: 20px;
 }
+
+.trashIcon:hover{
+  color:red !important;
+}
+
+.iconSearchBar{
+  font-size: 20px;
+  position: absolute;
+  padding-top: 2px;
+  color:#999999;
+}
+.iconSearchBar:hover{
+  color:#274F77;
+}
+
+.inputSearchBar{
+  border-radius: 20px;
+  border: 1px solid #999999;
+  padding-left:4px;
+}
+.inputSearchBar:focus{
+  border:1px solid #274F77;
+}
