@@ -1,18 +1,16 @@
 import React,{Component} from 'react';
-import {Grid, Row, Table, Col} from 'react-bootstrap';
+import {Grid, Row, Table, Col,Modal} from 'react-bootstrap';
 import { students } from "static/students";
 import { professors } from '../../static/professors';
 import Button from '../CustomButton/CustomButton';
-import PopupDelete from '../Popups/PopupDelete'
-import PopupInsertEmail from '../Popups/PopupInsertEmail'
 
 export class ProfessorList extends Component{
     state={
         header:[],
         content:[],
         isLoading: true,
-        showPopupDelete: false,
-        showPopupInsertEmail: false,
+        show: false,
+        showInsertEmail:false,
     }
 
     constructor(props){
@@ -26,20 +24,34 @@ export class ProfessorList extends Component{
         });
     }
     render(){
-      const togglePopupDelete=()=>{
-        this.setState({
-          showPopupDelete: !this.state.showPopupDelete
-        });
-      }          
-      const togglePopupInsertEmail=()=>{
-        this.setState({
-          showPopupInsertEmail: !this.state.showPopupInsertEmail
-        });
-      }          
-        const {
+      const handleClose = () => this.setState({
+        show:false,
+      });
+
+      const handleShow = () => this.setState({
+        show:true,
+      });
+      const handleCloseEmail = () => this.setState({
+        showInsertEmail:false,
+      });
+
+      const handleShowEmail = () => this.setState({
+        showInsertEmail:true,
+      });
+      const inputTextStyle={
+        height: '18px',
+        width: '100%',
+        borderRadius: '10px',
+        border: '1px solid #274F77',
+        paddingLeft: '5px',
+      }
+
+     
+      const {
             header,
         }=this.state;
-       const styleIconTrash={
+        
+      const styleIconTrash={
         fontSize:'20px',
         color:'#274F77',
       }
@@ -50,7 +62,7 @@ export class ProfessorList extends Component{
                   <input className='inputSearchBar' type='text' placeholder='Cerca...'/>
                   <span><i className='pe-7s-search iconSearchBar'></i></span>
                   <span style={{position:"absolute",right:"40px"}}>
-                    <Button style={{border:'1px solid #274F77'}} className='buttonHover' onClick={()=>{togglePopupInsertEmail();}} bsStyle="primary"  bsSize="xs">Inserisci professore</Button>
+                    <Button onClick={handleShowEmail} style={{border:'1px solid #274F77'}} className='buttonHover'  bsStyle="primary"  bsSize="xs">Inserisci professore</Button>
                   </span>
 
                 </div> 
@@ -78,7 +90,7 @@ export class ProfessorList extends Component{
                                     <td>{element.surname}</td>                                    
                                     <td>{element.serialNumber}</td>
                                     <td>{element.birthDate}</td>
-                                    <td onClick={()=>{togglePopupDelete();}}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
+                                    <td onClick={handleShow}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
                                   </tr>
                                 );
                               })}
@@ -86,24 +98,33 @@ export class ProfessorList extends Component{
                         </Table>
                   </Col>
                 </Row>
-                {
-                    this.state.showPopupDelete ?
-                      <PopupDelete
-                        text="Confermare l'eliminazione?"
-                        closePopup={()=>{togglePopupDelete();}}
-                      />
-                      :null
-                  }
-                  {
-                    this.state.showPopupInsertEmail ?
-                      <PopupInsertEmail
-                        text="Inserire e-mail professore"
-                        closePopup={()=>{togglePopupInsertEmail();}}
-                      />
-                      :null
-                  }
-                    
-              </Grid>
+                
+                <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute',height:'200px',width:'350px'}} show={this.state.show} onHide={handleClose} animation={false}>
+                    <Modal.Header style={{width:'350px'}} closeButton>
+                      <Modal.Title style={{color:'#274F77'}}>Elimina professore</Modal.Title>
+                    </Modal.Header>
+        
+                    <Modal.Body style={{width:'350px'}}>Confermare l'eliminazione?</Modal.Body>
+                      <Modal.Footer style={{width:'350px'}}>
+                        <Button className='buttonHover button' variant="secondary" onClick={handleClose}>Annulla</Button>
+                        <Button className='buttonHover button' variant="primary" onClick={handleClose}>Elimina</Button>
+                    </Modal.Footer>
+                </Modal>              
+                <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute',height:'200px',width:'350px'}} show={this.state.showInsertEmail} onHide={handleCloseEmail} animation={false}>
+                    <Modal.Header style={{width:'350px'}} closeButton>
+                      <Modal.Title style={{color:'#274F77'}}>Inserisci email</Modal.Title>
+                    </Modal.Header>
+        
+                    <Modal.Body style={{width:'350px'}}><input type='text' style={inputTextStyle}></input></Modal.Body>
+                      <Modal.Footer style={{width:'350px'}}>
+                        <Button className='buttonHover button' variant="secondary" onClick={handleCloseEmail}>Annulla</Button>
+                        <Button className='buttonHover button' variant="primary" onClick={handleCloseEmail}>Inserisci</Button>
+                    </Modal.Footer>
+                </Modal>              
+                              
+            
+            </Grid>
+
             </div>
           );
         }

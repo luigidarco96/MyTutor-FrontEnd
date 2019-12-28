@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
-import {Grid, Row, Table, Col} from 'react-bootstrap';
+import {Grid, Row, Table, Col, Modal} from 'react-bootstrap';
 import { students } from 'static/students';
-import PopupDelete from '../Popups/PopupDelete'
+import Button from '../CustomButton/CustomButton'
 
 
 
@@ -10,7 +10,7 @@ export class StudentList extends Component{
         header:[],
         content:[],
         isLoading: true,
-        showPopupDelete: false,
+        show: false,
     }
 
     constructor(props){
@@ -19,16 +19,20 @@ export class StudentList extends Component{
 
     componentDidMount(){
         
-            this.setState({
-            header:['E-mail','Nome','Cognome','Matricola','Data di Nascita']
+        this.setState({
+            header:['E-mail','Nome','Cognome','Matricola','Data di Nascita'],
         });
     }
     render(){
-      const togglePopupDelete=()=>{
-        this.setState({
-          showPopupDelete: !this.state.showPopupDelete
-        });
-      }          
+      const handleClose = () => this.setState({
+          show:false,
+      });
+
+      const handleShow = () => this.setState({
+        show:true,
+      });
+
+                
     const {
             header,
         }=this.state;
@@ -66,7 +70,7 @@ export class StudentList extends Component{
                                     <td>{element.surname}</td>                                    
                                     <td>{element.serialNumber}</td>
                                     <td>{element.birthDate}</td>
-                                    <td onClick={()=>{togglePopupDelete();}}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
+                                    <td onClick={handleShow} ><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
                                   </tr>
                                 );
                                 
@@ -75,14 +79,19 @@ export class StudentList extends Component{
                         </Table>
                   </Col>
                 </Row>
-                  {
-                    this.state.showPopupDelete ?
-                      <PopupDelete
-                        text="Confermare l'eliminazione?"
-                        closePopup={()=>{togglePopupDelete();}}
-                      />
-                      :null
-                  }
+                  
+                  <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute',height:'200px',width:'350px'}} show={this.state.show} onHide={handleClose} animation={false}>
+                    <Modal.Header style={{width:'350px'}} closeButton>
+                      <Modal.Title style={{color:'#274F77'}}>Elimina studente</Modal.Title>
+                    </Modal.Header>
+        
+                    <Modal.Body style={{width:'350px'}}>Confermare l'eliminazione?</Modal.Body>
+                      <Modal.Footer style={{width:'350px'}}>
+                        <Button className='buttonHover button' variant="secondary" onClick={handleClose}>Annulla</Button>
+                        <Button className='buttonHover button' variant="primary" onClick={handleClose}>Elimina</Button>
+                    </Modal.Footer>
+                  </Modal>
+                  
               </Grid>
             </div>
           );
