@@ -15,140 +15,144 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Dashboard from "views/Dashboard.jsx";
-import UserProfile from "views/UserProfile.jsx";
-import TableList from "views/TableList.jsx";
-import Typography from "views/Typography.jsx";
-import Icons from "views/Icons.jsx";
-import Maps from "views/Maps.jsx";
-import Notifications from "views/Notifications.jsx";
-import Upgrade from "views/Upgrade.jsx";
-import Notices from "views/Notices";
-import DetailsNotice from "views/DetailsNotice.jsx";
-import Error404 from "./views/Error404";
-import Candidature from "./views/Candidature";
-import Rankings from "./views/Rankings";
-import Users from "./views/Users";
-import Assignmets from "./views/Assignments";
-import Tasks from "./views/Tasks";
+import Dashboard from 'views/Dashboard.jsx';
+import UserProfile from 'views/UserProfile.jsx';
+import TableList from 'views/TableList.jsx';
+import Typography from 'views/Typography.jsx';
+import Icons from 'views/Icons.jsx';
+import Maps from 'views/Maps.jsx';
+import Notifications from 'views/Notifications.jsx';
+import Upgrade from 'views/Upgrade.jsx';
+import Notices from 'views/Notices';
+import DetailsNotice from 'views/DetailsNotice.jsx';
+import Error404 from './views/Error404';
+import Candidature from './views/Candidature';
+import Rankings from './views/Rankings';
+import Users from './views/Users';
+import Assignmets from './views/Assignments';
+import Tasks from './views/Tasks';
+import CreateNotice from './views/CreateNotice';
 
 const dashboardRoutes = {
-  "home":[
+  home: [
     {
-      path: "/detailNotices/:id",
-      name:"Dettaglio bando",
-      component: DetailsNotice,
+      path: '/detailNotices/:id',
+      name: 'Dettaglio bando',
+      component: DetailsNotice
     },
 
     {
-      path: "",
-      name:"Bandi",
-      component: Notices,
-    },
-
+      path: '',
+      name: 'Bandi',
+      component: Notices
+    }
   ],
-  "student": [
+  student: [
     {
-      path: "/notices",
-      name:"Bandi",
-      component: Notices,
+      path: '/notices',
+      name: 'Bandi',
+      component: Notices
     },
 
     {
-      path: "/detailNotices/:id",
-      name: "Dettaglio Bando",
-      component: DetailsNotice,
+      path: '/detailNotices/:id',
+      name: 'Dettaglio Bando',
+      component: DetailsNotice
     },
 
     {
-      path: "/tasks",
-      name:"Incarichi",
-      component: Tasks,
+      path: '/tasks',
+      name: 'Incarichi',
+      component: Tasks
     },
 
     {
-      path:"/candidature",
-      name:"Candidature",
-      component: Candidature,
+      path: '/candidature',
+      name: 'Candidature',
+      component: Candidature
     },
     {
-      path: "/*",
-      component: Error404,
-    },
-  ],
-
-  "professor": [
-    {
-      path: "/notices",
-      name:"Bandi",
-      component: Notices,
-    },
-    
-    {
-      path: "/detailNotices/:id",
-      name: "Dettaglio Bando",
-      component: DetailsNotice,
-    },
-
-    {
-      path: "/*",
-      component: Error404,
-    },
+      path: '/*',
+      component: Error404
+    }
   ],
 
-  "ddi": [
+  professor: [
     {
-      path: "/notices",
-      name: "Bandi",
-      component: Notices,
-    },
-    
-    {
-      path: "/detailNotices/:id",
-      name: "Dettaglio Bando",
-      component: DetailsNotice,
+      path: '/notices',
+      name: 'Bandi',
+      component: Notices
     },
 
     {
-      path: "/rankings",
-      name: "Graduatorie",
-      component: Rankings,
+      path: '/detailNotices/:id',
+      name: 'Dettaglio Bando',
+      component: DetailsNotice
     },
+
     {
-      path: "/*",
-      component: Error404,
-    },
+      path: '/*',
+      component: Error404
+    }
   ],
 
-  "admin": [
+  ddi: [
     {
-      path: "/notices",
-      name: "Bandi",
-      component: Notices,
-    },
-    
-    {
-      path: "/detailNotices/:id",
-      name: "Dettaglio Bando",
-      component: DetailsNotice,
+      path: '/notices',
+      name: 'Bandi',
+      component: Notices
     },
 
     {
-      path: "/users",
-      name: "Utenti",
-      component: Users,
+      path: '/detailNotices/:id',
+      name: 'Dettaglio Bando',
+      component: DetailsNotice
+    },
+
+    {
+      path: '/rankings',
+      name: 'Graduatorie',
+      component: Rankings
     },
     {
-      path:"/assignments",
-      name: "Assegni",
-      component: Assignmets,
+      path: '/*',
+      component: Error404
+    }
+  ],
+
+  admin: [
+    {
+      path: '/notices',
+      name: 'Bandi',
+      component: Notices
+    },
+
+    {
+      path: '/detailNotices/:id',
+      name: 'Dettaglio Bando',
+      component: DetailsNotice
     },
     {
-      path: "/*",
-      component: Error404,
+      path: '/createNotice',
+      name: 'Crea Bando',
+      component: CreateNotice
     },
-    
+
+    {
+      path: '/users',
+      name: 'Utenti',
+      component: Users
+    },
+    {
+      path: '/assignments',
+      name: 'Assegni',
+      component: Assignmets
+    },
+    {
+      path: '/*',
+      component: Error404
+    }
   ]
-}
+};
 
 export default dashboardRoutes;

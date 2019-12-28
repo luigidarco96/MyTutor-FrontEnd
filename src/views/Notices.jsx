@@ -1,101 +1,121 @@
 import React, { Component } from 'react';
 
-import { Grid, Row, Col, Table } from 'react-bootstrap';
 import Card from 'components/Card/Card.jsx';
-const dictionaryState={
-  Draft: "Bozza",
-  Published: "Pubblicato",
+import TypedNotices from '../components/AdminNotices/TypedNotices';
 
-}
+import { Grid, Row, Col, Tabs, Tab } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+
+const dictionaryState = {
+  Draft: 'Bozza',
+  Published: 'Pubblicato'
+};
 
 class Notices extends Component {
-  state = {
-    header: [],
-    content: {},
-    isLoading: true
-  };
   constructor(props) {
     super(props);
-    this.getDetailNotice = this.getDetailNotice.bind(this);
+    this.state = {
+      pathname: props.location.pathname.split('/')[1],
+      selectedTab: 'Bozza',
+      notices: {},
+      isLoaded: false
+    };
   }
 
   componentDidMount() {
-    this.setState({
-      header: ['protocollo', 'data scadenza', 'tipo', 'stato']
-    });
+    const { selectedTab } = this.state;
+    // Fetch the notices
     fetch('http://localhost:3001/api/notices')
       .then(blob => blob.json())
-      .then(
-        result => {
-          this.setState({
-            content: result,
-            isLoading: false
-          });
-        },
-        error => {
-          this.setState({
-            error
-          });
-        }
-      );
+      .then(result => {
+        this.setState({
+          isLoaded: true,
+          notices: result.notices,
+          filteredNotices: result.notices.filter(notice => {
+            return dictionaryState[notice.state] === selectedTab;
+          })
+        });
+      });
   }
 
-  getDetailNotice = e => {
-    let pathname = this.props.location.pathname;
-    let path = 'http://localhost:3000/';
-    path = path.concat(pathname.split('/')[1] + '/detailNotices/' + e.protocol);
-    window.location.replace(path);
-  };
+  handleTabSelect(e) {
+    const { notices } = this.state;
+
+    let filteredNotices = notices.filter(notice => {
+      return dictionaryState[notice.state] === e;
+    });
+
+    this.setState({
+      selectedTab: e,
+      filteredNotices: filteredNotices
+    });
+  }
 
   render() {
-    const {
-      header,
-      content: { notices }
-    } = this.state;
+    const { selectedTab, pathname, isLoaded, filteredNotices } = this.state;
 
-    return (
-      <div className='content'>
-        <Grid fluid>
-          <Row>
-            <Col md={12}>
-              <Card
-                title='Lista Bandi'
-                ctTableFullWidth
-                ctTableResponsive
-                content={
-                  <Table hover>
-                    <thead>
-                      <tr>
-                        {header.map((prop, key) => {
-                          return <th key={key}>{prop}</th>;
-                        })}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {notices &&
-                        notices.map(element => {
-                          return (
-                            <tr
-                              key={element.protocol}
-                              onClick={() => this.getDetailNotice(element)}
-
-                            >
-                              <td>{element.protocol}</td>
-                              <td>{element.deadline.split('T')[0]}</td>
-                              <td>{element.type}</td>
-                              <td>{dictionaryState[element.state]}</td>
-                            </tr>
-                          );
-                        })}
-                    </tbody>
-                  </Table>
-                }
-              />
-            </Col>
-          </Row>
-        </Grid>
-      </div>
-    );
+    if (!isLoaded) {
+      return <h1>Caricamento...</h1>;
+    } else {
+      return (
+        <div className='content'>
+          <Grid fluid>
+            <Row>
+              <Col md={12}>
+                <Card
+                  title='Lista Bandi'
+                  ctTableFullWidth
+                  ctTableResponsive
+                  content={
+                    <Tabs
+                      defaultActiveKey='Bozza'
+                      onSelect={e => this.handleTabSelect(e)}
+                      transition={false}
+                    >
+                      <Tab eventKey='Bozza' title='Bozza'>
+                        <Grid fluid>
+                          <Row style={{ padding: '5px', marginTop: '10px' }}>
+                            <Col md={12}>
+                              <Link
+                                to={'createNotice'}
+                                style={{ fontSize: '25px' }}
+                              >
+                                <i
+                                  className='pe-7s-plus'
+                                  style={{
+                                    margin: 'auto 10px',
+                                    fontSize: '20px'
+                                  }}
+                                ></i>
+                                Crea bando
+                              </Link>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <TypedNotices
+                              pathname={pathname}
+                              notices={filteredNotices}
+                              type={selectedTab}
+                            />
+                          </Row>
+                        </Grid>
+                      </Tab>
+                      <Tab eventKey='Pubblicato' title='Pubblicati'>
+                        <TypedNotices
+                          pathname={pathname}
+                          notices={filteredNotices}
+                          type={selectedTab}
+                        />
+                      </Tab>
+                    </Tabs>
+                  }
+                />
+              </Col>
+            </Row>
+          </Grid>
+        </div>
+      );
+    }
   }
 }
 

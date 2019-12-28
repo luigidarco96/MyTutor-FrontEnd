@@ -101,7 +101,7 @@ export class NoticeInformation extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {notice.evaluation_criterions.map(el => {
+                    {notice.evaluation_criteria.map(el => {
                       return (
                         <tr>
                           <td>{el.name}</td>

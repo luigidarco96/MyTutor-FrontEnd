@@ -23,7 +23,10 @@ class Footer extends Component {
       <footer
         className='footer'
         style={{
-          backgroundColor: '#274f77'
+          backgroundColor: '#274f77',
+          position: 'absolute',
+          width: '100%',
+          bottom: '0'
         }}
       >
         <p className='copyright' style={{ color: '#FFFFFF', margin: 0 }}>
