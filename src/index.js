@@ -40,7 +40,7 @@ function PrivateRoutes() {
         <PrivateRoute component={AdminLayout} path="/student"/>
         <PrivateRoute path="/professor" component={AdminLayout}/>
         <PrivateRoute path="/ddi" component={AdminLayout}/>
-     
+        <Redirect from='/' to='/home'></Redirect>
       </Switch>
   );
   
@@ -53,8 +53,7 @@ ReactDOM.render(
       <Route exact path="/signup" render={props => <SignUp {...props} />}/>
       <Route  path="/home"  render={props => <HomeLayout {...props} />}/>
       <PrivateRoutes/>
-     
-      <Redirect from="/" to="/home" />
+      
     </Switch>
   </BrowserRouter>,
   document.getElementById("root")
