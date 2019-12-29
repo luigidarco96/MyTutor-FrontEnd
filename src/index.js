@@ -15,7 +15,8 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
@@ -25,24 +26,33 @@ import "./assets/css/animate.min.css";
 import "./assets/sass/light-bootstrap-dashboard-react.scss?v=1.3.0";
 import "./assets/css/demo.css";
 import "./assets/css/pe-icon-7-stroke.css";
-
-import Notices from 'views/Notices';
 import AdminLayout from "layouts/Admin.jsx";
 import HomeLayout from "layouts/Home.jsx";
 import Login from "./views/Login";
 import SignUp from "./views/SignUp";
+import PrivateRoute from "./routes/PrivateRoutes";
+
+function PrivateRoutes() {
+    
+  return (
+      <Switch>
+        <PrivateRoute component={AdminLayout} path="/admin"/>
+        <PrivateRoute component={AdminLayout} path="/student"/>
+        <PrivateRoute path="/professor" component={AdminLayout}/>
+        <PrivateRoute path="/ddi" component={AdminLayout}/>
+     
+      </Switch>
+  );
+  
+};
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-    <Route exact path="/signin"render={props => <Login {...props} />}/>
-    <Route exact path="/signup" render={props => <SignUp {...props} />}/>
-    <Route  path="/home"  render={props => <HomeLayout {...props} />}/>
-
-      <Route path="/student" render={props => <AdminLayout {...props} />} />
-      <Route path="/professor" render={props => <AdminLayout {...props} />}/>
-      <Route path="/ddi" render={props => <AdminLayout {...props} />}/>
-      <Route path="/admin" render={props => <AdminLayout {...props} />}/>
+      <Route exact path="/signin"render={props => <Login {...props} />}/>
+      <Route exact path="/signup" render={props => <SignUp {...props} />}/>
+      <Route  path="/home"  render={props => <HomeLayout {...props} />}/>
+      <PrivateRoutes/>
      
       <Redirect from="/" to="/home" />
     </Switch>
