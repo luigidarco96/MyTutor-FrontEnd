@@ -27,7 +27,7 @@ const Regex = [
         passMatch: false
     },
     {
-        dataRegex: RegExp(/^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/),
+        dataRegex: RegExp(/^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/),
         dataMatch: false
     }
 ]
@@ -114,7 +114,7 @@ export class SignUpProfessor extends Component {
                         errors.email = ""
                         Regex[2].emailMatch = true;
                     }
-                    if (value == confirmEmail) 
+                    if (value == confirmEmail)
                         errors.confirmEmail = ''
                     break;
                 case 'password':
@@ -125,12 +125,12 @@ export class SignUpProfessor extends Component {
                         errors.password = ""
                         Regex[3].passwordMatch = true;
                     }
-                    if (value == confirmPass) 
+                    if (value == confirmPass)
                         errors.confirmPass = ''
                     break;
                 case 'data':
                     if (value.match(Regex[4].dataRegex) == null) {
-                        errors.data = 'Formato: dd/mm/yyyy'
+                        errors.data = 'Formato: yyyy-mm-dd'
                         Regex[4].dataMatch = false;
                     } else {
                         errors.data = ''
@@ -154,33 +154,25 @@ export class SignUpProfessor extends Component {
                 default:
                     break;
             }
-
-            console.log(errors)
             this.setState({ errors, [name]: value })
         }
 
         const handleSubmit = (event) => {
             event.preventDefault();
-            
-            /*axios.post('',
-            {
-                name: nome,
-                surname: cognome, 
-                email: email, 
-                password: password,
-                dateOfBirth: data
-            })
-*/
+
             let user = {
                 name: nome,
-                surname: cognome, 
-                email: email, 
+                surname: cognome,
+                email: email,
                 password: password,
-                dateOfBirth: data
+                birth_date: data,
+                role: null,
+                verified: null
             }
-
-            console.log(user)
-
+            axios.post('http://localhost:3001/api/auth/registerStudent', { student: user })
+                .then(response => {
+                    console.log(response)
+                })
         }
 
         return (

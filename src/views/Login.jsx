@@ -9,7 +9,7 @@ import {
 import "../assets/css/page-login.css";
 import Card from "../components/Card/Card";
 import Button from "components/CustomButton/CustomButton";
-import bg from '../assets/img/background-image.jpg'
+import bg from '../assets/img/background-image2.jpg'
 import GuestNavbar from "../components/Navbars/GuestNavbar";
 import { login } from "../utils/auth";
 

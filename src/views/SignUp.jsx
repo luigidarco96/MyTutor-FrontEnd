@@ -4,9 +4,9 @@ import { SignUpStudent } from '../components/SignUp/SignUpStudent';
 import { SignUpProfessor } from '../components/SignUp/SignUpProfessor';
 import Card from "components/Card/Card.jsx";
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
-import GuestNavbar from '../components/Navbars/GuestNavbar';
 import classnames from 'classnames';
-import bg from '../assets/img/background-image.jpg'
+import bg from '../assets/img/background-image2.jpg'
+import  GuestNavbar  from '../components/Navbars/GuestNavbar';
 
 const SignUp = (props) => {
     const [activeTab, setActiveTab] = useState('1');
