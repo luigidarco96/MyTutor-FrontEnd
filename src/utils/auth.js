@@ -1,11 +1,12 @@
 import axios from "axios";
 
-const dictionaryPath ={
+export const dictionaryPath ={
     student : 'Student',
     professor: 'Professor',
     ddi: 'DDI',
     admin: 'Office',
 }
+
 export const isLogin = (path) => {
     let token = localStorage.getItem('token');
     let user = JSON.parse(localStorage.getItem('user'));
