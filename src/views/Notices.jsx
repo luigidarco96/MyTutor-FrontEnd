@@ -25,7 +25,7 @@ class Notices extends Component {
   componentDidMount() {
     const { selectedTab } = this.state;
     // Fetch the notices
-    fetch('http://localhost:3001/api/notices')
+    fetch('http://localhost:3001/api/notices', { authorization: 'Bello' })
       .then(blob => blob.json())
       .then(result => {
         this.setState({

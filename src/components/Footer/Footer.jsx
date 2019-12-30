@@ -21,13 +21,7 @@ class Footer extends Component {
   render() {
     return (
       <footer
-        className='footer'
-        style={{
-          backgroundColor: '#274f77',
-          position: 'absolute',
-          width: '100%',
-          bottom: '0'
-        }}
+        className='footer custom-footer'
       >
         <p className='copyright' style={{ color: '#FFFFFF', margin: 0 }}>
           &copy; {new Date().getFullYear()}{' '}

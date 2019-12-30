@@ -1,0 +1,23 @@
+.custom-footer {
+    background-color: #274f77;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 45px;
+}
+
+.custom-navbar {
+    height: 80px;
+}
+
+.custom-body-view {
+    height: calc(100% - 45px - 80px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;
+}
+
+.custom-body-view::-webkit-scrollbar {
+    display: none;
+}
