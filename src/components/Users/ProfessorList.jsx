@@ -3,6 +3,7 @@ import {Grid, Row, Table, Col,Modal} from 'react-bootstrap';
 import { students } from "static/students";
 import { professors } from '../../static/professors';
 import Button from '../CustomButton/CustomButton';
+import { login, logout } from '../../utils/auth';
 
 export class ProfessorList extends Component{
     state={
@@ -62,7 +63,9 @@ export class ProfessorList extends Component{
                   <input className='inputSearchBar' type='text' placeholder='Cerca...'/>
                   <span><i className='pe-7s-search iconSearchBar'></i></span>
                   <span style={{position:"absolute",right:"40px"}}>
-                    <Button onClick={handleShowEmail} style={{border:'1px solid #274F77'}} className='buttonHover'  bsStyle="primary"  bsSize="xs">Inserisci professore</Button>
+                    <Button onClick={handleShowEmail} style={{border:'1px solid #274F77'}} className='buttonHover'  bsStyle="primary"  bsSize="xs">
+                      Inserisci professore
+                    </Button>
                   </span>
 
                 </div> 

@@ -17,6 +17,7 @@
 */
 import React, { Component } from "react";
 import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
+import { logout } from "../../utils/auth";
 
 class AdminNavbarLinks extends Component {
   render() {
@@ -33,7 +34,7 @@ class AdminNavbarLinks extends Component {
           >
             <MenuItem eventKey={2.1}>Visualizza Profilo</MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey={2.5}>Logout</MenuItem>
+            <MenuItem eventKey={2.5} onClick={logout}>Logout</MenuItem>
           </NavDropdown>
          
         </Nav>

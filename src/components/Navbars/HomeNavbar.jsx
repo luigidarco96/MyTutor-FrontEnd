@@ -17,7 +17,7 @@
 */
 import React, { Component } from "react";
 import { Navbar } from "react-bootstrap";
-
+import "../../assets/css/global.css";
 import HomeNavbarLinks from "./HomeNavbarLinks.jsx";
 
 class HeaderHome extends Component {
@@ -58,7 +58,7 @@ class HeaderHome extends Component {
         marginBottom: "12px",
       }
     return (
-      <Navbar fluid style={{backgroundColor: "#274F77"}}>
+      <Navbar className="custom-navbar" fluid style={{backgroundColor: "#274F77"}}>
         <Navbar.Header>
          
         <div style={spanStyle}>

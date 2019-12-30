@@ -17,7 +17,7 @@
 */
 import React, { Component } from "react";
 import { Navbar } from "react-bootstrap";
-
+import "../../assets/css/global.css";
 import AdminNavbarLinks from "./AdminNavbarLinks.jsx";
 
 class Header extends Component {
@@ -46,7 +46,7 @@ class Header extends Component {
   }
   render() {
     return (
-      <Navbar fluid>
+      <Navbar className="custom-navbar" fluid>
         <Navbar.Header>
           <Navbar.Brand>
             <a href="">{this.props.brandText}</a>

@@ -11,6 +11,7 @@ import Card from "../components/Card/Card";
 import Button from "components/CustomButton/CustomButton";
 import bg from '../assets/img/background-image.jpg'
 import GuestNavbar from "../components/Navbars/GuestNavbar";
+import { login } from "../utils/auth";
 
 export default function Login(props) {
   const [email, setEmail] = useState("");
@@ -73,7 +74,8 @@ export default function Login(props) {
                     bsSize="large"
                     disabled={!validateForm()}
                     type="submit"
-                  >
+                    onClick={()=>{login(email,password)}}
+                    >
                     Invio
                   </Button>
                 </form>
