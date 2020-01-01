@@ -150,7 +150,7 @@ export class StudentList extends Component{
                       <Modal.Title style={{color:'#274F77'}}>Elimina studente</Modal.Title>
                     </Modal.Header>
         
-                    <Modal.Body style={{width:'350px'}}>Confermare l'eliminazione?</Modal.Body>
+                    <Modal.Body style={{width:'350px', padding:'7px'}}>Confermare l'eliminazione?</Modal.Body>
                       <Modal.Footer style={{width:'350px'}}>
                         <Button className='buttonHover button' variant="secondary" onClick={handleClose}>Annulla</Button>
                             <Button className='buttonHover button' variant="primary" onClick={deleteStudent}>Elimina</Button>

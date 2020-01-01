@@ -12,6 +12,7 @@ export class ProfessorList extends Component{
         isLoading: true,
         show: false,
         showInsertEmail:false,
+        selectedProfessor:'',
     }
 
     constructor(props){
@@ -45,14 +46,52 @@ export class ProfessorList extends Component{
         
     }
     render(){
+      const deleteProfessor = ()=>{
+        //Search the professor to delete.
+       
+        const id = this.state.selectedProfessor.email; 
+        let url ='http://localhost:3001/api/users/'+id;
+        axios
+        .get(url,{
+          headers:{
+            'Authorization': localStorage.getItem('token'),
+          },
+        })
+        .then(blob => {
+          this.setState({
+            selectedProfessor: blob.data.user,
+          })
+        });
+
+        const headers={
+          'Authorization': localStorage.getItem('token'),
+        }
+        //Delete the user selected.
+        axios.
+        delete('http://localhost:3001/api/users/'+this.state.selectedProfessor.email,{
+          headers: headers,
+        },)
+        .then(blob=>{
+          professors.pop(professors.filter((el)=>el.email===this.state.selectedProfessor.email)[0]);
+          this.setState({
+            professors:professors,
+          })
+
+        });
+        handleClose();
+        
+      }
+
+
       const {professors} = this.state;
 
       const handleClose = () => this.setState({
         show:false,
       });
 
-      const handleShow = () => this.setState({
+      const handleShow = (professor) => this.setState({
         show:true,
+        selectedProfessor:professor,
       });
       const handleCloseEmail = () => this.setState({
         showInsertEmail:false,
@@ -103,7 +142,7 @@ export class ProfessorList extends Component{
                             </tr>
                           </thead>
                           <tbody>
-                            {students &&
+                            {professors &&
                               professors.map(element => {
                                 return (
                                   <tr
@@ -113,7 +152,7 @@ export class ProfessorList extends Component{
                                     <td>{element.email}</td>
                                     <td>{element.name}</td>
                                     <td>{element.surname}</td>                                    
-                                    <td onClick={handleShow}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
+                                    <td onClick={()=>{handleShow(element)}}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
                                   </tr>
                                 );
                               })}
@@ -127,10 +166,10 @@ export class ProfessorList extends Component{
                       <Modal.Title style={{color:'#274F77'}}>Elimina professore</Modal.Title>
                     </Modal.Header>
         
-                    <Modal.Body style={{width:'350px'}}>Confermare l'eliminazione?</Modal.Body>
+                    <Modal.Body style={{width:'350px',padding:'7px'}}>Confermare l'eliminazione?</Modal.Body>
                       <Modal.Footer style={{width:'350px'}}>
                         <Button className='buttonHover button' variant="secondary" onClick={handleClose}>Annulla</Button>
-                        <Button className='buttonHover button' variant="primary" onClick={handleClose}>Elimina</Button>
+                        <Button className='buttonHover button' variant="primary" onClick={deleteProfessor}>Elimina</Button>
                     </Modal.Footer>
                 </Modal>              
                 <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute',height:'200px',width:'350px'}} show={this.state.showInsertEmail} onHide={handleCloseEmail} animation={false}>
