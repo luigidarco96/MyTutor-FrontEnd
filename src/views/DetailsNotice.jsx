@@ -3,6 +3,7 @@ import NoticeInformation from '../components/NoticeInformation/NoticeInformation
 import Upload from '../components/UploadDocuments/Upload';
 import { Col, Row, Grid } from 'react-bootstrap';
 import CustomButton from '../components/CustomButton/CustomButton';
+import Axios from 'axios';
 
 class DetailsNotice extends Component {
   constructor(props) {
@@ -19,44 +20,45 @@ class DetailsNotice extends Component {
       match: { params }
     } = this.props;
 
-    //Fetch file notice.json from Back-end github project
-    fetch(`http://localhost:3001/api/notices/${params.id}`)
-      //Transform response text in json object
-      .then(blob => blob.json())
-      //set the json object in the state
-      .then(
-        result => {
-          this.setState({
-            isLoaded: true,
-            noticeJSON: result
-          });
-        },
-        error => {
-          this.setState({
-            isLoaded: false,
-            error
-          });
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    if (
+      user != null &&
+      (user.role === 'Teaching Office' ||
+        user.role === 'DDI' ||
+        user.role === 'Professor')
+    ) {
+      Axios.get(`http://localhost:3001/api/notices/${params.id}`, {
+        headers: {
+          Authorization: localStorage.getItem('token')
         }
-      );
+      }).then(blob => {
+        this.setState({
+          isLoaded: true,
+          noticeJSON: blob.data.notices[0]
+        });
+      });
+    } else {
+      Axios.get(`http://localhost:3001/api/notices/${params.id}`).then(blob => {
+        this.setState({
+          isLoaded: true,
+          noticeJSON: blob.data.notices[0]
+        });
+      });
+    }
   }
 
   render() {
-    const {
-      noticeJSON: { notice },
-      isLoaded
-    } = this.state;
+    const { noticeJSON, isLoaded } = this.state;
 
-    if (isLoaded && notice) {
-      console.log(notice);
-      var { articles, evaluation_criterions, assignments } = notice;
-
+    if (isLoaded && noticeJSON) {
       return (
-        <Grid style={{ margin: '20px 0' }} fluid>
+        <Grid className='custom-body-view' style={{ margin: '20px 0' }} fluid>
           <Row>
-            <Col xs={10}>
-              <NoticeInformation noticeJSON={notice} />
+            <Col xs={12} md={10}>
+              <NoticeInformation noticeJSON={noticeJSON} />
             </Col>
-            <Col xs={2}>
+            <Col xs={12} md={2}>
               <CustomButton bsStyle='primary' block={true}>
                 Scarica bando
               </CustomButton>
@@ -74,7 +76,11 @@ class DetailsNotice extends Component {
         </Grid>
       );
     } else {
-      return <h1>Caricamento...</h1>;
+      return (
+        <div className='container-fluid'>
+          <h1>Caricamento...</h1>
+        </div>
+      );
     }
   }
 }

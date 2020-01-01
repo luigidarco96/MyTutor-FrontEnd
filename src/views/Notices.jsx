@@ -1,61 +1,92 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
+import { Grid, Row, Col } from 'react-bootstrap';
+import Axios from 'axios';
 
 import Card from 'components/Card/Card.jsx';
-import TypedNotices from '../components/AdminNotices/TypedNotices';
+import UsersTabs from '../components/UsersTabs/UsersTabs';
 
-import { Grid, Row, Col, Tabs, Tab } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { UserLists } from '../static/dicts';
 
-const dictionaryState = {
-  Draft: 'Bozza',
-  Published: 'Pubblicato'
-};
+/**
+ * Notices.jsx
+ * This component display all notices for a specific user.
+ *
+ * @component
+ * @author Federico Allegretti
+ *
+ * @copyright 2019 - Copyright by Gang Of Four Eyes
+ */
 
 class Notices extends Component {
   constructor(props) {
     super(props);
     this.state = {
       pathname: props.location.pathname.split('/')[1],
-      selectedTab: 'Bozza',
-      notices: {},
+      notices: [],
       isLoaded: false
     };
   }
 
-  componentDidMount() {
-    const { selectedTab } = this.state;
-    // Fetch the notices
-    fetch('http://localhost:3001/api/notices', { authorization: 'Bello' })
-      .then(blob => blob.json())
-      .then(result => {
-        this.setState({
-          isLoaded: true,
-          notices: result.notices,
-          filteredNotices: result.notices.filter(notice => {
-            return dictionaryState[notice.state] === selectedTab;
-          })
-        });
-      });
+  handleDifferentUsers(pathname, notices) {
+    let user = JSON.parse(localStorage.getItem('user'));
+    if (user !== null) {
+      return (
+        <UsersTabs
+          pathname={pathname}
+          notices={notices}
+          tabs={UserLists[user.role]}
+        />
+      );
+    } else {
+      return (
+        <UsersTabs
+          pathname={pathname}
+          notices={notices}
+          tabs={UserLists['Student']}
+        />
+      );
+    }
   }
 
-  handleTabSelect(e) {
-    const { notices } = this.state;
+  componentDidMount() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    let token = localStorage.getItem('token');
 
-    let filteredNotices = notices.filter(notice => {
-      return dictionaryState[notice.state] === e;
-    });
-
-    this.setState({
-      selectedTab: e,
-      filteredNotices: filteredNotices
-    });
+    if (Boolean(token)) {
+      // Fetch the notices
+      Axios.get('http://localhost:3001/api/notices', {
+        headers: {
+          Authorization: token
+        }
+      })
+        .then(blob => blob.data)
+        .then(result => {
+          this.setState({
+            isLoaded: true,
+            notices: result.notices
+          });
+        });
+    } else {
+      Axios.get('http://localhost:3001/api/notices')
+        .then(blob => blob.data)
+        .then(result => {
+          this.setState({
+            isLoaded: true,
+            notices: result.notices
+          });
+        });
+    }
   }
 
   render() {
-    const { selectedTab, pathname, isLoaded, filteredNotices } = this.state;
+    const { pathname, isLoaded, notices } = this.state;
 
     if (!isLoaded) {
-      return <h1>Caricamento...</h1>;
+      return (
+        <div className='container-fluid'>
+          <h1>Caricamento...</h1>
+        </div>
+      );
     } else {
       return (
         <div className='content'>
@@ -66,49 +97,7 @@ class Notices extends Component {
                   title='Lista Bandi'
                   ctTableFullWidth
                   ctTableResponsive
-                  content={
-                    <Tabs
-                      defaultActiveKey='Bozza'
-                      onSelect={e => this.handleTabSelect(e)}
-                      transition={false}
-                    >
-                      <Tab eventKey='Bozza' title='Bozza'>
-                        <Grid fluid>
-                          <Row style={{ padding: '5px', marginTop: '10px' }}>
-                            <Col md={12}>
-                              <Link
-                                to={'createNotice'}
-                                style={{ fontSize: '25px' }}
-                              >
-                                <i
-                                  className='pe-7s-plus'
-                                  style={{
-                                    margin: 'auto 10px',
-                                    fontSize: '20px'
-                                  }}
-                                ></i>
-                                Crea bando
-                              </Link>
-                            </Col>
-                          </Row>
-                          <Row>
-                            <TypedNotices
-                              pathname={pathname}
-                              notices={filteredNotices}
-                              type={selectedTab}
-                            />
-                          </Row>
-                        </Grid>
-                      </Tab>
-                      <Tab eventKey='Pubblicato' title='Pubblicati'>
-                        <TypedNotices
-                          pathname={pathname}
-                          notices={filteredNotices}
-                          type={selectedTab}
-                        />
-                      </Tab>
-                    </Tabs>
-                  }
+                  content={this.handleDifferentUsers(pathname, notices)}
                 />
               </Col>
             </Row>

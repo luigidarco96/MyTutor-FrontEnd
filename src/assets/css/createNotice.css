@@ -13,3 +13,7 @@
     color: #565656;
     border: none;
 }
+
+.custom-th {
+    width: 100px;
+}
