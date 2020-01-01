@@ -1,14 +1,14 @@
 import React,{Component} from 'react';
 import {Grid, Row, Table, Col,Modal} from 'react-bootstrap';
 import { students } from "static/students";
-import { professors } from '../../static/professors';
 import Button from '../CustomButton/CustomButton';
 import { login, logout } from '../../utils/auth';
+import axios from 'axios';
 
 export class ProfessorList extends Component{
     state={
         header:[],
-        content:[],
+        professors:[],
         isLoading: true,
         show: false,
         showInsertEmail:false,
@@ -21,10 +21,32 @@ export class ProfessorList extends Component{
     componentDidMount(){
         
         this.setState({
-            header:['E-mail','Nome','Cognome','Matricola','Data di Nascita']
+            header:['E-mail','Nome','Cognome']
         });
+        let data ={
+          param:{
+            role:'Professor',
+          }
+        }
+
+        let headers ={
+          'Authorization':localStorage.getItem('token'),
+        }
+        axios.post('http://localhost:3001/api/users/search',data,{
+          headers:headers,
+        })
+        .then(blob=>{
+          this.setState({
+            professors: blob.data.list,
+          })
+        });
+
+
+        
     }
     render(){
+      const {professors} = this.state;
+
       const handleClose = () => this.setState({
         show:false,
       });
@@ -91,8 +113,6 @@ export class ProfessorList extends Component{
                                     <td>{element.email}</td>
                                     <td>{element.name}</td>
                                     <td>{element.surname}</td>                                    
-                                    <td>{element.serialNumber}</td>
-                                    <td>{element.birthDate}</td>
                                     <td onClick={handleShow}><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
                                   </tr>
                                 );

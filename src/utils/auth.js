@@ -4,7 +4,7 @@ export const dictionaryPath ={
     student : 'Student',
     professor: 'Professor',
     ddi: 'DDI',
-    admin: 'Office',
+    admin: 'Teaching Office',
 }
 
 export const isLogin = (path) => {
@@ -30,6 +30,7 @@ export const login = (userEmail, userPassword) =>{
       }
     })
     .then(blob =>{
+            localStorage.setItem('status', blob.data.status);
             localStorage.setItem('token',blob.data.token);
             localStorage.setItem('user', JSON.stringify(blob.data.user));
             let user = JSON.parse(localStorage.getItem('user'));
@@ -41,7 +42,7 @@ export const login = (userEmail, userPassword) =>{
                     break;
                 case 'Student': window.location.replace("http://localhost:3000/student/notices");    
                     break;
-                case 'Office': window.location.replace("http://localhost:3000/admin/notices");
+                case 'Teaching Office': window.location.replace("http://localhost:3000/admin/notices");
                     break;
             }
 
@@ -52,8 +53,10 @@ export const login = (userEmail, userPassword) =>{
 
 
 export const logout = () =>{
+    localStorage.removeItem('status');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+
     window.location.replace("http://localhost:3000/home");
 
 }
