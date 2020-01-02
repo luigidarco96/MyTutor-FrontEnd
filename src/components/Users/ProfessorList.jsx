@@ -177,7 +177,7 @@ export class ProfessorList extends Component{
                       <Modal.Title style={{color:'#274F77'}}>Inserisci email</Modal.Title>
                     </Modal.Header>
         
-                    <Modal.Body style={{width:'350px'}}><input type='text' style={inputTextStyle}></input></Modal.Body>
+                    <Modal.Body style={{width:'350px', padding:'7px'}}><input type='text' style={inputTextStyle}></input></Modal.Body>
                       <Modal.Footer style={{width:'350px'}}>
                         <Button className='buttonHover button' variant="secondary" onClick={handleCloseEmail}>Annulla</Button>
                         <Button className='buttonHover button' variant="primary" onClick={handleCloseEmail}>Inserisci</Button>
