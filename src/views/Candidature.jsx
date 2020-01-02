@@ -109,7 +109,7 @@ class Candidature extends Component{
                                   >
                                     <td>{element.student}</td>
                                     <td style={{paddingLeft:'35px'}}>{element.notice_protocol}</td>
-                                    <td>{element.last_edit}</td>                                    
+                                    <td style={{paddingLeft:'50px'}}>{element.last_edit.split("T")[0]}</td>                                    
                                     <td style={{paddingLeft:'40px'}}>{statusCandidature(element.state)}</td>
                                     <td>{updateButton(element.state)}</td>
                                     
