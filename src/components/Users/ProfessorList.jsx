@@ -1,6 +1,5 @@
 import React,{Component} from 'react';
 import {Grid, Row, Table, Col,Modal} from 'react-bootstrap';
-import { students } from "static/students";
 import Button from '../CustomButton/CustomButton';
 import { login, logout } from '../../utils/auth';
 import axios from 'axios';

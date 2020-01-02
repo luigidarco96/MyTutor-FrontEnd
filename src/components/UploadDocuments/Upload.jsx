@@ -29,6 +29,7 @@ const Upload = props => {
 
   return (
     <Card
+      plain = {props.plain}
       title="Carica Documenti Candidatura"
       content={
         <div className="text-center">
