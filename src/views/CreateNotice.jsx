@@ -1,5 +1,7 @@
 import '../assets/css/createNotice.css';
 import '../assets/css/global.css';
+
+import axios from 'axios';
 import React, { Component } from 'react';
 import CustomButton from '../components/CustomButton/CustomButton';
 import {
@@ -11,26 +13,21 @@ import {
   ControlLabel,
   OverlayTrigger,
   Tooltip,
-  Table
+  Table,
+  Alert
 } from 'react-bootstrap';
-
-import axios from 'axios';
-
-const dictionaryTitleAssignemnts = {
-  Dottorato: 'PhD',
-  Magistrale: 'Master'
-};
+import { useEffect } from 'react';
 
 export default class CreateNotice extends Component {
   constructor() {
     super();
     this.state = {
-      error: false,
+      error: null,
       user: {},
-      token: '',
+      professors: [],
       notice: {
         protocol: '',
-        referent_professor: null,
+        referent_professor: '',
         description: '',
         notice_subject: '',
         admission_requirements: '',
@@ -94,6 +91,7 @@ export default class CreateNotice extends Component {
     console.clear();
     console.info('Funzione per creare il bando.');
     console.log(noticeControl);
+    console.log(notice);
     for (let el in noticeControl) {
       if (
         el === 'articles' ||
@@ -120,8 +118,19 @@ export default class CreateNotice extends Component {
     }
 
     if (!allTrue) {
+      this.setState({
+        error: (
+          <Alert bsStyle='danger'>
+            Attenzione! Controllare se sono stati inseriti tutti i parametri.
+          </Alert>
+        )
+      });
       return false;
     }
+
+    this.setState({
+      error: null
+    });
 
     axios({
       method: 'PUT',
@@ -132,6 +141,14 @@ export default class CreateNotice extends Component {
       },
       headers: {
         Authorization: this.state.token
+      }
+    }).then(blob => {
+      let error = blob.data.error;
+
+      if (Boolean(error)) {
+        this.setState({
+          error: <Alert bsStyle='danger'>{error}</Alert>
+        });
       }
     });
   }
@@ -167,13 +184,13 @@ export default class CreateNotice extends Component {
     notice.evaluation_criteria.push({
       notice_protocol: notice.protocol,
       name: '',
-      max_value: 0
+      max_score: 0
     });
 
     noticeControl.evaluation_criteria.push({
       notice_protocol: notice.protocol.length > 0,
       name: false,
-      max_value: false
+      max_score: false
     });
 
     this.setState({
@@ -220,18 +237,11 @@ export default class CreateNotice extends Component {
     });
   }
 
-  handleFocus(e) {
-    let el = e.target;
-
-    el.className += ' typing';
-  }
-
-  handleBlur(e) {
+  handleChange(e) {
     const { notice, noticeControl } = this.state;
     const el = e.target;
 
     let value = '' + el.value;
-    el.disabled = value.length > 0;
 
     if (el.name === 'protocol') {
       notice.assignments.map(element => {
@@ -254,9 +264,6 @@ export default class CreateNotice extends Component {
       });
     }
 
-    el.className = el.className.replace('typing', '');
-    el.className = el.className.trim();
-
     let elClass = '' + el.className;
     let elName = '' + el.name;
 
@@ -273,31 +280,33 @@ export default class CreateNotice extends Component {
         noticeControl[elKey][index][elName] = value.trim().length > 0;
       }
     } else {
-      if (el.type === 'datetime-local') {
-        console.log(value);
-
-        let date = value.split('T')[0];
-
-        date =
-          date.split('-')[2] +
-          '/' +
-          date.split('-')[1] +
-          '/' +
-          date.split('-')[0];
-        let time = value.split('T')[1];
-
-        console.log(date, time);
-
-        notice[elName] = value;
-        noticeControl[elName] = Boolean(value);
+      if (el.type === 'number') {
+        notice[elName] = Number(value);
+        noticeControl[elName] = Number(value) > 0;
+      } else if (el.type === 'date') {
+        notice[elName] = value + ' ';
+        noticeControl[elName] = Boolean(value + ' ');
       } else {
         notice[elName] = value.trim();
         noticeControl[elName] = value.trim().length > 0;
       }
     }
+  }
 
-    console.log(notice);
-    console.log(noticeControl);
+  handleFocus(e) {
+    let el = e.target;
+
+    el.className += ' typing';
+  }
+
+  handleBlur(e) {
+    const el = e.target;
+
+    let value = '' + el.value;
+    el.disabled = value.length > 0;
+
+    el.className = el.className.replace('typing', '');
+    el.className = el.className.trim();
   }
 
   handleMouseEnter(e) {
@@ -317,17 +326,39 @@ export default class CreateNotice extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      user: JSON.parse(localStorage.getItem('user')),
-      token: localStorage.getItem('token')
-    });
+    console.warn('Sono qui!');
+    let user = JSON.parse(localStorage.getItem('user'));
+    let token = localStorage.getItem('token');
+
+    axios
+      .post(
+        'http://localhost:3001/api/users/search',
+        {
+          param: {
+            role: 'Professor'
+          }
+        },
+        {
+          headers: { Authorization: token }
+        }
+      )
+      .then(blob => {
+        console.log(blob.data);
+        this.setState({
+          professors: blob.data.list,
+          user: user,
+          token: token
+        });
+      });
   }
 
   render() {
     const {
       notice: { articles },
       notice: { evaluation_criteria },
-      notice: { assignments }
+      notice: { assignments },
+      error,
+      professors
     } = this.state;
 
     return (
@@ -335,7 +366,7 @@ export default class CreateNotice extends Component {
         <Form onSubmit={e => this.handleFormSubmit(e)}>
           <FormGroup>
             <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Protocollo</ControlLabel>
                 <OverlayTrigger
                   trigger='focus'
@@ -354,12 +385,34 @@ export default class CreateNotice extends Component {
                     onBlur={e => this.handleBlur(e)}
                     onMouseEnter={e => this.handleMouseEnter(e)}
                     onMouseOut={e => this.handleMouseOut(e)}
+                    onChange={e => this.handleChange(e)}
                   />
                 </OverlayTrigger>
               </Col>
+              <Col xs={12} md={6}>
+                <ControlLabel>Professore</ControlLabel>
+                <FormControl
+                  componentClass='select'
+                  name='referent_professor'
+                  onFocus={e => this.handleFocus(e)}
+                  onBlur={e => this.handleBlur(e)}
+                  onMouseEnter={e => this.handleMouseEnter(e)}
+                  onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
+                >
+                  <option value=''>Nessuna Scelta</option>
+                  {professors.map((professor, index) => {
+                    return (
+                      <option value={professor.email} key={index}>
+                        {professor.name + ' ' + professor.surname}
+                      </option>
+                    );
+                  })}
+                </FormControl>
+              </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={10}>
+              <Col xs={12} md={12}>
                 <ControlLabel>Incarichi</ControlLabel>
                 <Table id='assignments' striped bordered hover responsive>
                   <thead>
@@ -386,6 +439,7 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                           <td>
@@ -397,6 +451,7 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                           <td>
@@ -408,6 +463,7 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                           <td>
@@ -415,10 +471,12 @@ export default class CreateNotice extends Component {
                               className={index + '.assignments list'}
                               name='hourly_cost'
                               type='number'
+                              step='0.01'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                           <td>
@@ -430,7 +488,9 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             >
+                              <option value=''>Nessuna Scelta</option>
                               <option value='PhD'>Dottorato</option>
                               <option value='Master'>Magistrale</option>
                             </FormControl>
@@ -444,6 +504,7 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                         </tr>
@@ -462,7 +523,7 @@ export default class CreateNotice extends Component {
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Descrizione bando</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -472,9 +533,10 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Responsabile delle procedure</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -484,11 +546,12 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Oggetto del bando</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -498,11 +561,10 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-            </Row>
-            <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Requisiti di ammissione</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -512,11 +574,12 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={10}>
+              <Col xs={12} md={12}>
                 <ControlLabel>Criteri di valutazione</ControlLabel>
 
                 <Table id='criteria' striped bordered hover>
@@ -540,17 +603,19 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                           <td>
                             <FormControl
                               className={index + '.evaluation_criteria list'}
-                              name='max_value'
+                              name='max_score'
                               type='number'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                         </tr>
@@ -569,7 +634,7 @@ export default class CreateNotice extends Component {
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Titoli Valutabili</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -579,9 +644,10 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>
                   Modalità di presentazione delle domande
                 </ControlLabel>
@@ -593,11 +659,12 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Commissione Giudicatrice</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -607,9 +674,10 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Accettazione incarico</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -619,11 +687,12 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Incompatibilità</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -633,9 +702,10 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Cessazione dell'incarico</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -645,11 +715,12 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Natura dell'incarico</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -659,9 +730,10 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-              <Col xs={12} md={5}>
+              <Col xs={12} md={6}>
                 <ControlLabel>Borse non utilizzate</ControlLabel>
                 <FormControl
                   componentClass='textarea'
@@ -671,11 +743,12 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={6} md={3}>
+              <Col xs={12} md={4}>
                 <ControlLabel>Tipo bando</ControlLabel>
                 <FormControl
                   type='text'
@@ -685,35 +758,39 @@ export default class CreateNotice extends Component {
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-              <Col xs={6} md={3}>
+              <Col xs={12} md={4}>
                 <ControlLabel>Scadenza</ControlLabel>
                 <FormControl
-                  type='datetime-local'
+                  type='date'
                   placeholder='Scadenza bando'
                   name='deadline'
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
-              <Col xs={6} md={3}>
+              <Col xs={12} md={4}>
                 <ControlLabel>Fondi</ControlLabel>
                 <FormControl
                   type='number'
                   placeholder='Fondi'
                   name='notice_funds'
+                  step='0.01'
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
+                  onChange={e => this.handleChange(e)}
                 />
               </Col>
             </Row>
             <Row className='create-notice-row'>
-              <Col xs={12} md={10}>
+              <Col xs={12} md={12}>
                 <ControlLabel>Articoli</ControlLabel>
                 <Table id='articles' striped bordered hover>
                   <thead>
@@ -737,6 +814,7 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                           <td>
@@ -748,6 +826,7 @@ export default class CreateNotice extends Component {
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
                               onMouseOut={e => this.handleMouseOut(e)}
+                              onChange={e => this.handleChange(e)}
                             />
                           </td>
                         </tr>
@@ -776,6 +855,7 @@ export default class CreateNotice extends Component {
                 </CustomButton>
               </Col>
             </Row>
+            <Row className='create-notice-row'>{error}</Row>
           </FormGroup>
         </Form>
       </div>

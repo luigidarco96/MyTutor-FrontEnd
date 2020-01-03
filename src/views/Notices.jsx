@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
+import { Grid, Row, Col, Glyphicon, FormControl } from 'react-bootstrap';
 import Axios from 'axios';
 import Fuse from 'fuse.js';
 
@@ -52,12 +52,16 @@ class Notices extends Component {
     if (user !== null) {
       return (
         <div className='container-fluid'>
-          <input
-            type='text'
-            name='search'
-            placeholder='Cerca bando...'
-            onChange={e => this.handleSearch(e)}
-          />
+          <div className='search-group'>
+            <Glyphicon glyph='search' />
+            <FormControl
+              className='search-bar'
+              type='text'
+              name='search'
+              placeholder='Cerca bando...'
+              onChange={e => this.handleSearch(e)}
+            />
+          </div>
           <UsersTabs
             pathname={pathname}
             notices={notices}
@@ -68,12 +72,16 @@ class Notices extends Component {
     } else {
       return (
         <div className='container-fluid'>
-          <input
-            type='text'
-            name='search'
-            placeholder='Cerca bando...'
-            onChange={e => this.handleSearch(e)}
-          />
+          <div className='search-group'>
+            <Glyphicon glyph='search' />
+            <FormControl
+              className='search-bar'
+              type='text'
+              name='search'
+              placeholder='Cerca bando...'
+              onChange={e => this.handleSearch(e)}
+            />
+          </div>
           <UsersTabs
             pathname={pathname}
             notices={notices}
@@ -101,6 +109,9 @@ class Notices extends Component {
             isLoaded: true,
             notices: result.notices
           });
+        })
+        .catch(error => {
+          console.log(error);
         });
     } else {
       Axios.get('http://localhost:3001/api/notices')

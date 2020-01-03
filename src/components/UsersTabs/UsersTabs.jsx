@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import { Tabs, Tab } from 'react-bootstrap';
@@ -26,7 +27,7 @@ export default class DefaultTabs extends Component {
   }
 
   handleTabSelect(e) {
-    const { notices, tabs } = this.props;
+    const { notices } = this.props;
 
     let filteredNotices = [];
 
@@ -70,8 +71,21 @@ export default class DefaultTabs extends Component {
         onSelect={e => this.handleTabSelect(e)}
         animation={false}
       >
-        {' '}
         {tabs.map((tab, index) => {
+          if (tab === 'Bozza') {
+            return (
+              <Tab eventKey={tab} title={tab} key={index}>
+                <Link className='link' to='createNotice'>
+                  Crea bando
+                </Link>
+                <TypedNotices
+                  pathname={pathname}
+                  notices={filteredNotices}
+                  type={selectedTab}
+                />
+              </Tab>
+            );
+          }
           return (
             <Tab eventKey={tab} title={tab} key={index}>
               <TypedNotices
@@ -81,7 +95,7 @@ export default class DefaultTabs extends Component {
               />
             </Tab>
           );
-        })}{' '}
+        })}
       </Tabs>
     );
   }

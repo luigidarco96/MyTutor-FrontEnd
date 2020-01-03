@@ -17,16 +17,16 @@ export const UserLists = {
     'Chiuso',
     'Scaduto',
     'In attesa della graduatoria',
-    'In accettazione',
-    'Accettato'
+    'In Approvazione',
+    'Approvato'
   ],
   Professor: [
     'Pubblicato',
     'Chiuso',
     'Scaduto',
     'In attesa della graduatoria',
-    'In Approvazione',
-    'Approvato'
+    'In accettazione',
+    'Accettato'
   ],
   'Teaching Office': [
     'Bozza',

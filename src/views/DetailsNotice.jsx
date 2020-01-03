@@ -15,6 +15,14 @@ class DetailsNotice extends Component {
     };
   }
 
+  handleInputForm() {
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    if (user.role === 'Student') {
+      return <Upload />;
+    }
+  }
+
   componentDidMount() {
     const {
       match: { params }
@@ -69,9 +77,7 @@ class DetailsNotice extends Component {
             </Col>
           </Row>
           <Row>
-            <Col xs={12}>
-              <Upload />
-            </Col>
+            <Col xs={12}>{this.handleInputForm()}</Col>
           </Row>
         </Grid>
       );
