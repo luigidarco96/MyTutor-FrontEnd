@@ -45,8 +45,8 @@ export default function Login(props) {
         maxHeight: '550px',
         padding: '1px',
       }}>
-        <Col md="4"></Col>
-        <Col md="4" style={{marginTop:'6vw'}}>
+        <Col md="4" lg='4' sm='2' xs='2'></Col>
+        <Col md="4" lg='4' sm='8' xs='8' style={{marginTop:'6vw'}}>
           <Card
             content={
               <div className="Login">

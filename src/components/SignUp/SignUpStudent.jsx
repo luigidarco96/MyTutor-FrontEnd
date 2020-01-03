@@ -1,21 +1,23 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import {
     Form,
     Col,
     FormControl,
     FormGroup,
     ControlLabel,
-    Button
+    Button,
+    Modal
 } from 'react-bootstrap';
+import { isLogin, logout } from "../../utils/auth";
 import axios from 'axios';
 
 const Regex = [
     {
-        nomeRegex: RegExp(/^[A-Za-z‘]+$/),
+        nomeRegex: RegExp(/^[A-Za-z ']+$/),
         nomeMatch: false
     },
     {
-        cognomeRegex: RegExp(/^[A-Za-z‘]+$/),
+        cognomeRegex: RegExp(/^[A-Za-z ']+$/),
         cognomeMatch: false
     },
     {
@@ -48,6 +50,8 @@ export class SignUpStudent extends Component {
             matricola: '',
             confirmEmail: '',
             confirmPass: '',
+            modal: false,
+            modalContent: '',
             errors: {
                 nome: '',
                 cognome: '',
@@ -71,6 +75,8 @@ export class SignUpStudent extends Component {
             matricola,
             confirmEmail,
             confirmPass,
+            modal,
+            modalContent,
             errors
         } = this.state;
 
@@ -187,12 +193,45 @@ export class SignUpStudent extends Component {
                 role: null,
                 verified: null
             }
-            axios.post('http://localhost:3001/api/auth/registerStudent',{student:user})
-            .then(response => {
-                
-            })
+            axios.post('http://localhost:3001/api/auth/registerStudent', { student: user })
+                .then(response => {
+                    if(response.data.status = '200') {
+                        if(isLogin) {
+                            localStorage.removeItem('status');
+                            localStorage.removeItem('token');
+                            localStorage.removeItem('user');
+                        }
+                        
+                        localStorage.setItem('status', response.data.status);
+                        localStorage.setItem('token',response.data.token);
+                        localStorage.setItem('user', JSON.stringify(response.data.student));
+                        let user = JSON.parse(localStorage.getItem('user'));
+                        switch(user.role){
+                 
+                            case 'DDI': window.location.replace("http://localhost:3000/ddi/notices");
+                                break;
+                            case 'Professor': window.location.replace("http://localhost:3000/professor/notices");
+                                break;
+                            case 'Student': window.location.replace("http://localhost:3000/student/notices");    
+                                break;
+                            case 'Teaching Office': window.location.replace("http://localhost:3000/admin/notices");
+                                break;
+                        }
+                    }
+                }).catch(err => {
+                    if(err.response != undefined)
+                        setModal(err.response.data.error)
+                })
 
         }
+
+        const setModal = (content) => {
+            this.setState({ modal: !this.state.modal,modalContent: content })
+        }
+
+        const handleClose = () => this.setState({
+            modal:false,
+          });
         return (
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
@@ -314,6 +353,10 @@ export class SignUpStudent extends Component {
                     className='pull-right'
                     style={{ 'margin': '1.5rem' }}>
                     Registrati</Button>
+                <Modal style={{ borderRadius: '6px', overflow: 'hidden', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={handleClose} animation={false}>
+                    <Modal.Header style={{ width: '350px' }} closeButton />
+                    <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px' }}>{modalContent}</Modal.Body>
+                </Modal>
             </Form>
         )
     }

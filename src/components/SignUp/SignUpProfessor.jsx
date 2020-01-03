@@ -5,30 +5,27 @@ import {
     FormControl,
     FormGroup,
     ControlLabel,
-    Button
+    Button,
+    Modal
 } from 'react-bootstrap';
 import axios from 'axios';
 
 const Regex = [
     {
-        nomeRegex: RegExp(/^[A-Za-z‘]+$/),
+        nomeRegex: RegExp(/^[A-Za-z ']+$/),
         nomeMatch: false
     },
     {
-        cognomeRegex: RegExp(/^[A-Za-z‘]+$/),
+        cognomeRegex: RegExp(/^[A-Za-z ']+$/),
         cognomeMatch: false
     },
     {
-        emailRegex: RegExp(/^[a-z]\.[a-z]*\@unisa.it$/),
+        emailRegex: RegExp(/^[a-z]\.{0,1}[a-z]*\@unisa.it$/),
         emailMatch: false
     },
     {
         passRegex: RegExp(/^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])[A-Za-z0-9!@#$%]{8,20}$/),
         passMatch: false
-    },
-    {
-        dataRegex: RegExp(/^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/),
-        dataMatch: false
     }
 ]
 
@@ -40,15 +37,15 @@ export class SignUpProfessor extends Component {
             cognome: '',
             email: '',
             password: '',
-            data: '',
             confirmEmail: '',
             confirmPass: '',
+            modal: false,
+            modalContent: '',
             errors: {
                 nome: '',
                 cognome: '',
                 email: '',
                 password: '',
-                data: '',
                 confirmEmail: '',
                 confirmPass: ''
             }
@@ -59,12 +56,13 @@ export class SignUpProfessor extends Component {
         const {
             nome,
             cognome,
-            data,
             email,
             password,
             confirmEmail,
             confirmPass,
-            errors
+            errors,
+            modal,
+            modalContent
         } = this.state;
 
         function validateForm() {
@@ -108,7 +106,7 @@ export class SignUpProfessor extends Component {
                     break;
                 case 'email':
                     if (value.match(Regex[2].emailRegex) == null) {
-                        errors.email = "l'email deve essere del tipo m.rossi@unisa.it"
+                        errors.email = "l'email deve essere del tipo m.rossi@unisa.it o mario@unisa.it"
                         Regex[2].emailMatch = false;
                     } else {
                         errors.email = ""
@@ -127,15 +125,6 @@ export class SignUpProfessor extends Component {
                     }
                     if (value == confirmPass)
                         errors.confirmPass = ''
-                    break;
-                case 'data':
-                    if (value.match(Regex[4].dataRegex) == null) {
-                        errors.data = 'Formato: yyyy-mm-dd'
-                        Regex[4].dataMatch = false;
-                    } else {
-                        errors.data = ''
-                        Regex[4].dataMatch = true;
-                    }
                     break;
                 case 'confirmPass':
                     if (password != value) {
@@ -165,15 +154,28 @@ export class SignUpProfessor extends Component {
                 surname: cognome,
                 email: email,
                 password: password,
-                birth_date: data,
                 role: null,
                 verified: null
             }
-            axios.post('http://localhost:3001/api/auth/registerStudent', { student: user })
+            axios.post('http://localhost:3001/api/auth/registerProfessor', { professor: user })
                 .then(response => {
-                    console.log(response)
+                    if (response.status == '200' && response.data.status == true) {
+                        setModal('Ti è stata inviata una mail di verifica al tuo indirizzo email. Controllala per confermare la tua registrazione.')
+                    }
+                })
+                .catch(err => {
+                    if(err.response != undefined)
+                        setModal(err.response.data.error)
                 })
         }
+
+        const setModal = (content) => {
+            this.setState({ modal: !this.state.modal,modalContent: content })
+        }
+
+        const handleClose = () => this.setState({
+            modal:false,
+          });
 
         return (
             <Form onSubmit={handleSubmit}>
@@ -203,21 +205,6 @@ export class SignUpProfessor extends Component {
                         />
                         {errors.cognome.length > 0 &&
                             <span style={{ fontSize: '10px', color: 'red' }} className='error'>{errors.cognome}</span>}
-                    </Col>
-                </FormGroup>
-                <FormGroup>
-                    <Col md={6} lg={6} sm={6} style={{ padding: '6px', height: '80px' }}>
-                        <ControlLabel style={{ marginTop: '3px' }}>Data Di Nascita</ControlLabel>
-                        <FormControl
-                            name='data'
-                            value={data}
-                            onChange={handleChange}
-                            required
-                            type="text"
-                            placeholder="La tua data di nascita.."
-                        />
-                        {errors.data.length > 0 &&
-                            <span style={{ fontSize: '10px', color: 'red' }} className='error'>{errors.data}</span>}
                     </Col>
                 </FormGroup>
                 <FormGroup>
@@ -276,19 +263,18 @@ export class SignUpProfessor extends Component {
                             <span style={{ fontSize: '10px', color: 'red' }} className='error'>{errors.confirmPass}</span>}
                     </Col>
                 </FormGroup>
-                <FormGroup>
-                    <Col md={6} lg={6} sm={6} style={{ padding: '6px', height: '80px' }}>
-                        <ControlLabel style={{ visibility: 'hidden', marginTop: '3px' }}>Conferma password</ControlLabel>
-                        <FormControl style={{ visibility: 'hidden' }} />
-                    </Col>
-                </FormGroup>
                 <Button
                     disabled={!validateForm()}
                     variant="dark"
                     type='submit'
                     className='pull-right'
                     style={{ 'margin': '1.5rem' }}>
-                    Registrati</Button>
+                    Registrati
+                </Button>
+                <Modal style={{ borderRadius: '6px', overflow: 'hidden', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={handleClose} animation={false}>
+                    <Modal.Header style={{ width: '350px' }} closeButton/>
+                    <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px' }}>{modalContent}</Modal.Body>
+                </Modal>
             </Form>
         )
     }

@@ -6,7 +6,7 @@ import Card from "components/Card/Card.jsx";
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import bg from '../assets/img/background-image2.jpg'
-import  GuestNavbar  from '../components/Navbars/GuestNavbar';
+import GuestNavbar from '../components/Navbars/GuestNavbar';
 
 const SignUp = (props) => {
     const [activeTab, setActiveTab] = useState('1');
@@ -67,10 +67,11 @@ const SignUp = (props) => {
             }}>
                 <Row style={{
                     width: '100%',
-                    overflowY: 'hidden'
+                    overflowY: 'hidden',
+                    marginLeft:'1px'
                 }}>
-                    <Col md="2"></Col>
-                    <Col md="8">
+                    <Col md="2" lg='2' sm='1'></Col>
+                    <Col md="8" lg='8' sm='10'>
                         <Card
                             title='Registrati'
                             content={
