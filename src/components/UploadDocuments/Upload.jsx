@@ -3,6 +3,7 @@ import { useDropzone } from "react-dropzone";
 import Card from "../Card/Card";
 import Button from "components/CustomButton/CustomButton";
 import axios from "axios";
+import { Modal } from "react-bootstrap";
 
 const Upload = props => {
   const updateCandidature =()=>{
@@ -35,6 +36,19 @@ const Upload = props => {
     .patch('http://localhost:3001/api/candidatures',data,{headers:headers})
     .then(blob=>{
       console.log(blob.data);
+      var para = document.createElement("p");
+      var node = document.createTextNode("Modifica effettuta con successo");
+      para.appendChild(node);
+      para.style.cssText='color:green, margin-top:3px';
+      document.getElementById('1').appendChild(para);
+      
+    })
+    .catch(error=>{
+      var para = document.createElement("p");
+      var node = document.createTextNode("Errore, impossibile effettuare la modifica.");
+      para.appendChild(node);
+      para.style.cssText='color:red, margin-top:3px';
+      document.getElementById('1').appendChild(para);
     })
   }
   const maxSize = 1048576;
@@ -76,7 +90,7 @@ const Upload = props => {
             )}
           </div>
 
-          <ul className="list-group mt-2">
+          <ul id ='1' className="list-group mt-2">
             {acceptedFiles.length > 0 &&
               acceptedFiles.map(acceptedFile => (
                 <li className="list-group-item list-group-item-success">

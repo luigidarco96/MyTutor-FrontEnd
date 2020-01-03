@@ -65,7 +65,7 @@ const dashboardRoutes = {
       component: Candidature
     },
     {
-      path: '/modificaCandidatura/:notice_protocol',
+      path: '/modificaCandidatura/:id',
       name: 'Modifica candidatura',
       component: UpdateCandidatura
     },
