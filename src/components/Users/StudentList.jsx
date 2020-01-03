@@ -133,7 +133,7 @@ export class StudentList extends Component{
                                     <td>{element.name}</td>
                                     <td>{element.surname}</td>                                    
                                     <td>{element.registration_number}</td>
-                                    <td>{element.birth_date}</td>
+                                    <td>{element.birth_date.split("T")[0]}</td>
                                     <td onClick={()=>{handleShow(element)}} ><i className="pe-7s-trash trashIcon" style={styleIconTrash}></i></td>
                                   </tr>
                                 );
