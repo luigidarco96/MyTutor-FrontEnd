@@ -217,6 +217,17 @@ export default class TypedNotices extends Component {
       return (
         <td>
           <CustomButton
+            bsStyle='success'
+            pullRight
+            onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+            }}
+          >
+            Accetta bando
+          </CustomButton>
+          <CustomButton
             bsStyle='primary'
             pullRight
             onClick={e => {

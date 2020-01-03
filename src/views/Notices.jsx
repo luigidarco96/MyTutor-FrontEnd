@@ -111,7 +111,9 @@ class Notices extends Component {
           });
         })
         .catch(error => {
-          console.log(error);
+          if (error) {
+            window.location = '/signin';
+          }
         });
     } else {
       Axios.get('http://localhost:3001/api/notices')
