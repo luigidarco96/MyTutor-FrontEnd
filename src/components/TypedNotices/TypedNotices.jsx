@@ -4,6 +4,7 @@ import { Table } from 'react-bootstrap';
 import { StateDictionary } from '../../static/dicts';
 import CustomButton from '../CustomButton/CustomButton';
 import '../../assets/css/detailNotice.css';
+import axios from 'axios'
 
 export default class TypedNotices extends Component {
   constructor(props) {
@@ -210,20 +211,28 @@ export default class TypedNotices extends Component {
     }
   }
 
-  acceptingOperation() {
+  acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
+    let acceptedNotice = (e,element)=>{
+      e.stopPropagation();
+      e.preventDefault();
+      element.state = 'Accepted';
+      const headers = {
+        'Authorization' : localStorage.getItem('token'),
+      }
+      axios
+      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+      .then(blob=>{
 
+      })
+    }
     if (user.role === 'Professor') {
       return (
         <td>
           <CustomButton
             bsStyle='success'
             pullRight
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
-            }}
+            onClick={(e)=>{acceptedNotice(e,element)}}
           >
             Accetta bando
           </CustomButton>
@@ -286,8 +295,8 @@ export default class TypedNotices extends Component {
       );
     }
   }
-
-  displayButtons(type) {
+  //element is the notice selected
+  displayButtons(type,element) {
     console.log(type);
     switch (type) {
       case 'Bozza':
@@ -305,7 +314,7 @@ export default class TypedNotices extends Component {
       case 'Chiuso':
         return this.closedOperation();
       case 'In accettazione':
-        return this.acceptingOperation();
+        return this.acceptingOperation(element);
       case 'In approvazione':
         return this.approvingOperation();
       default:
@@ -339,7 +348,7 @@ export default class TypedNotices extends Component {
                 <td>{element.deadline.split('T')[0]}</td>
                 <td>{element.type}</td>
                 <td>{StateDictionary[element.state]}</td>
-                {this.displayButtons(type)}
+                {this.displayButtons(type,element)}
               </tr>
             );
           })}

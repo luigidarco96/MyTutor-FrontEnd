@@ -37,7 +37,7 @@ const Upload = props => {
     .then(blob=>{
       console.log(blob.data);
       var para = document.createElement("p");
-      var node = document.createTextNode("Modifica effettuta con successo");
+      var node = document.createTextNode("Inserimento effettuto con successo");
       para.appendChild(node);
       para.style.cssText='color:green, margin-top:3px';
       document.getElementById('1').appendChild(para);
@@ -45,7 +45,7 @@ const Upload = props => {
     })
     .catch(error=>{
       var para = document.createElement("p");
-      var node = document.createTextNode("Errore, impossibile effettuare la modifica.");
+      var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
       para.appendChild(node);
       para.style.cssText='color:red, margin-top:3px';
       document.getElementById('1').appendChild(para);
