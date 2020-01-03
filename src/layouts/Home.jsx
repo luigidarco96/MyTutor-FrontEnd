@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { Component } from "react";
+import React, { Component, useReducer } from "react";
 import { Route, Switch } from "react-router-dom";
 import NotificationSystem from "react-notification-system";
 
@@ -38,7 +38,13 @@ class Home extends Component {
   }
 
   getRoutes = routes => {
+
     const pathname = this.props.location.pathname.split("/")[1];
+    
+    if(pathname==='home' && localStorage.getItem('token')!=null){
+      let user = JSON.parse(localStorage.getItem('user'));  
+      window.location.replace('http://localhost:3000/'+user.role[0].toLowerCase()+user.role.split("S")[1]+'/notices'); 
+    }
     let list = routes[pathname];
     return list.map((prop, key) => {
       return (
