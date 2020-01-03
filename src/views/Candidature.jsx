@@ -34,21 +34,11 @@ class Candidature extends Component{
         });
     }
     render(){
-        const handleShow=()=>{
-            this.setState({
-                show:true,
-            })
-        }
-        const handleClose=()=>{
-            this.setState({
-                show:false,
-            })
-        }
-
-        let updateButton = (status)=>{
-            if(status === 'Editable')
+       
+        let updateButton = (element)=>{
+            if(element.state === 'Editable')
                 return(
-                    <Button onClick={handleShow} style={{border:'1px solid #274F77'}} className='buttonHover'  bsStyle="primary"  bsSize="xs">
+                    <Button onClick={()=>{window.open('http://localhost:3000/student/modificaCandidatura/'+element.notice_protocol, '_blank')}} style={{border:'1px solid #274F77'}} className='buttonHover'  bsStyle="primary"  bsSize="xs">
                         Modifica documenti
                     </Button>
                 )
@@ -111,7 +101,7 @@ class Candidature extends Component{
                                     <td style={{paddingLeft:'35px'}}>{element.notice_protocol}</td>
                                     <td style={{paddingLeft:'50px'}}>{element.last_edit.split("T")[0]}</td>                                    
                                     <td style={{paddingLeft:'40px'}}>{statusCandidature(element.state)}</td>
-                                    <td>{updateButton(element.state)}</td>
+                                    <td>{updateButton(element)}</td>
                                     
 
                                   </tr>
@@ -145,12 +135,7 @@ class Candidature extends Component{
                     <img style={{paddingLeft:'10px',height:'16px'}} src='/assets/images/statusCandidatureGradList.png'/>
                     La graduatoria per la candidatura è stata pubblicata
                 </div>
-                <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute',height:'200px',width:'350px'}} show={this.state.show} onHide={handleClose} animation={false}>
-                  
-                    <Modal.Body style={{width:'350px', padding:'7px'}}><Upload plain={true}/></Modal.Body>
-                      
-                  </Modal>
-
+               
             
             </Grid>
 

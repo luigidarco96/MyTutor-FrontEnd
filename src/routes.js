@@ -24,6 +24,7 @@ import Users from './views/Users';
 import Assignmets from './views/Assignments';
 import Tasks from './views/Tasks';
 import CreateNotice from './views/CreateNotice';
+import UpdateCandidatura from './views/UpdateCandidatura';
 
 const dashboardRoutes = {
   home: [
@@ -62,6 +63,11 @@ const dashboardRoutes = {
       path: '/candidature',
       name: 'Candidature',
       component: Candidature
+    },
+    {
+      path: '/modificaCandidatura/:notice_protocol',
+      name: 'Modifica candidatura',
+      component: UpdateCandidatura
     },
     {
       path: '/*',

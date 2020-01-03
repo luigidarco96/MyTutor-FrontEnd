@@ -2,12 +2,45 @@ import React, { Component, useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Card from "../Card/Card";
 import Button from "components/CustomButton/CustomButton";
+import axios from "axios";
 
 const Upload = props => {
+  const updateCandidature =()=>{
+  const user = JSON.parse(localStorage.getItem('user'))
+  let today = new Date();
+  let last_edit = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+  let documents=[];
+  acceptedFiles.map(acceptedFile=>{
+    let document = {
+      student: user.email,
+      notice_protocol: props.notice_protocol,
+      file_name: acceptedFile.name,
+      file: acceptedFile,
+    }
+    documents.push(document);
+  })
+  const data = {
+    candidature:{
+      student:user.email,
+      notice_protocol: props.notice_protocol,
+      last_edit: last_edit,
+      state: 'Editable',
+      documents: documents,
+    }
+  }
+  const headers ={
+    'Authorization': localStorage.getItem('token'),
+  }
+    axios
+    .patch('http://localhost:3001/api/candidatures',data,{headers:headers})
+    .then(blob=>{
+      console.log(blob.data);
+    })
+  }
   const maxSize = 1048576;
 
   const onDrop = useCallback(acceptedFiles => {
-    console.log(acceptedFiles);
+    acceptedFiles.map((acceptedFile)=>{console.log(acceptedFile)})
   }, []);
 
   const {
@@ -52,7 +85,7 @@ const Upload = props => {
                 </li>
               ))}
           </ul>
-          <Button bsStyle="primary">Invia Candidatura</Button>
+          <Button bsStyle="primary" onClick={updateCandidature}>Invia Candidatura</Button>
         </div>
       }
     />
