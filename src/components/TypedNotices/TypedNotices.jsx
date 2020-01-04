@@ -10,10 +10,6 @@ export default class TypedNotices extends Component {
   constructor(props) {
     super(props);
     this.getDetailNotice = this.getDetailNotice.bind(this);
-    this.state = {
-      pathname: '',
-      type: this.props.type
-    };
   }
 
   getDetailNotice = e => {
@@ -213,18 +209,27 @@ export default class TypedNotices extends Component {
 
   acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
-    console.log(element);
     let acceptedNotice = (e,element)=>{
       e.stopPropagation();
       e.preventDefault();
+      console.log(element);
       element.state = 'Accepted';
+      element.deadline=element.deadline.split('T')[0];
       const headers = {
         'Authorization' : localStorage.getItem('token'),
       }
       axios
       .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
       .then(blob=>{
-        console.log(blob.data);
+        this.state.notices.forEach((el)=>{
+          if(el.protocol===element.protocol){
+            console.log(el);
+            el=element;
+          }
+        })
+        this.setState({
+          notices:this.state.notices,
+        })
       })
     }
     if (user.role === 'Professor') {
@@ -257,6 +262,7 @@ export default class TypedNotices extends Component {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (user.role === 'DDI') {
+      console.log('Ciao');
       return (
         <td>
           <CustomButton
@@ -316,7 +322,7 @@ export default class TypedNotices extends Component {
         return this.closedOperation();
       case 'In accettazione':
         return this.acceptingOperation(element);
-      case 'In approvazione':
+      case 'In Approvazione':
         return this.approvingOperation();
       default:
         return <td></td>;
@@ -324,8 +330,13 @@ export default class TypedNotices extends Component {
   }
 
   render() {
-    const { type, notices } = this.props;
-
+    this.state = {
+      pathname: '',
+      type: this.props.type,
+      notices: this.props.notices,
+    };    
+    const{ type, notices} = this.state
+    
     return (
       <Table key={type} striped bordered hover>
         <thead>
@@ -338,7 +349,8 @@ export default class TypedNotices extends Component {
           </tr>
         </thead>
         <tbody>
-          {notices.map(element => {
+          {
+            notices.map(element => {
             return (
               <tr
                 id={element.protocol}
