@@ -7,6 +7,8 @@ import { Modal } from "react-bootstrap";
 
 const Upload = props => {
   const updateCandidature =()=>{
+  console.log(props.notice_protocol);
+
   const user = JSON.parse(localStorage.getItem('user'))
   let today = new Date();
   let last_edit = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
@@ -29,6 +31,7 @@ const Upload = props => {
       documents: documents,
     }
   }
+  console.log(data);
   const headers ={
     'Authorization': localStorage.getItem('token'),
   }
@@ -39,7 +42,7 @@ const Upload = props => {
       var para = document.createElement("p");
       var node = document.createTextNode("Inserimento effettuto con successo");
       para.appendChild(node);
-      para.style.cssText='color:green, margin-top:3px';
+      para.style.cssText='color:green;, margin-top:3px;';
       document.getElementById('1').appendChild(para);
       
     })
@@ -47,7 +50,7 @@ const Upload = props => {
       var para = document.createElement("p");
       var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
       para.appendChild(node);
-      para.style.cssText='color:red, margin-top:3px';
+      para.style.cssText='color:red; margin-top:3px;';
       document.getElementById('1').appendChild(para);
     })
   }

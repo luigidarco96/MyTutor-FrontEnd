@@ -73,9 +73,9 @@ export class StudentList extends Component{
           headers: headers,
         },)
         .then(blob=>{
-          students.pop(students.filter((el)=>el.email===this.state.selectedStudent.email)[0]);
+          
           this.setState({
-            students:students,
+            students: students.filter((el)=>el.email!=this.state.selectedStudent.email),
           })
 
         });

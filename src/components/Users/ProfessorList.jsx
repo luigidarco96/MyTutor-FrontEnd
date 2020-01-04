@@ -71,9 +71,8 @@ export class ProfessorList extends Component{
           headers: headers,
         },)
         .then(blob=>{
-          professors.pop(professors.filter((el)=>el.email===this.state.selectedProfessor.email)[0]);
           this.setState({
-            professors:professors,
+            professors:professors.filter((el)=>el.email!=this.state.selectedProfessor.email),
           })
 
         });
