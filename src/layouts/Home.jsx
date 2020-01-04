@@ -40,10 +40,15 @@ class Home extends Component {
   getRoutes = routes => {
 
     const pathname = this.props.location.pathname.split("/")[1];
-    
+    const dictionaryPath ={
+      'Student' : 'student',
+      'Professor': 'professor',
+      'DDI': 'ddi',
+      'Teaching Office':'admin',
+  }
     if(pathname==='home' && localStorage.getItem('token')!=null){
       let user = JSON.parse(localStorage.getItem('user'));  
-      window.location.replace('http://localhost:3000/'+user.role[0].toLowerCase()+user.role.split("S")[1]+'/notices'); 
+      window.location.replace('http://localhost:3000/'+dictionaryPath[user.role]+'/notices'); 
     }
     let list = routes[pathname];
     return list.map((prop, key) => {

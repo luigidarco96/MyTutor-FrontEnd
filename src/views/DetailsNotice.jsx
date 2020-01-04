@@ -19,7 +19,7 @@ class DetailsNotice extends Component {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (user.role === 'Student') {
-      return <Upload />;
+      return <Upload notice_protocol={this.props.match.params.id}/>;
     }
   }
 

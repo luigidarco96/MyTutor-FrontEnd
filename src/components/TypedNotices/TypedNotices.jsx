@@ -213,6 +213,7 @@ export default class TypedNotices extends Component {
 
   acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
+    console.log(element);
     let acceptedNotice = (e,element)=>{
       e.stopPropagation();
       e.preventDefault();
@@ -223,7 +224,7 @@ export default class TypedNotices extends Component {
       axios
       .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
       .then(blob=>{
-
+        console.log(blob.data);
       })
     }
     if (user.role === 'Professor') {
