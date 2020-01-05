@@ -920,3 +920,7 @@ a:hover{
   height: 200px;
   width: 351px;
 }
+
+.commentHover:hover {
+  color:red;
+}

@@ -16,7 +16,9 @@ export default class TypedNotices extends Component {
       type: '',
       notices: '',
       show: false,
+      showComment:false,
       selectedNotice: '',
+      selectedComment: '',
     };
   
   }
@@ -29,53 +31,104 @@ export default class TypedNotices extends Component {
     window.location.replace(path);
   };
 
-  draftOperation() {
+  draftOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
+    const headers = {
+      'Authorization':localStorage.getItem('token'),
+    }
+    //Show the comment of a notice
+    const showComment=(e,element)=>{
+        e.stopPropagation();
+        e.preventDefault();
+        axios
+        .post('http://localhost:3001/api/comment',{noticeProtocol:element.protocol},{headers:headers})
+        .then(blob=>{
+          if(blob.data.comment!=null){
+            this.setState({
+              showComment: true,
+              selectedComment: blob.data.comment.text,
+            })
+          }
+          else{
+            this.setState({
+              showComment: true,
+              selectedComment: 'Nessun commento disponibile',
+            })
+          }
+        })
+    }
+    const sendToProfessor = (element)=>{
+      element.state = "In Acceptance";
+      element.deadline = element.deadline.split('T')[0];
+      axios
+      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+      .then(blob=>{
+        this.setState({
+          notices: this.props.notices,
+        })
 
+        this.state.notices.forEach(el => {
+          if (el.protocol === element.protocol) {
+            el = element;
+          }
+        });
+
+        this.setState({
+          notices: this.state.notices
+        });
+        
+      })
+    }
     if (Boolean(user) && user.role === 'Teaching Office') {
-      return (
-        <td>
-          <CustomButton
-            bsStyle='primary'
-            pullRight
-            onClick={e => {
-              // Prevent propagation and the default action
-              e.stopPropagation();
-              e.preventDefault();
+        return (
+          <td>
+            <i className='pe-7s-comment commentHover' onClick={(e)=>{showComment(e,element)}}style={{fontSize:'20px'}}></i>
+            <CustomButton
+              bsStyle='primary'
+              pullRight
+              onClick={e => {
+                // Prevent propagation and the default action
+                  e.stopPropagation();
+                  e.preventDefault();
 
-              // Take the notice's protocol
-              let id = e.target.parentElement.parentElement.id;
+                 // Take the notice's protocol
+                  let id = e.target.parentElement.parentElement.id;
 
-              // Redirect to the modifications page
-              window.location = `manageNotice/${id}`;
-            }}
+                // Redirect to the modifications page
+                  window.location = `manageNotice/${id}`;
+                }
+              }
           >
-            Modifica
-          </CustomButton>
-          <CustomButton
-            bsStyle='warning'
-            pullRight
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
-            }}
-          >
-            Elimina
-          </CustomButton>
-          <CustomButton
-            bsStyle='success'
-            pullRight
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
-            }}
-          >
+              Modifica
+            </CustomButton>
+            <CustomButton
+              bsStyle='warning'
+              pullRight
+              onClick={e => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+                }
+              }
+            >
+              Elimina
+            </CustomButton>
+          
+            <CustomButton
+              bsStyle='success'
+              pullRight
+              onClick={e => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  sendToProfessor(element);
+                }
+              }
+            >
             Inoltra al professore
-          </CustomButton>
-        </td>
-      );
+            </CustomButton>
+          </td>
+        );
+      
     }
   }
 
@@ -100,8 +153,33 @@ export default class TypedNotices extends Component {
     );
   }
 
-  acceptedOperation() {
+  acceptedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
+    const headers = {
+      'Authorization':localStorage.getItem('token'),
+    }
+    const sendToDDI = (element)=>{
+      element.state = "In Approval";
+      element.deadline = element.deadline.split('T')[0];
+      axios
+      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+      .then(blob=>{
+        this.setState({
+          notices: this.props.notices,
+        })
+
+        this.state.notices.forEach(el => {
+          if (el.protocol === element.protocol) {
+            el = element;
+          }
+        });
+
+        this.setState({
+          notices: this.state.notices
+        });
+        
+      })
+    }
 
     if (Boolean(user) && user.role === 'Teaching Office') {
       return (
@@ -112,7 +190,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+              sendToDDI(element);
             }}
           >
             Inoltra al DDI
@@ -394,13 +472,13 @@ export default class TypedNotices extends Component {
     console.log(type);
     switch (type) {
       case 'Bozza':
-        return this.draftOperation();
+        return this.draftOperation(element);
       case 'Pubblicato':
         return this.publishedOperation();
       case 'Accettato':
-        return this.acceptedOperation();
+        return this.acceptedOperation(element);
       case 'Approvato':
-        return this.approvedOperation();
+        return this.approvedOperation(element);
       case 'Scaduto':
         return this.expiredOperation();
       case 'In attesa di graduatoria':
@@ -420,6 +498,7 @@ export default class TypedNotices extends Component {
     const closeModalComment = ()=>{
       this.setState({
         show:false,
+        showComment:false,
       })
     }
        
@@ -502,6 +581,14 @@ export default class TypedNotices extends Component {
             <CustomButton className='buttonHover button' variant="secondary" onClick={closeModalComment}>Annulla</CustomButton>
                 <CustomButton className='buttonHover button' variant="primary" onClick={()=>{disapproveNotice(this.state.selectedNotice)}}>Invia commento</CustomButton>
         </Modal.Footer>
+      </Modal>
+      {/* Modal to show comment */}
+      <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute'}} show={this.state.showComment} onHide={closeModalComment} animation={false}>
+        <Modal.Header style={{width:'350px'}} closeButton>
+          <Modal.Title style={{color:'#274F77'}}>Commento</Modal.Title>
+        </Modal.Header>
+        
+        <Modal.Body style={{width:'350px', padding:'7px'}}>{this.state.selectedComment}</Modal.Body>
       </Modal>
       </div>
 
