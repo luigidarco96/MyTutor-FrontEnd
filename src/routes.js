@@ -135,6 +135,11 @@ const dashboardRoutes = {
       name: 'Crea Bando',
       component: CreateNotice
     },
+    {
+      path: '/manageNotice/:id',
+      name: 'Modifica bando',
+      component: CreateNotice
+    },
 
     {
       path: '/users',

@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 import { StateDictionary } from '../../static/dicts';
 import CustomButton from '../CustomButton/CustomButton';
 import '../../assets/css/detailNotice.css';
-import axios from 'axios'
+import axios from 'axios';
 
 export default class TypedNotices extends Component {
   constructor(props) {
@@ -22,18 +22,22 @@ export default class TypedNotices extends Component {
   draftOperation() {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    console.log(user.role === 'Teaching Office');
-
-    if (user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
           <CustomButton
             bsStyle='primary'
             pullRight
             onClick={e => {
+              // Prevent propagation and the default action
               e.stopPropagation();
               e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+
+              // Take the notice's protocol
+              let id = e.target.parentElement.parentElement.id;
+
+              // Redirect to the modifications page
+              window.location = `manageNotice/${id}`;
             }}
           >
             Modifica
@@ -89,7 +93,7 @@ export default class TypedNotices extends Component {
   acceptedOperation() {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
           <CustomButton
@@ -111,7 +115,7 @@ export default class TypedNotices extends Component {
   approvedOperation() {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
           <CustomButton
@@ -133,7 +137,7 @@ export default class TypedNotices extends Component {
   expiredOperation() {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
           <CustomButton
@@ -160,13 +164,15 @@ export default class TypedNotices extends Component {
           </CustomButton>
         </td>
       );
+    } else {
+      return this.publishedOperation();
     }
   }
 
   waitingForGradedListOperation() {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
           <CustomButton
@@ -182,13 +188,15 @@ export default class TypedNotices extends Component {
           </CustomButton>
         </td>
       );
+    } else {
+      return this.publishedOperation();
     }
   }
 
   closedOperation() {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
           <CustomButton
@@ -204,41 +212,49 @@ export default class TypedNotices extends Component {
           </CustomButton>
         </td>
       );
+    } else {
+      return this.publishedOperation();
     }
   }
 
   acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
-    let acceptedNotice = (e,element)=>{
+    let acceptedNotice = (e, element) => {
       e.stopPropagation();
       e.preventDefault();
       console.log(element);
       element.state = 'Accepted';
-      element.deadline=element.deadline.split('T')[0];
+      element.deadline = element.deadline.split('T')[0];
       const headers = {
-        'Authorization' : localStorage.getItem('token'),
-      }
+        Authorization: localStorage.getItem('token')
+      };
       axios
-      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
-      .then(blob=>{
-        this.state.notices.forEach((el)=>{
-          if(el.protocol===element.protocol){
-            console.log(el);
-            el=element;
-          }
-        })
-        this.setState({
-          notices:this.state.notices,
-        })
-      })
-    }
-    if (user.role === 'Professor') {
+        .patch(
+          'http://localhost:3001/api/notices/state',
+          { notice: element },
+          { headers: headers }
+        )
+        .then(blob => {
+          this.state.notices.forEach(el => {
+            if (el.protocol === element.protocol) {
+              console.log(el);
+              el = element;
+            }
+          });
+          this.setState({
+            notices: this.state.notices
+          });
+        });
+    };
+    if (Boolean(user) && user.role === 'Professor') {
       return (
         <td>
           <CustomButton
             bsStyle='success'
             pullRight
-            onClick={(e)=>{acceptedNotice(e,element)}}
+            onClick={e => {
+              acceptedNotice(e, element);
+            }}
           >
             Accetta bando
           </CustomButton>
@@ -261,7 +277,7 @@ export default class TypedNotices extends Component {
   approvingOperation() {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.role === 'DDI') {
+    if (Boolean(user) && user.role === 'DDI') {
       console.log('Ciao');
       return (
         <td>
@@ -302,8 +318,9 @@ export default class TypedNotices extends Component {
       );
     }
   }
+
   //element is the notice selected
-  displayButtons(type,element) {
+  displayButtons(type, element) {
     console.log(type);
     switch (type) {
       case 'Bozza':
@@ -333,10 +350,10 @@ export default class TypedNotices extends Component {
     this.state = {
       pathname: '',
       type: this.props.type,
-      notices: this.props.notices,
-    };    
-    const{ type, notices} = this.state
-    
+      notices: this.props.notices
+    };
+    const { type, notices } = this.state;
+
     return (
       <Table key={type} striped bordered hover>
         <thead>
@@ -349,8 +366,7 @@ export default class TypedNotices extends Component {
           </tr>
         </thead>
         <tbody>
-          {
-            notices.map(element => {
+          {notices.map(element => {
             return (
               <tr
                 id={element.protocol}
@@ -361,7 +377,7 @@ export default class TypedNotices extends Component {
                 <td>{element.deadline.split('T')[0]}</td>
                 <td>{element.type}</td>
                 <td>{StateDictionary[element.state]}</td>
-                {this.displayButtons(type,element)}
+                {this.displayButtons(type, element)}
               </tr>
             );
           })}

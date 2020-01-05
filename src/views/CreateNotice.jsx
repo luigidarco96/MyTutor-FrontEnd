@@ -3,6 +3,7 @@ import '../assets/css/global.css';
 
 import axios from 'axios';
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import CustomButton from '../components/CustomButton/CustomButton';
 import {
   Form,
@@ -16,8 +17,16 @@ import {
   Table,
   Alert
 } from 'react-bootstrap';
-import { useEffect } from 'react';
 
+/**
+ * View: NoticeManager.jsx
+ * If the prop 'notice' is set, this component is used for the notice's editing.
+ * If the prop 'notice is not set, this component is used for the notice creation.
+ *
+ * @author Federico Allegretti
+ * @copyright 2019 - Copyright by Gang Of Four Eyes
+ *
+ */
 export default class CreateNotice extends Component {
   constructor() {
     super();
@@ -82,9 +91,25 @@ export default class CreateNotice extends Component {
     };
   }
 
+  handleEditType() {
+    const {
+      match: { params }
+    } = this.props;
+
+    if (params.id) {
+      return 'Applica Modifica';
+    } else {
+      return 'Crea bando';
+    }
+  }
+
   handleFormSubmit(e) {
     e.preventDefault();
     const { noticeControl, notice } = this.state;
+
+    const {
+      match: { params }
+    } = this.props;
 
     let allTrue = true;
 
@@ -132,25 +157,52 @@ export default class CreateNotice extends Component {
       error: null
     });
 
-    axios({
-      method: 'PUT',
-      url: 'http://localhost:3001/api/notices',
-      data: {
-        user: this.state.user,
-        notice: notice
-      },
-      headers: {
-        Authorization: this.state.token
-      }
-    }).then(blob => {
-      let error = blob.data.error;
+    // Add space for timestamp
+    notice.deadline = notice.deadline + ' ';
 
-      if (Boolean(error)) {
-        this.setState({
-          error: <Alert bsStyle='danger'>{error}</Alert>
-        });
-      }
-    });
+    if (params.id) {
+      // Change the notice
+      axios({
+        method: 'PATCH',
+        url: 'http://localhost:3001/api/notices',
+        data: {
+          user: this.state.user,
+          notice: notice
+        },
+        headers: {
+          Authorization: this.state.token
+        }
+      }).then(blob => {
+        let error = blob.data.error;
+
+        if (Boolean(error)) {
+          this.setState({
+            error: <Alert bsStyle='danger'>{error}</Alert>
+          });
+        }
+      });
+    } else {
+      // Create the notice
+      axios({
+        method: 'PUT',
+        url: 'http://localhost:3001/api/notices',
+        data: {
+          user: this.state.user,
+          notice: notice
+        },
+        headers: {
+          Authorization: this.state.token
+        }
+      }).then(blob => {
+        let error = blob.data.error;
+
+        if (Boolean(error)) {
+          this.setState({
+            error: <Alert bsStyle='danger'>{error}</Alert>
+          });
+        }
+      });
+    }
   }
 
   handleAddArticle(e) {
@@ -205,7 +257,6 @@ export default class CreateNotice extends Component {
     const { notice, noticeControl } = this.state;
 
     notice.assignments.push({
-      id: notice.assignments.length + 1,
       notice_protocol: notice.protocol,
       student: null,
       code: '',
@@ -226,7 +277,7 @@ export default class CreateNotice extends Component {
       total_number_hours: false,
       title: false,
       hourly_cost: false,
-      ht_fund: false,
+      ht_fund: true,
       state: true,
       note: true
     });
@@ -245,22 +296,22 @@ export default class CreateNotice extends Component {
 
     if (el.name === 'protocol') {
       notice.assignments.map(element => {
-        element.notice_protocol = value.trim();
+        element.notice_protocol = value;
       });
       notice.evaluation_criteria.map(element => {
-        element.notice_protocol = value.trim();
+        element.notice_protocol = value;
       });
       notice.articles.map(element => {
-        element.notice_protocol = value.trim();
+        element.notice_protocol = value;
       });
       noticeControl.assignments.map(element => {
-        element.notice_protocol = value.trim().length > 0;
+        element.notice_protocol = value.length > 0;
       });
       noticeControl.evaluation_criteria.map(element => {
-        element.notice_protocol = value.trim().length > 0;
+        element.notice_protocol = value.length > 0;
       });
       noticeControl.articles.map(element => {
-        element.notice_protocol = value.trim().length > 0;
+        element.notice_protocol = value.length > 0;
       });
     }
 
@@ -276,21 +327,24 @@ export default class CreateNotice extends Component {
         notice[elKey][index][elName] = Number(value);
         noticeControl[elKey][index][elName] = Number(value) > 0;
       } else {
-        notice[elKey][index][elName] = value.trim();
-        noticeControl[elKey][index][elName] = value.trim().length > 0;
+        notice[elKey][index][elName] = value;
+        noticeControl[elKey][index][elName] =
+          elName !== 'ht_fund' ? value.length > 0 : true;
       }
     } else {
       if (el.type === 'number') {
         notice[elName] = Number(value);
         noticeControl[elName] = Number(value) > 0;
       } else if (el.type === 'date') {
-        notice[elName] = value + ' ';
+        notice[elName] = value;
         noticeControl[elName] = Boolean(value + ' ');
       } else {
-        notice[elName] = value.trim();
-        noticeControl[elName] = value.trim().length > 0;
+        notice[elName] = value;
+        noticeControl[elName] = value.length > 0;
       }
     }
+
+    this.setState({ notice });
   }
 
   handleFocus(e) {
@@ -303,7 +357,7 @@ export default class CreateNotice extends Component {
     const el = e.target;
 
     let value = '' + el.value;
-    el.disabled = value.length > 0;
+    el.disabled = el.name !== 'ht_fund' ? value.length > 0 : true;
 
     el.className = el.className.replace('typing', '');
     el.className = el.className.trim();
@@ -326,10 +380,96 @@ export default class CreateNotice extends Component {
   }
 
   componentDidMount() {
-    console.warn('Sono qui!');
     let user = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
+    let noticeControl;
 
+    const {
+      match: { params }
+    } = this.props;
+
+    // Fetch notice information if the protocol its been passed
+    if (params.id) {
+      if (
+        user != null &&
+        (user.role === 'Teaching Office' ||
+          user.role === 'DDI' ||
+          user.role === 'Professor')
+      ) {
+        axios
+          .get(`http://localhost:3001/api/notices/${params.id}`, {
+            headers: {
+              Authorization: localStorage.getItem('token')
+            }
+          })
+          .then(blob => {
+            let notice = blob.data.notices[0];
+            notice.deadline = notice.deadline.split('T')[0];
+
+            noticeControl = {
+              protocol: true,
+              referent_professor: true,
+              description: true,
+              notice_subject: true,
+              admission_requirements: true,
+              assessable_titles: true,
+              how_to_submit_applications: true,
+              selection_board: true,
+              acceptance: true,
+              incompatibility: true,
+              termination_of_the_assignment: true,
+              nature_of_the_assignment: true,
+              unused_funds: true,
+              responsible_for_the_procedure: true,
+              notice_funds: true,
+              state: true,
+              type: true,
+              deadline: true,
+              notice_file: true,
+              graded_list_file: true,
+              assignments: [],
+              evaluation_criteria: [],
+              articles: [],
+              application_sheet: true,
+              comment: true
+            };
+
+            notice.assignments.map(el => {
+              noticeControl.assignments.push({
+                notice_protocol: notice.protocol.length > 0,
+                student: true,
+                code: true,
+                activity_description: true,
+                total_number_hours: true,
+                title: true,
+                hourly_cost: true,
+                ht_fund: true,
+                state: true,
+                note: true
+              });
+            });
+
+            notice.articles.map(el => {
+              noticeControl.articles.push({
+                notice_protocol: notice.protocol.length > 0,
+                text: true,
+                initial: true
+              });
+            });
+
+            notice.evaluation_criteria.map(el => {
+              noticeControl.evaluation_criteria.push({
+                notice_protocol: notice.protocol.length > 0,
+                name: true,
+                max_score: true
+              });
+            });
+
+            this.setState({ notice: notice, noticeControl: noticeControl });
+          });
+      }
+    }
+    // Fetch all professor
     axios
       .post(
         'http://localhost:3001/api/users/search',
@@ -343,23 +483,27 @@ export default class CreateNotice extends Component {
         }
       )
       .then(blob => {
-        console.log(blob.data);
         this.setState({
           professors: blob.data.list,
           user: user,
           token: token
         });
       });
+
+    this.handleChange = this.handleChange.bind(this);
   }
 
   render() {
     const {
+      notice,
       notice: { articles },
       notice: { evaluation_criteria },
       notice: { assignments },
       error,
       professors
     } = this.state;
+
+    console.log(notice);
 
     return (
       <div className='container-fluid custom-body-view'>
@@ -381,6 +525,7 @@ export default class CreateNotice extends Component {
                     type='text'
                     placeholder='Inserisci il protocollo'
                     name='protocol'
+                    value={this.state.notice.protocol}
                     onFocus={e => this.handleFocus(e)}
                     onBlur={e => this.handleBlur(e)}
                     onMouseEnter={e => this.handleMouseEnter(e)}
@@ -394,6 +539,7 @@ export default class CreateNotice extends Component {
                 <FormControl
                   componentClass='select'
                   name='referent_professor'
+                  value={this.state.notice.referent_professor}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -434,6 +580,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.assignments list'}
                               name='code'
+                              value={el.code}
                               type='text'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
@@ -446,6 +593,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.assignments list'}
                               name='activity_description'
+                              value={el.activity_description}
                               componentClass='textarea'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
@@ -458,6 +606,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.assignments list'}
                               name='total_number_hours'
+                              value={el.total_number_hours}
                               type='number'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
@@ -470,6 +619,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.assignments list'}
                               name='hourly_cost'
+                              value={el.hourly_cost}
                               type='number'
                               step='0.01'
                               onFocus={e => this.handleFocus(e)}
@@ -484,6 +634,7 @@ export default class CreateNotice extends Component {
                               componentClass='select'
                               className={index + '.assignments list'}
                               name='title'
+                              value={el.title}
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
@@ -499,6 +650,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.assignments list'}
                               name='ht_fund'
+                              value={el.ht_fund}
                               type='text'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
@@ -529,6 +681,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci la descrizione del bando (max. 300 caratteri)'
                   name='description'
+                  value={notice.description}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -542,6 +695,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci il responsabile delle procedure'
                   name='responsible_for_the_procedure'
+                  value={notice.responsible_for_the_procedure}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -557,6 +711,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder="Inserisci l'oggetto del bando (max. 2000 caratteri)"
                   name='notice_subject'
+                  value={notice.notice_subject}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -570,6 +725,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci i requisiti di ammissione (max. 5000 caratteri)'
                   name='admission_requirements'
+                  value={notice.admission_requirements}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -598,6 +754,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.evaluation_criteria list'}
                               name='name'
+                              value={el.name}
                               type='text'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
@@ -610,6 +767,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.evaluation_criteria list'}
                               name='max_score'
+                              value={el.max_score}
                               type='number'
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
@@ -640,6 +798,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci i titoli valutabili (max. 5000)'
                   name='assessable_titles'
+                  value={notice.assessable_titles}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -655,6 +814,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci come inviare la domanda (max. 5000)'
                   name='how_to_submit_applications'
+                  value={notice.how_to_submit_applications}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -670,6 +830,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci informazioni riguardo la commissione giudicatrice (max. 5000)'
                   name='selection_board'
+                  value={notice.selection_board}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -683,6 +844,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder="Inserisci informazioni riguardo l'accettazione dell'incarico (max. 5000)"
                   name='acceptance'
+                  value={notice.acceptance}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -698,6 +860,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci informazioni riguardo le incompatibilità (max. 5000)'
                   name='incompatibility'
+                  value={notice.incompatibility}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -711,6 +874,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder="Inserisci informazioni riguardo la cessazione dell'incarico (max. 5000)"
                   name='termination_of_the_assignment'
+                  value={notice.termination_of_the_assignment}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -726,6 +890,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder="Inserisci informazioni riguardo la natura dell'incarico (max. 5000)"
                   name='nature_of_the_assignment'
+                  value={notice.nature_of_the_assignment}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -739,6 +904,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci informazioni riguardo le borse non utilizzate (max. 5000)'
                   name='unused_funds'
+                  value={notice.unused_funds}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -751,15 +917,20 @@ export default class CreateNotice extends Component {
               <Col xs={12} md={4}>
                 <ControlLabel>Tipo bando</ControlLabel>
                 <FormControl
-                  type='text'
+                  componentClass='select'
                   placeholder='Tipo bando'
                   name='type'
+                  value={notice.type}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
                   onMouseOut={e => this.handleMouseOut(e)}
                   onChange={e => this.handleChange(e)}
-                />
+                >
+                  <option value=''>Scegli tipo</option>
+                  <option value='Tutoring'>Tutorato</option>
+                  <option value='Help Teaching'>Help Teaching</option>
+                </FormControl>
               </Col>
               <Col xs={12} md={4}>
                 <ControlLabel>Scadenza</ControlLabel>
@@ -767,6 +938,7 @@ export default class CreateNotice extends Component {
                   type='date'
                   placeholder='Scadenza bando'
                   name='deadline'
+                  value={notice.deadline}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -780,6 +952,7 @@ export default class CreateNotice extends Component {
                   type='number'
                   placeholder='Fondi'
                   name='notice_funds'
+                  value={notice.notice_funds}
                   step='0.01'
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -808,6 +981,7 @@ export default class CreateNotice extends Component {
                             <FormControl
                               className={index + '.articles list'}
                               name='initial'
+                              value={el.initial}
                               type='text'
                               placeholder='Es: VISTO, VISTA, ...'
                               onFocus={e => this.handleFocus(e)}
@@ -822,6 +996,7 @@ export default class CreateNotice extends Component {
                               className={index + '.articles list'}
                               type='text'
                               name='text'
+                              value={el.text}
                               onFocus={e => this.handleFocus(e)}
                               onBlur={e => this.handleBlur(e)}
                               onMouseEnter={e => this.handleMouseEnter(e)}
@@ -851,11 +1026,15 @@ export default class CreateNotice extends Component {
                   create-notice-csbutton
                   type='submit'
                 >
-                  Crea bando
+                  {this.handleEditType()}
                 </CustomButton>
               </Col>
             </Row>
-            <Row className='create-notice-row'>{error}</Row>
+            <Row className='create-notice-row'>
+              <Col xs={12} md={12}>
+                {error}
+              </Col>
+            </Row>
           </FormGroup>
         </Form>
       </div>
