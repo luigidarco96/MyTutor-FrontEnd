@@ -25,6 +25,7 @@ import Assignmets from './views/Assignments';
 import Tasks from './views/Tasks';
 import CreateNotice from './views/CreateNotice';
 import UpdateCandidatura from './views/UpdateCandidatura';
+import UserProfile from './views/UserProfile';
 
 const dashboardRoutes = {
   home: [
@@ -41,6 +42,11 @@ const dashboardRoutes = {
     }
   ],
   student: [
+    {
+      path: '/profile',
+      name: 'Profilo',
+      component: UserProfile
+    },
     {
       path: '/notices',
       name: 'Bandi',
@@ -76,6 +82,11 @@ const dashboardRoutes = {
   ],
 
   professor: [
+    {
+      path: '/profile',
+      name: 'Profilo',
+      component: UserProfile
+    },
     {
       path: '/notices',
       name: 'Bandi',

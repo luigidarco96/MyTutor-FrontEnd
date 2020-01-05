@@ -15,9 +15,10 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { Component } from "react";
-import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
-import { logout } from "../../utils/auth";
+import React, { Component } from 'react';
+import { NavItem, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
+import { logout } from '../../utils/auth';
+import { Link } from 'react-router-dom';
 
 class AdminNavbarLinks extends Component {
   render() {
@@ -26,17 +27,21 @@ class AdminNavbarLinks extends Component {
         <Nav pullRight>
           <NavDropdown
             eventKey={2}
-            title= {
-              <span><i className="pe-7s-user pe-custom-32px"/></span>
-            } 
-            
-            id="basic-nav-dropdown-right"
+            title={
+              <span>
+                <i className='pe-7s-user pe-custom-32px' />
+              </span>
+            }
+            id='basic-nav-dropdown-right'
           >
-            <MenuItem eventKey={2.1}>Visualizza Profilo</MenuItem>
+            <MenuItem eventKey={2.1} href='profile'>
+              Visualizza Profilo
+            </MenuItem>
             <MenuItem divider />
-            <MenuItem eventKey={2.5} onClick={logout}>Logout</MenuItem>
+            <MenuItem eventKey={2.5} onClick={logout}>
+              Logout
+            </MenuItem>
           </NavDropdown>
-         
         </Nav>
       </div>
     );

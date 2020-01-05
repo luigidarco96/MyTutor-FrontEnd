@@ -16,9 +16,14 @@ class DetailsNotice extends Component {
   }
 
   handleInputForm() {
+    const { noticeJSON } = this.state;
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (Boolean(user) && user.role === 'Student') {
+    if (
+      Boolean(user) &&
+      user.role === 'Student' &&
+      noticeJSON.state === 'Published'
+    ) {
       return <Upload notice_protocol={this.props.match.params.id} />;
     }
   }
