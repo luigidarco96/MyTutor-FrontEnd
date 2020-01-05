@@ -203,6 +203,8 @@ export default class CreateNotice extends Component {
         }
       });
     }
+
+    window.location = 'notices';
   }
 
   handleAddArticle(e) {
