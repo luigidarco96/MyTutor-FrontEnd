@@ -229,6 +229,7 @@ export default class TypedNotices extends Component {
 
   acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
+    //Update state notice to Accepted.
     let acceptedNotice = (e, element) => {
       e.stopPropagation();
       e.preventDefault();
@@ -257,6 +258,34 @@ export default class TypedNotices extends Component {
             notices: this.state.notices
           });
         });
+        
+    };
+    //Notice not accepted by professor.
+    let notAcceptNotice=(e,element)=>{
+      e.stopPropagation();
+      e.preventDefault();
+      console.log(element);
+      element.state = 'Draft';
+      element.deadline = element.deadline.split('T')[0];
+      const headers = {
+        Authorization: localStorage.getItem('token')
+      };
+     
+      axios
+      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+      .then(blob=>{
+        this.setState({
+          notices: this.props.notices,
+        })
+        this.state.notices.forEach(el => {
+          if (el.protocol === element.protocol) {
+            el = element;
+          }
+        });
+        this.setState({
+          notices: this.state.notices
+        });
+      });
     };
     if (Boolean(user) && user.role === 'Professor') {
       return (
@@ -268,8 +297,22 @@ export default class TypedNotices extends Component {
               acceptedNotice(e, element);
             }}
           >
-            Accetta bando
+            Accetta
           </CustomButton>
+         
+          <CustomButton
+            bsStyle='primary'
+            pullRight
+            onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+              notAcceptNotice(e,element);
+              
+            }}
+          >
+            Non accetta
+          </CustomButton>
+
           <CustomButton
             bsStyle='primary'
             pullRight
@@ -383,7 +426,6 @@ export default class TypedNotices extends Component {
     const disapproveNotice = (element)=>{
       let user = JSON.parse(localStorage.getItem('user'));
 
-      //Prendi il commento e mettilo ad element.
      const headers = {
        'Authorization': localStorage.getItem('token'),
      }
