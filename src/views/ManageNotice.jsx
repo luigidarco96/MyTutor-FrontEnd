@@ -3,13 +3,45 @@ import { Tabs, Tab, Grid, Row, Col } from 'react-bootstrap';
 import CreateNotice from '../components/NoticeComponents/CreateNotice'
 import CreateApplication from '../components/NoticeComponents/CreateApplication'
 import Card from 'components/Card/Card.jsx';
+import axios from 'axios';
 
 export default class draftNotice extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: 'bando'
+            selectedTab: 'bando',
+            applicationSheet: {}
         };
+    }
+
+    componentDidMount() {
+        let user = JSON.parse(localStorage.getItem('user'));
+        let token = localStorage.getItem('token');
+
+        const {
+            match: { params }
+        } = this.props;
+
+        //check if the id params of the applicationSheet is passed
+        if (params.id) {
+            if (user != null &&
+                (user.role === 'Teaching Office')) {
+                //fetch applicationSheet information
+                axios
+                .get(`http://localhost:3001/api/notices/${params.id}`, {
+                    headers: {
+                      Authorization: token
+                    }
+                  })
+                  .then(response => {
+                        if (response.status == '200') {
+                            this.setState({applicationSheet : response.data.notices[0].application_sheet});
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    })
+            }
+        }
     }
 
     handleTabSelect(e) {
@@ -20,11 +52,11 @@ export default class draftNotice extends Component {
     }
 
     render() {
-        const { selectedTab } = this.state;
+        const { selectedTab, applicationSheet } = this.state;
         return (
             <div className='content' style={{height:'30vw', overflowY:'scroll'}}>
                 <Card
-                    title={selectedTab == 'bando' ? 'Crea Bando' : 'Crea Domanda'}
+                    title={selectedTab == 'bando' ? 'Modifica Bando' : 'Modifica Domanda'}
                     ctTableFullWidth
                     ctTableResponsive
                     content={
@@ -38,7 +70,7 @@ export default class draftNotice extends Component {
                                     <CreateNotice {...this.props}></CreateNotice>
                                 </Tab>
                                 <Tab eventKey={'domanda'} title={'domanda'} key={2}>
-                                    <CreateApplication {...this.props}></CreateApplication>
+                                    <CreateApplication {...this.props} applicationSheet = {applicationSheet}></CreateApplication>
                                 </Tab>
                             </Tabs>
                         </div>

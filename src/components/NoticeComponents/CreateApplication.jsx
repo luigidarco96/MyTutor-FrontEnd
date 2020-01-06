@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FormControl,
     Form,
@@ -8,7 +8,8 @@ import {
     Tooltip,
     Row,
     Col,
-    Modal
+    Modal,
+    Alert
 } from 'react-bootstrap';
 import '../../assets/css/global.css';
 import CustomButton from '../CustomButton/CustomButton';
@@ -19,10 +20,138 @@ const CreateApplication = (props) => {
     const [description, setDescription] = useState("");
     const [modal, setModal] = useState(false)
     const [modalContent, setModalContent] = useState("")
+    const [isMounted, setIsMounted] = useState(false)
+    const [error, setError] = useState('')
+
+    useEffect(() => {
+        if (!isMounted) {
+            let user = JSON.parse(localStorage.getItem('user'));
+            let token = localStorage.getItem('token');
+
+            const {
+                match: { params }
+            } = props;
+
+            //check if the id params of the applicationSheet is passed
+            if (params.id) {
+                if (user != null &&
+                    (user.role === 'Teaching Office')) {
+                    //fetch applicationSheet information
+                    axios
+                        .get(`http://localhost:3001/api/notices/${params.id}`, {
+                            headers: {
+                                Authorization: token
+                            }
+                        })
+                        .then(response => {
+                            if (response.status == '200') {
+                                setIsMounted(true)
+                                console.log(response.data.notices[0])
+                                let applicationSheet = response.data.notices[0].application_sheet
+                                if (applicationSheet != null) {
+                                    setDescription(applicationSheet.documents_to_attach)
+                                    setProtocol(applicationSheet.notice_protocol)
+                                } else {
+                                    setError('PROTOCOL ERROR')
+                                }
+                            }
+                        }).catch(err => {
+                            console.log(err)
+                        })
+                }
+            }
+        }
+    })
+
+    const handleEditType = () => {
+        const {
+            match: { params }
+        } = props;
+
+        if (params.id) {
+            return (
+                <div>
+                    <CustomButton
+                        style={{ display: 'block' }}
+                        bsStyle='primary'
+                        create-notice-csbutton
+                        type='submit'
+                        onClick={e => handleDelete(e)}>
+                        Elimina
+                    </CustomButton>
+                    <CustomButton
+                        bsStyle='success'
+                        create-notice-csbutton
+                        type='submit'>
+                        Applica Modifica
+                    </CustomButton>
+                </div>
+            );
+        } else {
+            return (
+                <CustomButton
+                    bsStyle='success'
+                    create-notice-csbutton
+                    type='submit'>
+                    Crea Domanda
+                    </CustomButton>
+            );
+        }
+    }
+
+    const handleDelete = (e) => {
+        const {
+            match: { params }
+        } = props;
+        e.preventDefault()
+
+        let protocolField = document.getElementById('protocolField').value
+        if (error != '' && protocolField == params.id){
+            setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
+            setModal(true)
+        }else if (protocolField == params.id && protocolField != '') {
+            let user = JSON.parse(localStorage.getItem('user'));
+            let token = localStorage.getItem('token');
+
+            //Delete the applicationSheet
+            axios({
+                method: 'DELETE',
+                url: `http://localhost:3001/api/applicationsheet/${params.id}`,
+                data: {
+                    user: user
+                },
+                headers: {
+                    Authorization: token
+                }
+            }).then(response => {
+                if (response.status == '200') {
+                    setModalContent('Domanda eliminata con successo')
+                }
+            }).catch(err => {
+                console.log(err.response)
+                if (err.response != undefined) {
+                    setModalContent('Controlla di aver inserito correttamente il protocollo.')
+                }
+            })
+            setModal(true)
+        } else if (protocolField != params.id && protocolField != '' && protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) != null) {
+            setModalContent('Attenzione! Hai inserito un nuovo protocollo, se vuoi cancellare un\'altra domanda recati sulla pagina inerente ad esso.')
+            setModal(true)
+        } else if (protocolField == '') {
+            setModalContent('Devi inserire il protocollo per poter eliminare una domanda.')
+            setModal(true)
+        } else if (protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) == null) {
+            console.log(protocolField)
+            setModalContent("Protocollo non valido. Rispettare il formato.")
+            setModal(true)
+        }
+    }
 
     const handleFormSubmit = (e) => {
         e.preventDefault()
+
         validateForm()
+
         let applicationSheet = {
             notice_protocol: protocol,
             documents_to_attach: description
@@ -30,41 +159,88 @@ const CreateApplication = (props) => {
         let user = JSON.parse(localStorage.getItem('user'));
         let token = localStorage.getItem('token');
 
-        axios({
-            method: 'PUT',
-            url: 'http://localhost:3001/api/applicationsheet',
-            data: {
-                user: user,
-                applicationSheet: applicationSheet
-            },
-            headers: {
-                Authorization: token
-            }
-        }).then(response => {
-            if (response.status == '200') {
+        const {
+            match: { params }
+        } = props;
+
+        if (params.id && params.id == protocol) {
+            if (error != '') {
+                setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
                 setModal(true)
-                setModalContent('Domanda creata con successo')
+            }else {
+                //modify applicationSheet
+                axios({
+                    method: 'PATCH',
+                    url: 'http://localhost:3001/api/applicationsheet',
+                    data: {
+                        user: user,
+                        applicationSheet: applicationSheet
+                    },
+                    headers: {
+                        Authorization: token
+                    }
+                }).then(response => {
+                    if (response.status == '200') {
+                        setModalContent('Domanda modificata con successo')
+                    }
+                }).catch(err => {
+                    if (err.response != undefined) {
+                        setModalContent(err.response.data.error)
+                    }
+                })
+                setModal(true)
             }
-        })
-            .catch(err => {
-                if (err.response.data.exception != undefined) {
-                    if (err.response.data.exception.match("Duplicate entry")) {
-                        setModal(true)
-                        setModalContent(err.response.data.error + "\nControlla che la domanda per questo bando non esista già.")
-                    }
-                    else {
-                        setModal(true)
-                        setModalContent(err.response.data.error + "\nControlla che il bando collegato alla domanda esista.")
-                    }
+        } else if (params.id && params.id != protocol && protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) != null) {
+            if (error != '' && protocol == params.id) {
+                setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
+                setModal(true)
+            } else {
+                setModalContent('Attenzione! Hai inserito un nuovo protocollo, se vuoi modificare un\'altra domanda recati sulla pagina inerente ad essa.')
+                setModal(true)
+            }
+        } else if (!params.id) {
+            //create the applicationSheet
+            axios({
+                method: 'PUT',
+                url: 'http://localhost:3001/api/applicationsheet',
+                data: {
+                    user: user,
+                    applicationSheet: applicationSheet
+                },
+                headers: {
+                    Authorization: token
+                }
+            }).then(response => {
+                if (response.status == '200') {
+                    setModalContent('Domanda creata con successo')
+                    setModal(true)
                 }
             })
+                .catch(err => {
+                    if (err.response.data.exception != undefined) {
+                        if (err.response.data.exception.match("Duplicate entry")) {
+                            setModalContent(err.response.data.error + "Assicurati che la domanda per questo bando non esista già e riprova.")
+                            setModal(true)
+                        }
+                        else {
+                            setModalContent(err.response.data.error + "Assicurati che il bando collegato alla domanda esista e riprova.")
+                            setModal(true)
+                        }
+                    }
+                })
+        } else if (protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) == null) {
+            setModalContent("Protocollo non valido. Rispettare il formato.")
+            setModal(true)
+        }
     }
 
     const validateForm = () => {
         if (protocol == '' || description == '') {
             document.getElementById('error-message').innerHTML = 'Controlla di aver compilato tutti i campi'
+            document.getElementById('error-message').style.visibility = 'visible'
         } else if (protocol != '' && description != '') {
             document.getElementById('error-message').innerHTML = ''
+            document.getElementById('error-message').style.visibility = 'hidden'
         }
     }
 
@@ -118,10 +294,12 @@ const CreateApplication = (props) => {
                                         <strong>Esempio:</strong> Prot. n. 0274751
                                         </Tooltip>}>
                                 <FormControl
-                                    defaultValue={props.protocol}
+                                    required
+                                    defaultValue={protocol}
                                     type='text'
                                     placeholder='Inserisci il protocollo'
-                                    name='protocol'
+                                    id='protocolField'
+                                    name='protocolField'
                                     onFocus={e => handleFocus(e)}
                                     onBlur={e => handleBlur(e)}
                                     onMouseEnter={e => handleMouseEnter(e)}
@@ -138,31 +316,27 @@ const CreateApplication = (props) => {
                                 componentClass='textarea'
                                 placeholder='Inserisci quali sono i documenti da caricare'
                                 name='responsible_for_the_procedure'
+                                value={description}
                                 onFocus={e => handleFocus(e)}
                                 onBlur={e => handleBlur(e)}
                                 onMouseEnter={e => handleMouseEnter(e)}
                                 onMouseOut={e => handleMouseOut(e)}
                                 onChange={e => setDescription(e.target.value)}>
-
                             </FormControl>
                         </Col>
                     </Row>
                     <Row className='create-notice-row'>
                         <Col xs={12} md={12}>
-                            <CustomButton
-                                bsStyle='success'
-                                create-notice-csbutton
-                                type='submit'
-                            >Crea Domanda</CustomButton>
+                            {handleEditType()}
                         </Col>
                     </Row>
                 </FormGroup>
-                <Modal style={{ borderRadius: '6px', overflow: 'hidden', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={handleClose} animation={false}>
-                    <Modal.Header style={{ width: '350px' }} closeButton />
-                    <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px' }}>{modalContent}</Modal.Body>
-                </Modal>
             </Form>
-            <div id='error-message'></div>
+            <Modal style={{ borderRadius: '6px', overflow: 'visible', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={handleClose} animation={false}>
+                <Modal.Header style={{ width: '350px' }} closeButton />
+                <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px', textAlign: 'center' }}>{modalContent}</Modal.Body>
+            </Modal>
+            <Alert style={{ visibility: 'hidden' }} bsStyle='danger' id='error-message'></Alert >
         </div>
     )
 }
