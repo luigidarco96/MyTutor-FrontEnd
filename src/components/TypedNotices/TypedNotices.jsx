@@ -200,9 +200,35 @@ export default class TypedNotices extends Component {
     }
   }
 
-  approvedOperation() {
+  approvedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
+    
+    const headers = {
+      'Authorization': localStorage.getItem('token'),
+    }
 
+    const publishNotice = (element)=>{
+      element.state = 'Published';
+      element.deadline = element.deadline.split('T')[0];
+      axios
+      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+      .then(blob=>{
+        this.setState({
+          notices: this.props.notices,
+        })
+
+        this.state.notices.forEach(el => {
+          if (el.protocol === element.protocol) {
+            el = element;
+          }
+        });
+
+        this.setState({
+          notices: this.state.notices
+        });
+        
+      })
+    }
     if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
@@ -212,7 +238,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+              publishNotice(element);
             }}
           >
             Pubblica bando
