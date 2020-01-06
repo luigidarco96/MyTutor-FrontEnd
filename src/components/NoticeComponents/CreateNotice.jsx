@@ -392,12 +392,7 @@ export default class CreateNotice extends Component {
 
     // Fetch notice information if the protocol its been passed
     if (params.id) {
-      if (
-        user != null &&
-        (user.role === 'Teaching Office' ||
-          user.role === 'DDI' ||
-          user.role === 'Professor')
-      ) {
+      if (user != null && user.role === 'Teaching Office') {
         axios
           .get(`http://localhost:3001/api/notices/${params.id}`, {
             headers: {

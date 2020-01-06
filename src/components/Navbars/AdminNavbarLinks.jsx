@@ -1,26 +1,47 @@
-/*!
-
-=========================================================
-* Light Bootstrap Dashboard React - v1.3.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/light-bootstrap-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React, { Component } from 'react';
 import { NavItem, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
 import { logout } from '../../utils/auth';
 import { Link } from 'react-router-dom';
 
 class AdminNavbarLinks extends Component {
+  constructor() {
+    super();
+
+    this.state = {
+      hasProfile: false
+    };
+  }
+
+  showProfile() {
+    const { hasProfile } = this.state;
+
+    if (hasProfile) {
+      return (
+        <MenuItem eventKey={2.1} href='profile'>
+          Visualizza profilo
+        </MenuItem>
+      );
+    }
+  }
+
+  divider() {
+    const { hasProfile } = this.state;
+
+    if (hasProfile) {
+      return <MenuItem divider />;
+    }
+  }
+
+  componentDidMount() {
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    if (user && (user.role === 'Student' || user.role === 'Professor')) {
+      this.setState({
+        hasProfile: true
+      });
+    }
+  }
+
   render() {
     return (
       <div>
@@ -34,10 +55,8 @@ class AdminNavbarLinks extends Component {
             }
             id='basic-nav-dropdown-right'
           >
-            <MenuItem eventKey={2.1} href='profile'>
-              Visualizza Profilo
-            </MenuItem>
-            <MenuItem divider />
+            {this.showProfile()}
+            {this.divider()}
             <MenuItem eventKey={2.5} onClick={logout}>
               Logout
             </MenuItem>

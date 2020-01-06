@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { FormControl, ControlLabel, Col, Row, Grid } from 'react-bootstrap';
+import {
+  FormControl,
+  ControlLabel,
+  Col,
+  Row,
+  Grid,
+  Alert
+} from 'react-bootstrap';
 import Card from '../components/Card/Card';
 import CustomButton from '../components/CustomButton/CustomButton';
 import { UserRole } from '../static/dicts';
@@ -12,8 +19,17 @@ export default class UserProfile extends Component {
 
     this.state = {
       password: '',
-      change: false
+      change: false,
+      error: null
     };
+  }
+
+  showError() {
+    const { error } = this.state;
+
+    if (error) {
+      return error;
+    }
   }
 
   changePassword() {
@@ -25,12 +41,12 @@ export default class UserProfile extends Component {
           <h6>Cambia password</h6>
           <FormControl
             style={{ margin: '5px 0 0 5px' }}
-            type='text'
+            type='password'
             value={this.state.password}
             placeholder='Inserisci password'
             onChange={e => this.handleInput(e)}
           />
-          <CustomButton block bsStyle='primary'>
+          <CustomButton type='submit' block bsStyle='primary'>
             Invia
           </CustomButton>
         </div>
@@ -59,23 +75,46 @@ export default class UserProfile extends Component {
     e.stopPropagation();
     e.preventDefault();
 
-    let user = JSON.parse(localStorage.getItem('user'));
+    console.log('Cambia password!');
 
-    Axios({
-      method: 'GET',
-      url: 'http://localhost:3001/api/users/search',
-      data: {
-        user: user
-      },
-      headers: {
-        Authorization: this.state.token
+    let user = JSON.parse(localStorage.getItem('user'));
+    let token = localStorage.getItem('token');
+
+    if (user) {
+      if (user.role === 'Student') {
+        user.birth_date = user.birth_date.split('T')[0] + ' ';
       }
-    });
+      user.password = this.state.password;
+
+      Axios({
+        method: 'PATCH',
+        url: 'http://localhost:3001/api/users',
+        data: {
+          user: user
+        },
+        headers: {
+          Authorization: token
+        }
+      })
+        .then(result => {
+          console.log(result);
+          localStorage.removeItem('user');
+          localStorage.setItem('user', JSON.stringify(result.data.user));
+
+          window.location = '/notices';
+        })
+        .catch(error => {
+          if (Boolean(error)) {
+            this.setState({
+              error: <Alert bsStyle='danger'>{error}</Alert>
+            });
+          }
+        });
+    }
   }
 
   render() {
     let user = JSON.parse(localStorage.getItem('user'));
-    console.log(user);
 
     return (
       <div className='container-fluid content'>
@@ -117,6 +156,11 @@ export default class UserProfile extends Component {
                   <Col xs={12} md={6}>
                     <h6>Nome</h6>
                     <p>{UserRole[user.role]}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={12} md={12}>
+                    {this.showError()}
                   </Col>
                 </Row>
               </Grid>
