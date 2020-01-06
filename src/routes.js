@@ -23,7 +23,8 @@ import Rankings from './views/Rankings';
 import Users from './views/Users';
 import Assignmets from './views/Assignments';
 import Tasks from './views/Tasks';
-import CreateNotice from './views/CreateNotice';
+import CreateNotice from './components/NoticeComponents/CreateNotice';
+import DraftNotice from './views/DraftNotice';
 import UpdateCandidatura from './views/UpdateCandidatura';
 import UserProfile from './views/UserProfile';
 import UploadNotice from './views/UploadNotice';
@@ -148,9 +149,9 @@ const dashboardRoutes = {
       component: DetailsNotice
     },
     {
-      path: '/createNotice',
-      name: 'Crea Bando',
-      component: CreateNotice
+      path: '/draftNotice',
+      name: 'Bozza Bando',
+      component: DraftNotice
     },
     {
       path: '/manageNotice/:id',
