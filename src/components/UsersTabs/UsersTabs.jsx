@@ -75,7 +75,7 @@ export default class DefaultTabs extends Component {
           if (tab === 'Bozza') {
             return (
               <Tab eventKey={tab} title={tab} key={index}>
-                <Link className='link' to='createNotice'>
+                <Link className='link' to='draftNotice'>
                   Crea bando
                 </Link>
                 <TypedNotices
