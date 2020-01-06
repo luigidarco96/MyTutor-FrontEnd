@@ -7,6 +7,7 @@ import '../../assets/css/detailNotice.css';
 import axios from 'axios';
 
 
+
 export default class TypedNotices extends Component {
   constructor(props) {
     super(props);
@@ -17,12 +18,20 @@ export default class TypedNotices extends Component {
       notices: '',
       show: false,
       showComment:false,
+      showConfirm: false,
       selectedNotice: '',
       selectedComment: '',
+      operationToConfrim:'',
     };
-  
   }
- 
+
+  
+  //Show the modal to confirm an operation.
+  showConfirm(){
+    this.setState({
+      showConfirm: true,
+    });
+  }
 
   getDetailNotice = e => {
     let { pathname } = this.props;
@@ -56,28 +65,6 @@ export default class TypedNotices extends Component {
             })
           }
         })
-    }
-    const sendToProfessor = (element)=>{
-      element.state = "In Acceptance";
-      element.deadline = element.deadline.split('T')[0];
-      axios
-      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
-      .then(blob=>{
-        this.setState({
-          notices: this.props.notices,
-        })
-
-        this.state.notices.forEach(el => {
-          if (el.protocol === element.protocol) {
-            el = element;
-          }
-        });
-
-        this.setState({
-          notices: this.state.notices
-        });
-        
-      })
     }
     if (Boolean(user) && user.role === 'Teaching Office') {
         return (
@@ -120,7 +107,13 @@ export default class TypedNotices extends Component {
               onClick={e => {
                   e.stopPropagation();
                   e.preventDefault();
-                  sendToProfessor(element);
+                  
+                  this.setState({
+                    selectedNotice: element,
+                    operationToConfrim: 'Inoltra al professore',
+                  });
+
+                  this.showConfirm();
                 }
               }
             >
@@ -158,29 +151,7 @@ export default class TypedNotices extends Component {
     const headers = {
       'Authorization':localStorage.getItem('token'),
     }
-    const sendToDDI = (element)=>{
-      element.state = "In Approval";
-      element.deadline = element.deadline.split('T')[0];
-      axios
-      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
-      .then(blob=>{
-        this.setState({
-          notices: this.props.notices,
-        })
-
-        this.state.notices.forEach(el => {
-          if (el.protocol === element.protocol) {
-            el = element;
-          }
-        });
-
-        this.setState({
-          notices: this.state.notices
-        });
-        
-      })
-    }
-
+  
     if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
@@ -190,7 +161,11 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              sendToDDI(element);
+              this.setState({
+                operationToConfrim:'Inoltra al DDI',
+                selectedNotice: element,
+              });
+              this.showConfirm();
             }}
           >
             Inoltra al DDI
@@ -202,34 +177,8 @@ export default class TypedNotices extends Component {
 
   approvedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
-    
-    const headers = {
-      'Authorization': localStorage.getItem('token'),
-    }
-
-    const publishNotice = (element)=>{
-      element.state = 'Published';
-      element.deadline = element.deadline.split('T')[0];
-      axios
-      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
-      .then(blob=>{
-        this.setState({
-          notices: this.props.notices,
-        })
-
-        this.state.notices.forEach(el => {
-          if (el.protocol === element.protocol) {
-            el = element;
-          }
-        });
-
-        this.setState({
-          notices: this.state.notices
-        });
-        
-      })
-    }
-    if (Boolean(user) && user.role === 'Teaching Office') {
+  
+      if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
           <CustomButton
@@ -238,7 +187,14 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              publishNotice(element);
+              
+              this.setState({
+                selectedNotice: element,
+                operationToConfrim:'Pubblica bando',
+              });
+
+              this.showConfirm();
+              
             }}
           >
             Pubblica bando
@@ -333,64 +289,7 @@ export default class TypedNotices extends Component {
 
   acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
-    //Update state notice to Accepted.
-    let acceptedNotice = (e, element) => {
-      e.stopPropagation();
-      e.preventDefault();
-      console.log(element);
-      element.state = 'Accepted';
-      element.deadline = element.deadline.split('T')[0];
-      const headers = {
-        Authorization: localStorage.getItem('token')
-      };
-      axios
-        .patch(
-          'http://localhost:3001/api/notices/state',
-          { notice: element },
-          { headers: headers }
-        )
-        .then(blob => {
-          this.setState({
-            notices: this.props.notices,
-          })
-          this.state.notices.forEach(el => {
-            if (el.protocol === element.protocol) {
-              el = element;
-            }
-          });
-          this.setState({
-            notices: this.state.notices
-          });
-        });
-        
-    };
-    //Notice not accepted by professor.
-    let notAcceptNotice=(e,element)=>{
-      e.stopPropagation();
-      e.preventDefault();
-      console.log(element);
-      element.state = 'Draft';
-      element.deadline = element.deadline.split('T')[0];
-      const headers = {
-        Authorization: localStorage.getItem('token')
-      };
-     
-      axios
-      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
-      .then(blob=>{
-        this.setState({
-          notices: this.props.notices,
-        })
-        this.state.notices.forEach(el => {
-          if (el.protocol === element.protocol) {
-            el = element;
-          }
-        });
-        this.setState({
-          notices: this.state.notices
-        });
-      });
-    };
+    
     if (Boolean(user) && user.role === 'Professor') {
       return (
         <td>
@@ -398,7 +297,15 @@ export default class TypedNotices extends Component {
             bsStyle='success'
             pullRight
             onClick={e => {
-              acceptedNotice(e, element);
+              
+              e.stopPropagation();
+              e.preventDefault();
+              this.setState({
+                selectedNotice: element,
+                operationToConfrim: 'Accetta',
+              });
+              this.showConfirm();
+              
             }}
           >
             Accetta
@@ -410,7 +317,11 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              notAcceptNotice(e,element);
+              this.setState({
+                selectedNotice: element,
+                operationToConfrim: 'Non accetta',
+              });
+              this.showConfirm();
               
             }}
           >
@@ -436,7 +347,7 @@ export default class TypedNotices extends Component {
   approvingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
    
-    
+    //Show the modal to comment a notice.
     const showModalComment = (element)=>{
       console.log(element);
       console.log('Initial show:'+ this.state.show);
@@ -459,9 +370,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              showModalComment(element);
-              //disapproveNotice(element);
-              
+              showModalComment(element); 
             }}
           >
             Non Approvare
@@ -519,14 +428,218 @@ export default class TypedNotices extends Component {
     }
   }
 
+
+  //To accept the notice.
+  acceptedNotice(element){
+    //Close the modal show to confirm the operation.
+    const closeConfirm = ()=>{
+      this.setState({
+        showConfirm: false,
+      });
+    }
+   
+    console.log(element);
+    element.state = 'Accepted';
+    element.deadline = element.deadline.split('T')[0];
+    const headers = {
+      Authorization: localStorage.getItem('token')
+    };
+    axios
+      .patch(
+        'http://localhost:3001/api/notices/state',
+        { notice: element },
+        { headers: headers }
+      )
+      .then(blob => {
+        this.setState({
+          notices: this.props.notices,
+        })
+        this.state.notices.forEach(el => {
+          if (el.protocol === element.protocol) {
+            el = element;
+          }
+        });
+        this.setState({
+          notices: this.state.notices
+        });
+        closeConfirm();
+      });
+      
+  };
+  //Notice not accepted by professor.
+  notAcceptNotice(element){
+      
+    const closeConfirm = ()=>{
+        this.setState({
+          showConfirm: false,
+        });
+      }
+
+      console.log(element);
+      element.state = 'Draft';
+      element.deadline = element.deadline.split('T')[0];
+      const headers = {
+        Authorization: localStorage.getItem('token')
+      };
+     
+      axios
+      .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+      .then(blob=>{
+        this.setState({
+          notices: this.props.notices,
+        })
+        this.state.notices.forEach(el => {
+          if (el.protocol === element.protocol) {
+            el = element;
+          }
+        });
+        this.setState({
+          notices: this.state.notices
+        });
+        closeConfirm();
+      });
+    };
+
+  //Send a notice to professor.
+  sendToProfessor (element){
+    const closeConfirm = ()=>{
+      this.setState({
+        showConfirm: false,
+      });
+    }
+    const headers = {
+      'Authorization' : localStorage.getItem('token'),
+    }
+    element.state = "In Acceptance";
+    element.deadline = element.deadline.split('T')[0];
+    axios
+    .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+    .then(blob=>{
+      this.setState({
+        notices: this.props.notices,
+      })
+
+      this.state.notices.forEach(el => {
+        if (el.protocol === element.protocol) {
+          el = element;
+        }
+      });
+
+      this.setState({
+        notices: this.state.notices
+      });
+      closeConfirm();
+    })
+  }
+
+  //Send a notice to DDI
+  sendToDDI(element){
+    const closeConfirm = ()=>{
+      this.setState({
+        showConfirm: false,
+      });
+    }
+    const headers = {
+      'Authorization': localStorage.getItem('token'),
+    }
+    element.state = "In Approval";
+    element.deadline = element.deadline.split('T')[0];
+    axios
+    .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+    .then(blob=>{
+      this.setState({
+        notices: this.props.notices,
+      })
+
+      this.state.notices.forEach(el => {
+        if (el.protocol === element.protocol) {
+          el = element;
+        }
+      });
+
+      this.setState({
+        notices: this.state.notices
+      });
+      closeConfirm();
+      
+    })
+  }
+  //Publish a notice
+  publishNotice(element){
+    //Close the modal to confrim an operation
+    const closeConfirm = ()=>{
+      this.setState({
+        showConfirm: false,
+      })  
+    }
+    const headers = {
+      'Authorization' : localStorage.getItem('token'),
+    }
+    element.state = 'Published';
+    element.deadline = element.deadline.split('T')[0];
+
+    axios
+    .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+    .then(blob=>{
+      this.setState({
+        notices: this.props.notices,
+      })
+
+      this.state.notices.forEach(el => {
+        if (el.protocol === element.protocol) {
+          el = element;
+        }
+      });
+
+      this.setState({
+        notices: this.state.notices
+      });
+      closeConfirm();
+      
+    })
+  }
+
+
+
+
+
+  //Select the operation to do when user confirm an operation.
+  selectOperation(operation){
+    switch(operation){
+      case 'Inoltra al professore':
+        this.sendToProfessor(this.state.selectedNotice);
+        break;
+      case 'Accetta':
+        this.acceptedNotice(this.state.selectedNotice);
+        break;
+      case 'Non accetta':
+        this.notAcceptNotice(this.state.selectedNotice);
+        break;
+      case 'Inoltra al DDI':
+        this.sendToDDI(this.state.selectedNotice);
+        break;
+      case 'Pubblica bando':
+        this.publishNotice(this.state.selectedNotice);
+        break;
+           
+    }
+  }
+
   render() {
+    //Close the modal when you try to show or insert a comment.
     const closeModalComment = ()=>{
       this.setState({
         show:false,
         showComment:false,
       })
     }
-       
+    //Close the modal show when you try to confirm an operation
+    const closeConfirm = ()=>{
+      this.setState({
+        showConfirm: false,
+      });
+    }
+    //Disapprove notice    
     const disapproveNotice = (element)=>{
       let user = JSON.parse(localStorage.getItem('user'));
 
@@ -597,7 +710,8 @@ export default class TypedNotices extends Component {
          
           
       </Table>
-      <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute'}} show={this.state.show} onHide={closeModalComment} animation={false}>
+      {/* Modal to insert comment */}
+      <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'13%',left:'35%',position:'absolute'}} show={this.state.show} onHide={closeModalComment} animation={false}>
         <Modal.Header style={{width:'350px'}} closeButton>
           <Modal.Title style={{color:'#274F77'}}>Inserire un Commento</Modal.Title>
         </Modal.Header>
@@ -608,17 +722,27 @@ export default class TypedNotices extends Component {
         </Modal.Footer>
       </Modal>
       {/* Modal to show comment */}
-      <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'15%',left:'45%',position:'absolute'}} show={this.state.showComment} onHide={closeModalComment} animation={false}>
+      <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'13%',left:'5%',position:'absolute'}} show={this.state.showComment} onHide={closeModalComment} animation={false}>
         <Modal.Header style={{width:'350px'}} closeButton>
           <Modal.Title style={{color:'#274F77'}}>Commento</Modal.Title>
         </Modal.Header>
         
         <Modal.Body style={{width:'350px', padding:'7px'}}>{this.state.selectedComment}</Modal.Body>
       </Modal>
+      {/* Modal to confirm operation */}
+      <Modal style={{borderRadius:'6px',overflow:'hidden',marginTop:'13%',left:'35%',position:'absolute'}} show={this.state.showConfirm} onHide={closeConfirm} animation={false}>
+        <Modal.Header style={{width:'350px'}} closeButton>
+        <Modal.Title style={{color:'#274F77'}}>{this.state.operationToConfrim}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{width:'350px', padding:'7px',fontSize:'25px'}}>Confermare l'operazione?</Modal.Body>
+          <Modal.Footer style={{width:'350px',paddingTop:'20px'}}>
+            <CustomButton className='buttonHover button' variant="secondary" onClick={closeConfirm}>Annulla</CustomButton>
+                <CustomButton className='buttonHover button' variant="primary" onClick={()=>{this.selectOperation(this.state.operationToConfrim)}}>Conferma</CustomButton>
+        </Modal.Footer>
+      </Modal>
+
+
       </div>
-
-
-        
     );
   }
 }
