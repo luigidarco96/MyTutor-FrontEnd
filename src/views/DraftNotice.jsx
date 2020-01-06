@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Tabs, Tab, Grid, Row, Col } from 'react-bootstrap';
-import CreateNotice from './CreateNotice'
-import CreateApplication from './CreateApplication'
+import CreateNotice from '../components/NoticeComponents/CreateNotice'
+import CreateApplication from '../components/NoticeComponents/CreateApplication'
 import Card from 'components/Card/Card.jsx';
 
 export default class draftNotice extends Component {
@@ -22,7 +22,7 @@ export default class draftNotice extends Component {
     render() {
         const { selectedTab } = this.state;
         return (
-            <div className='content' style={{height:'40vw', overflowY:'scroll'}}>
+            <div className='content' style={{height:'30vw', overflowY:'scroll'}}>
                 <Card
                     title={selectedTab == 'bando' ? 'Crea Bando' : 'Crea Domanda'}
                     ctTableFullWidth

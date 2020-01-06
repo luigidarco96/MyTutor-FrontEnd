@@ -10,8 +10,8 @@ import {
     Col,
     Modal
 } from 'react-bootstrap';
-import '../assets/css/global.css';
-import CustomButton from '../components/CustomButton/CustomButton';
+import '../../assets/css/global.css';
+import CustomButton from '../CustomButton/CustomButton';
 import axios from 'axios';
 
 const CreateApplication = (props) => {
