@@ -457,7 +457,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+              window.open('http://localhost:3000/ddi/uploadNotice/'+element.protocol,'_blank');
             }}
           >
             Carica bando
@@ -469,8 +469,7 @@ export default class TypedNotices extends Component {
 
   //element is the notice selected
   displayButtons(type, element) {
-    console.log(type);
-    switch (type) {
+    switch (type) {    
       case 'Bozza':
         return this.draftOperation(element);
       case 'Pubblicato':

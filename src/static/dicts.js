@@ -3,7 +3,7 @@ export const StateDictionary = {
   'In Acceptance': 'In accettazione',
   Accepted: 'Accettato',
   'In Approval': 'In Approvazione',
-  Approved: 'Approvati',
+  'Approved': 'Approvato',
   Published: 'Pubblicato',
   Expired: 'Scaduto',
   'Waiting for Graded List': 'In attesa della graduatoria',

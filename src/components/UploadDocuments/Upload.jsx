@@ -13,7 +13,9 @@ const Upload = props => {
   let today = new Date();
   let last_edit = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
   let documents=[];
+
   acceptedFiles.map(acceptedFile=>{
+    
     let document = {
       student: user.email,
       notice_protocol: props.notice_protocol,
@@ -22,6 +24,8 @@ const Upload = props => {
     }
     documents.push(document);
   })
+  
+
   const data = {
     candidature:{
       student:user.email,
@@ -89,7 +93,7 @@ const Upload = props => {
   const onDrop = useCallback(acceptedFiles => {
     acceptedFiles.map((acceptedFile)=>{console.log(acceptedFile)})
   }, []);
-
+  
   const {
     isDragActive,
     getRootProps,
@@ -101,12 +105,14 @@ const Upload = props => {
     onDrop,
     accept: "application/pdf",
     minSize: 0,
-    maxSize
+    maxSize,
+    multiple: window.location.pathname.split("/P")[0]==='/student/modificaCandidatura',
   });
+  
 
   const isFileTooLarge =
     rejectedFiles.length > 0 && rejectedFiles[0].size > maxSize;
-
+  if(window.location.pathname.split("/P")[0]==='/student/modificaCandidatura'){
   return (
     <Card
       plain = {props.plain}
@@ -137,6 +143,43 @@ const Upload = props => {
       }
     />
   );
+  }
+  else if(window.location.pathname.split("/P")[0]==="/ddi/uploadNotice"){
+    return (
+      <Card
+        plain = {props.plain}
+        title="Carica bando"
+        content={
+          <div className="text-center">
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              {!isDragActive && "Click here or drop a file to upload!"}
+              {isDragActive && !isDragReject && "Drop it like it's hot!"}
+              {isDragReject && "File type not accepted, sorry!"}
+              {isFileTooLarge && (
+                <div className="text-danger mt-2">File is too large.</div>
+              )}
+            </div>
+  
+            <ul id ='1' className="list-group mt-2">
+              {acceptedFiles.length > 0 &&
+                acceptedFiles.map(acceptedFile => (
+                  <li className="list-group-item list-group-item-success">
+                    {acceptedFile.name}
+                    <i className="pe-7s-close" onClick="elimina"></i>
+                  </li>
+                ))}
+            </ul>
+            <Button bsStyle="primary" onClick='Implementa carica bando con firma'>Approva e invia bando</Button>
+          </div>
+        }
+      />
+    );
+      
+  }
+  
+
 };
+
 
 export default Upload;
