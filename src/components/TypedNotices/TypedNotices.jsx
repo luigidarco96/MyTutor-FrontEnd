@@ -39,7 +39,7 @@ export default class TypedNotices extends Component {
     path = path.concat(pathname + '/detailNotices/' + e.protocol);
     window.location.replace(path);
   };
-
+  //Operation on draft notices.
   draftOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
     const headers = {
@@ -124,7 +124,8 @@ export default class TypedNotices extends Component {
       
     }
   }
-
+  
+  //Operation on published notices.
   publishedOperation() {
     return (
       <td>
@@ -146,6 +147,7 @@ export default class TypedNotices extends Component {
     );
   }
 
+  //Operation on accepted notices.
   acceptedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
     const headers = {
@@ -175,6 +177,7 @@ export default class TypedNotices extends Component {
     }
   }
 
+  //Operation on approved notices.
   approvedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
   
@@ -286,7 +289,7 @@ export default class TypedNotices extends Component {
       return this.publishedOperation();
     }
   }
-
+  //Operation to accepting noteces.
   acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
     
@@ -343,7 +346,7 @@ export default class TypedNotices extends Component {
       );
     }
   }
-
+  //Operation to approving notices
   approvingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
    
@@ -427,8 +430,6 @@ export default class TypedNotices extends Component {
         return <td></td>;
     }
   }
-
-
   //To accept the notice.
   acceptedNotice(element){
     //Close the modal show to confirm the operation.
