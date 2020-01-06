@@ -222,41 +222,8 @@ const Upload = props => {
 
   const isFileTooLarge =
     rejectedFiles.length > 0 && rejectedFiles[0].size > maxSize;
-  if (window.location.pathname.split("/P")[0] === '/student/modificaCandidatura') {
-    return (
-      <Card
-        plain={props.plain}
-        title="Carica Documenti Candidatura"
-        content={
-          <div className="text-center">
-            <div {...getRootProps()}>
-              <input {...getInputProps()} />
-              {!isDragActive && "Click here or drop a file to upload!"}
-              {isDragActive && !isDragReject && "Drop it like it's hot!"}
-              {isDragReject && "File type not accepted, sorry!"}
-              {isFileTooLarge && (
-                <div className="text-danger mt-2">File is too large.</div>
-              )}
-            </div>
 
-            <ul className="list-group mt-2">
-              {acceptedFiles.length > 0 &&
-                acceptedFiles.map(acceptedFile => (
-                  <li className="list-group-item list-group-item-success">
-                    {acceptedFile.name}
-                    <i className="pe-7s-close" onClick="elimina"></i>
-                  </li>
-                ))}
-            </ul>
-            <div id='1'></div>
-            <Button bsStyle="primary" onClick={updateCandidature}>Invia Candidatura</Button>
-
-          </div>
-        }
-      />
-    );
-  }
-  else if (window.location.pathname.split("/P")[0] === "/ddi/uploadNotice") {
+  if (window.location.pathname.split("/P")[0] === "/ddi/uploadNotice") {
     return (
       <Card
         plain={props.plain}
@@ -289,6 +256,41 @@ const Upload = props => {
       />
     );
 
+  }
+  else{
+      return (
+        <Card
+          plain={props.plain}
+          title="Carica Documenti Candidatura"
+          content={
+            <div className="text-center">
+              <div {...getRootProps()}>
+                <input {...getInputProps()} />
+                {!isDragActive && "Click here or drop a file to upload!"}
+                {isDragActive && !isDragReject && "Drop it like it's hot!"}
+                {isDragReject && "File type not accepted, sorry!"}
+                {isFileTooLarge && (
+                  <div className="text-danger mt-2">File is too large.</div>
+                )}
+              </div>
+  
+              <ul className="list-group mt-2">
+                {acceptedFiles.length > 0 &&
+                  acceptedFiles.map(acceptedFile => (
+                    <li className="list-group-item list-group-item-success">
+                      {acceptedFile.name}
+                      <i className="pe-7s-close" onClick="elimina"></i>
+                    </li>
+                  ))}
+              </ul>
+              <div id='1'></div>
+              <Button bsStyle="primary" onClick={updateCandidature}>Invia Candidatura</Button>
+  
+            </div>
+          }
+        />
+      );
+    
   }
 
 
