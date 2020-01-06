@@ -99,7 +99,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-
+              
               // Take the notice's protocol and element index
               let id = e.target.parentElement.parentElement.id;
               let noticeIndex = Number(
@@ -109,28 +109,14 @@ export default class TypedNotices extends Component {
               // Take the target element
               let notices = new Array(this.props.notices);
               let deletedNotice = this.props.notices[noticeIndex];
+              this.setState({
+                selectedNotice:deletedNotice,
+                operationToConfrim: "Elimina bando",
+              })
+              this.showConfirm();
 
-              // Retrieve from localStorage the user token
-              let token = localStorage.getItem('token');
-
-              axios({
-                method: 'DELETE',
-                url: `http://localhost:3001/api/notices/${id}`,
-                data: {
-                  notice: deletedNotice
-                },
-                headers: {
-                  Authorization: token
-                }
-              }).then(blob => {
-                console.log(error);
-                let error = blob.data.error;
-
-                if (error) {
-                  console.log(error);
-                }
-              });
             }}
+            
           >
             Elimina
           </CustomButton>
@@ -640,6 +626,36 @@ export default class TypedNotices extends Component {
         closeConfirm();
       });
   }
+  deleteDraftNotice(deletedNotice){
+      const closeConfirm=()=>{
+        this.setState({
+          showConfirm: false,
+        })
+      } 
+     // Retrieve from localStorage the user token
+      let token = localStorage.getItem('token');
+
+     axios({
+       method: 'DELETE',
+       url: `http://localhost:3001/api/notices/${deletedNotice.protocol}`,
+       data: {
+         notice: deletedNotice
+       },
+       headers: {
+         Authorization: token
+       }
+     }).then(blob => {
+       
+       let error = blob.data.error;
+       window.location.replace('http://localhost:3000/admin/notices');
+       if (error) {
+         console.log(error);
+       }
+     });
+
+    closeConfirm();
+   
+  }
 
   //Select the operation to do when user confirm an operation.
   selectOperation(operation) {
@@ -658,6 +674,9 @@ export default class TypedNotices extends Component {
         break;
       case 'Pubblica bando':
         this.publishNotice(this.state.selectedNotice);
+        break;
+      case 'Elimina bando':
+        this.deleteDraftNotice(this.state.selectedNotice);
         break;
     }
   }
@@ -803,7 +822,7 @@ export default class TypedNotices extends Component {
             borderRadius: '6px',
             overflow: 'hidden',
             marginTop: '13%',
-            left: '5%',
+            left: '35%',
             position: 'absolute'
           }}
           show={this.state.showComment}
