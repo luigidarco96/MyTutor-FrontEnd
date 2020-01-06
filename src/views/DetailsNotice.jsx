@@ -16,10 +16,15 @@ class DetailsNotice extends Component {
   }
 
   handleInputForm() {
+    const { noticeJSON } = this.state;
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (user.role === 'Student') {
-      return <Upload notice_protocol={this.props.match.params.id}/>;
+    if (
+      Boolean(user) &&
+      user.role === 'Student' &&
+      noticeJSON.state === 'Published'
+    ) {
+      return <Upload notice_protocol={this.props.match.params.id} />;
     }
   }
 
@@ -63,10 +68,10 @@ class DetailsNotice extends Component {
       return (
         <Grid className='custom-body-view' style={{ margin: '20px 0' }} fluid>
           <Row>
-            <Col xs={12} md={10}>
+            <Col xs={12} md={9}>
               <NoticeInformation noticeJSON={noticeJSON} />
             </Col>
-            <Col xs={12} md={2}>
+            <Col xs={12} md={3}>
               <CustomButton bsStyle='primary' block={true}>
                 Scarica bando
               </CustomButton>

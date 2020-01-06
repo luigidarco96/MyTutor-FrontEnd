@@ -10,6 +10,11 @@ export const StateDictionary = {
   Closed: 'Chiuso'
 };
 
+export const UserRole = {
+  Student: 'Studente',
+  Professor: 'Professore'
+};
+
 export const UserLists = {
   Student: ['Pubblicato', 'Chiuso', 'Scaduto', 'In attesa della graduatoria'],
   DDI: [

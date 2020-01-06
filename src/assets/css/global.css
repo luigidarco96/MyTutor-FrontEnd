@@ -1,3 +1,29 @@
+body {overflow: hidden;}
+#root {overflow: hidden;}
+
+/* Classe di bootstrap */
+#root > div > .content {
+    max-height: calc(100vh - 45px - 80px);
+    overflow-y: scroll;
+}
+
+#root > div > .content::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-content {
+    padding: 10px;
+}
+
+.navbar {
+    margin-bottom: 0;
+}
+
+.row {
+    padding: 10px 0;
+}
+
+/* Custom classes */
 .custom-footer {
     background-color: #274f77;
     position: absolute;
@@ -46,11 +72,6 @@ table.table {
     transition-timing-function: ease-in-out;
     transition-delay: 50ms;
     transition-duration: 100ms;
-}
-
-/* Classe di react-bootstrap */
-.tab-content {
-    padding: 10px;
 }
 
 .search-group {

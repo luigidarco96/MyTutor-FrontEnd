@@ -31,28 +31,58 @@ const Upload = props => {
       documents: documents,
     }
   }
-  console.log(data);
+  
   const headers ={
     'Authorization': localStorage.getItem('token'),
   }
     axios
-    .patch('http://localhost:3001/api/candidatures',data,{headers:headers})
+    .get('http://localhost:3001/api/candidatures',{headers:headers})
     .then(blob=>{
-      console.log(blob.data);
-      var para = document.createElement("p");
-      var node = document.createTextNode("Inserimento effettuto con successo");
-      para.appendChild(node);
-      para.style.cssText='color:green;, margin-top:3px;';
-      document.getElementById('1').appendChild(para);
-      
-    })
-    .catch(error=>{
-      var para = document.createElement("p");
-      var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
-      para.appendChild(node);
-      para.style.cssText='color:red; margin-top:3px;';
-      document.getElementById('1').appendChild(para);
-    })
+        if(blob.data.candidatures.length>0){
+          axios
+          .patch('http://localhost:3001/api/candidatures',data,{headers:headers})
+          .then(blob=>{
+            console.log(blob.data);
+            var para = document.createElement("p");
+            var node = document.createTextNode("Inserimento effettuto con successo");
+            para.appendChild(node);
+            para.style.cssText='color:green;, margin-top:3px;';
+            document.getElementById('1').appendChild(para);
+            
+          })
+          .catch(error=>{
+            var para = document.createElement("p");
+            var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
+            para.appendChild(node);
+            para.style.cssText='color:red; margin-top:3px;';
+            document.getElementById('1').appendChild(para);
+          })
+        }
+        else{
+          axios
+          .put('http://localhost:3001/api/candidatures',data,{headers:headers})
+          .then(blob=>{
+            console.log(blob.data);
+            var para = document.createElement("p");
+            var node = document.createTextNode("Inserimento effettuto con successo");
+            para.appendChild(node);
+            para.style.cssText='color:green;, margin-top:3px;';
+            document.getElementById('1').appendChild(para);
+
+          })
+          .catch(error=>{
+            var para = document.createElement("p");
+            var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
+            para.appendChild(node);
+            para.style.cssText='color:red; margin-top:3px;';
+            document.getElementById('1').appendChild(para);
+          })
+ 
+        }
+        
+    });
+    
+    
   }
   const maxSize = 1048576;
 

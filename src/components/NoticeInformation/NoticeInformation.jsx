@@ -105,7 +105,7 @@ export class NoticeInformation extends Component {
                       return (
                         <tr>
                           <td>{el.name}</td>
-                          <td>{el.maxScore}</td>
+                          <td>{el.max_score}</td>
                         </tr>
                       );
                     })}
