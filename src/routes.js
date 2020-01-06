@@ -26,6 +26,7 @@ import Tasks from './views/Tasks';
 import CreateNotice from './views/CreateNotice';
 import UpdateCandidatura from './views/UpdateCandidatura';
 import UserProfile from './views/UserProfile';
+import UploadNotice from './views/UploadNotice';
 
 const dashboardRoutes = {
   home: [
@@ -117,7 +118,12 @@ const dashboardRoutes = {
       name: 'Dettaglio Bando',
       component: DetailsNotice
     },
-
+    
+    {
+      path: '/uploadNotice/:id',
+      name: 'Carica Bando',
+      component: UploadNotice,
+    },
     {
       path: '/rankings',
       name: 'Graduatorie',
