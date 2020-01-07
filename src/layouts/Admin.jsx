@@ -16,7 +16,7 @@
 
 */
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import NotificationSystem from 'react-notification-system';
 
 import AdminNavbar from 'components/Navbars/AdminNavbar';
@@ -105,6 +105,7 @@ class Admin extends Component {
   };
 
   render() {
+    const pathBase = this.props.location.pathname.split('/')[1];
     return (
       <div className='wrapper'>
         <Sidebar
@@ -113,6 +114,7 @@ class Admin extends Component {
           image={this.state.image}
           color={this.state.color}
           hasImage={this.state.hasImage}
+
         />
 
         <div
@@ -125,7 +127,12 @@ class Admin extends Component {
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
-          <Switch>{this.getRoutes(routes)}</Switch>
+          <Switch>
+            <Route exact path={"/" + pathBase}>
+              <Redirect to={"/" + pathBase + "/notices"} />
+            </Route>
+            {this.getRoutes(routes)}
+          </Switch>
           <Footer />
         </div>
       </div>
