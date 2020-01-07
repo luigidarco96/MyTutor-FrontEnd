@@ -19,7 +19,7 @@ class Candidature extends Component {
     componentDidMount() {
         if (window.location.pathname === '/admin/candidatures') {
             this.setState({
-              header: ['Studente', 'Protocollo', 'Ultima modifica', 'Stato', 'Scarica']
+              header: ['Studente', 'Protocollo', 'Ultima modifica', 'Stato', 'Scarica','Rifiuta']
             })
         }
         else {
@@ -135,6 +135,70 @@ class Candidature extends Component {
                 )
             }
         }
+        let rejectCandidature = (element) => {
+            if(element.state === 'In Evaluation'){
+            
+                return (
+                    <Button 
+                        style = {{ border: '1px solid #274F77' }}
+                        className = 'buttonHover'
+                        bsStyle = "primary"
+                        bsSize = "xs"
+                        onClick = {()=>{
+                            const headers = {
+                                'Authorization': localStorage.getItem('token'),
+                            }
+                            console.log(element);
+                            const candidature ={
+                                student: element.student,
+                                notice_protocol: element.notice_protocol,
+                                last_edit: element.last_edit,
+                                state: 'Rejected',
+                            }
+                            //Call servise to delete a candidature
+                            axios
+                            .patch('http://localhost:3001/api/candidatures',{candidature:candidature},{headers:headers})
+                            .then(blob=>{
+                                console.log(blob.data);
+                                let newCandidatures=[];
+                                let i = 0;
+                                this.state.candidatures.forEach((el)=>{
+                                    
+                                    if(candidature.student === el.student && candidature.notice_protocol===el.notice_protocol){
+                                        newCandidatures[i++]=blob.data.candidature;
+                                    }
+                                    else{
+                                        newCandidatures[i++]=el;
+                                    }
+                                })
+                                console.log(newCandidatures);
+                                this.setState({
+                                    candidatures: newCandidatures,
+                                })
+                            })
+                        }}
+                        
+
+                    >
+                        Rifiuta candidatura
+                    </Button>
+                )
+            }
+            else{
+                return(
+                    <Button 
+                        disabled = {true}
+                        style = {{ border: '1px solid #274F77' }}
+                        className ='buttonHover'
+                        bsStyle = "primary"
+                        bsSize = "xs"
+                        onClick =''
+                    >
+                      Rifiuta candidatura
+                    </Button>
+                )
+            }
+        }
         let statusCandidature = (status) => {
             switch (status) {
                 case 'Editable':
@@ -189,7 +253,7 @@ class Candidature extends Component {
                                                                 <td style={{ paddingLeft: '50px' }}>{element.last_edit.split("T")[0]}</td>
                                                                 <td style={{ paddingLeft: '40px' }}>{statusCandidature(element.state)}</td>
                                                                 <td>{downoladDocuments(element)}</td>
-
+                                                                <td>{rejectCandidature(element)}</td>
 
                                                             </tr>
                                                         );
