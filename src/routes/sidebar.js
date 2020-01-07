@@ -53,6 +53,12 @@ const adminSidebar = [
         name: "Assegni",
         icon: "pe-7s-news-paper",
     },
+    {
+        path: "/admin/candidatures",
+        name: "Candidature",
+        icon: "pe-7s-news-paper",
+    },
+    
 ]
 
 module.exports ={

@@ -169,6 +169,13 @@ const dashboardRoutes = {
       name: 'Assegni',
       component: Assignmets
     },
+    
+    {
+      path: '/candidatures',
+      name:'Candidature',
+      component: Candidature
+    },
+
     {
       path: '/*',
       component: Error404
