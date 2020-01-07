@@ -399,7 +399,23 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+              const headers = {
+                'Authorization': localStorage.getItem('token'),
+              }
+              axios
+              .get('http://localhost:3001/api/notices/pdf/'+element.protocol,{headers:headers, responseType: 'blob'})
+              .then(blob=>{
+                console.log(blob);
+                const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
+                let a = document.createElement('a');
+                var url = window.URL.createObjectURL(blob.data);
+                a.href = url;
+                a.download = fileName;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();                          
+
+              })
             }}
           >
             Scarica bando
