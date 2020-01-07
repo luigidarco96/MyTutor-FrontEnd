@@ -152,6 +152,7 @@ const Upload = props => {
           axios
           .put('http://localhost:3001/api/notices/pdf/'+props.notice_protocol,noticePdf,{headers:headers})
           .then(blob=>{
+            console.log(blob);
             axios
             .get('http://localhost:3001/api/notices/'+props.notice_protocol,{headers:headers})
             .then(blob=>{
@@ -189,9 +190,24 @@ const Upload = props => {
               })
             })
           })
+          .catch(error=>{
+            if (document.getElementById('2') != null) {
+              let el = document.getElementById('2');
+              el.remove();
+            }
+  
+              var para = document.createElement("p");
+              var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
+              para.appendChild(node);
+              para.style.cssText = 'color:red; margin-top:3px;';
+              para.id = '2';
+              document.getElementById('1').appendChild(para);
+  
+          })
         })
         .catch(error => {
           console.log(error);
+         
         })
 
 
