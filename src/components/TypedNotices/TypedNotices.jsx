@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Modal } from 'react-bootstrap';
 
-import { StateDictionary } from '../../static/dicts';
+import { StateNoticeDictionary } from '../../static/dicts';
 import CustomButton from '../CustomButton/CustomButton';
 import '../../assets/css/detailNotice.css';
 import axios from 'axios';
@@ -10,6 +10,7 @@ export default class TypedNotices extends Component {
   constructor(props) {
     super(props);
     this.getDetailNotice = this.getDetailNotice.bind(this);
+
     this.state = {
       pathname: '',
       type: '',
@@ -99,7 +100,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              
+
               // Take the notice's protocol and element index
               let id = e.target.parentElement.parentElement.id;
               let noticeIndex = Number(
@@ -110,13 +111,11 @@ export default class TypedNotices extends Component {
               let notices = new Array(this.props.notices);
               let deletedNotice = this.props.notices[noticeIndex];
               this.setState({
-                selectedNotice:deletedNotice,
-                operationToConfrim: "Elimina bando",
-              })
+                selectedNotice: deletedNotice,
+                operationToConfrim: 'Elimina bando'
+              });
               this.showConfirm();
-
             }}
-            
           >
             Elimina
           </CustomButton>
@@ -310,7 +309,11 @@ export default class TypedNotices extends Component {
   acceptingOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
 
-    if (Boolean(user) && user.role === 'Professor') {
+    if (
+      Boolean(user) &&
+      user.role === 'Professor' &&
+      element.referent_professor === user.email
+    ) {
       return (
         <td>
           <CustomButton
@@ -626,35 +629,33 @@ export default class TypedNotices extends Component {
         closeConfirm();
       });
   }
-  deleteDraftNotice(deletedNotice){
-      const closeConfirm=()=>{
-        this.setState({
-          showConfirm: false,
-        })
-      } 
-     // Retrieve from localStorage the user token
-      let token = localStorage.getItem('token');
+  deleteDraftNotice(deletedNotice) {
+    const closeConfirm = () => {
+      this.setState({
+        showConfirm: false
+      });
+    };
+    // Retrieve from localStorage the user token
+    let token = localStorage.getItem('token');
 
-     axios({
-       method: 'DELETE',
-       url: `http://localhost:3001/api/notices/${deletedNotice.protocol}`,
-       data: {
-         notice: deletedNotice
-       },
-       headers: {
-         Authorization: token
-       }
-     }).then(blob => {
-       
-       let error = blob.data.error;
-       window.location.replace('http://localhost:3000/admin/notices');
-       if (error) {
-         console.log(error);
-       }
-     });
+    axios({
+      method: 'DELETE',
+      url: `http://localhost:3001/api/notices/${deletedNotice.protocol}`,
+      data: {
+        notice: deletedNotice
+      },
+      headers: {
+        Authorization: token
+      }
+    }).then(blob => {
+      let error = blob.data.error;
+      window.location.replace('http://localhost:3000/admin/notices');
+      if (error) {
+        console.log(error);
+      }
+    });
 
     closeConfirm();
-   
   }
 
   //Select the operation to do when user confirm an operation.
@@ -739,7 +740,21 @@ export default class TypedNotices extends Component {
         });
     };
 
+    let noticesForProf;
+    let user = JSON.parse(localStorage.getItem('user'));
+    console.log('Tab selezionato ' + this.props.type);
+    let acceptingNotice;
+    if (user && this.props.type === 'In accettazione') {
+      noticesForProf = this.props.notices.filter(notice => {
+        return notice.referent_professor === user.email;
+      });
+      acceptingNotice = noticesForProf;
+    }
     const { type, notices } = this.props;
+
+    let noticeList = Boolean(acceptingNotice) ? acceptingNotice : notices;
+
+    //console.log(noticeList);
 
     return (
       <div>
@@ -755,7 +770,7 @@ export default class TypedNotices extends Component {
             </tr>
           </thead>
           <tbody>
-            {notices.map((element, index) => {
+            {noticeList.map((element, index) => {
               return (
                 <tr
                   id={element.protocol}
@@ -766,7 +781,7 @@ export default class TypedNotices extends Component {
                   <td>{element.protocol}</td>
                   <td>{element.deadline.split('T')[0]}</td>
                   <td>{element.type}</td>
-                  <td>{StateDictionary[element.state]}</td>
+                  <td>{StateNoticeDictionary[element.state]}</td>
                   {this.displayButtons(type, element)}
                 </tr>
               );

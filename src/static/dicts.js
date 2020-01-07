@@ -1,13 +1,21 @@
-export const StateDictionary = {
+export const StateNoticeDictionary = {
   Draft: 'Bozza',
   'In Acceptance': 'In accettazione',
   Accepted: 'Accettato',
   'In Approval': 'In Approvazione',
-  'Approved': 'Approvato',
+  Approved: 'Approvato',
   Published: 'Pubblicato',
   Expired: 'Scaduto',
   'Waiting for Graded List': 'In attesa della graduatoria',
   Closed: 'Chiuso'
+};
+
+export const StateAssignmentDictionary = {
+  Unassigned: 'Non assegnato',
+  Waiting: 'In attesa',
+  Booked: 'Prenotato',
+  Assigned: 'Assegnato',
+  Over: 'Terminato'
 };
 
 export const UserRole = {
@@ -15,7 +23,7 @@ export const UserRole = {
   Professor: 'Professore'
 };
 
-export const UserLists = {
+export const UserNoticeLists = {
   Student: ['Pubblicato', 'Chiuso', 'Scaduto', 'In attesa della graduatoria'],
   DDI: [
     'Pubblicato',
@@ -42,4 +50,9 @@ export const UserLists = {
     'Accettato',
     'Approvato'
   ]
+};
+
+export const UserAssignmentLists = {
+  Student: ['Richiesta', 'Assegnati'],
+  'Teaching Office': ['Attivi', 'Chiusi']
 };

@@ -6,7 +6,7 @@ import Fuse from 'fuse.js';
 import Card from 'components/Card/Card.jsx';
 import UsersTabs from '../components/UsersTabs/UsersTabs';
 
-import { UserLists } from '../static/dicts';
+import { UserNoticeLists } from '../static/dicts';
 
 /**
  * Notices.jsx
@@ -65,7 +65,7 @@ class Notices extends Component {
           <UsersTabs
             pathname={pathname}
             notices={notices}
-            tabs={UserLists[user.role]}
+            tabs={UserNoticeLists[user.role]}
           />
         </div>
       );
@@ -85,7 +85,7 @@ class Notices extends Component {
           <UsersTabs
             pathname={pathname}
             notices={notices}
-            tabs={UserLists['Student']}
+            tabs={UserNoticeLists['Student']}
           />
         </div>
       );

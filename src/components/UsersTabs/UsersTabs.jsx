@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { Tabs, Tab } from 'react-bootstrap';
 
 import TypedNotices from '../TypedNotices/TypedNotices';
-import { StateDictionary } from '../../static/dicts';
+import { StateNoticeDictionary } from '../../static/dicts';
 
 /**
  * DefaultTabs.jsx
@@ -33,7 +33,7 @@ export default class DefaultTabs extends Component {
 
     if (Boolean(notices)) {
       filteredNotices = this.props.notices.filter(notice => {
-        return StateDictionary[notice.state] === e;
+        return StateNoticeDictionary[notice.state] === e;
       });
     }
 
@@ -49,7 +49,7 @@ export default class DefaultTabs extends Component {
 
     if (Boolean(notices)) {
       filteredNotices = this.props.notices.filter(notice => {
-        return StateDictionary[notice.state] === tabs[0];
+        return StateNoticeDictionary[notice.state] === tabs[0];
       });
     }
 

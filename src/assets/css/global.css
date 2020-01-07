@@ -37,7 +37,7 @@ body {overflow: hidden;}
 }
 
 .custom-body-view {
-    height: calc(100% - 45px - 80px);
+    height: calc(100vh - 45px - 80px);
     overflow-x: hidden;
     overflow-y: scroll;
     scroll-behavior: smooth;
