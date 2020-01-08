@@ -8,19 +8,19 @@ export default class TypedAssignments extends Component {
     super(props);
 
     this.state = {
-      showConfirm: false,
-      operationToConfrim: ""
+      showInsertComment: false,
+      selectedAssignment: ""
     };
   }
 
   //Show the modal to confirm an operation.
-  showConfirm() {
+  showInsertComment() {
     this.setState({
-      showConfirm: true
+      showInsertComment: true
     });
   }
 
-  draftOperation(element) {
+  assignedOperation(element) {
     let user = JSON.parse(localStorage.getItem("user"));
     const headers = {
       Authorization: localStorage.getItem("token")
@@ -29,21 +29,57 @@ export default class TypedAssignments extends Component {
       return (
         <div>
           <CustomButton
-            bsStyle="success"
+            bsStyle="primary"
+            pullRight
+            onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+
+              //Inserisci logica
+            }}
+          >
+            Dettagli
+          </CustomButton>
+          <CustomButton
+            bsStyle="danger"
             pullRight
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
 
               this.setState({
-                selectedNotice: element,
-                operationToConfrim: "Invia Richiesta"
+                selectedAssignment: element
               });
 
-              this.showConfirm();
+              this.showInsertComment();
             }}
           >
-            Inoltra al professore
+            Chiudi
+          </CustomButton>
+        </div>
+      );
+    }
+  }
+
+  closedOperation(element) {
+    let user = JSON.parse(localStorage.getItem("user"));
+    const headers = {
+      Authorization: localStorage.getItem("token")
+    };
+    if (Boolean(user) && user.role === "Teaching Office") {
+      return (
+        <div>
+          <CustomButton
+            bsStyle="primary"
+            pullRight
+            onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+
+              //Inserisci logica
+            }}
+          >
+            Dettagli
           </CustomButton>
         </div>
       );
@@ -52,23 +88,25 @@ export default class TypedAssignments extends Component {
 
   displayButtons(type, element) {
     switch (type) {
-      case "Non assegnato":
-        return this.draftOperation(element);
-      default:
-        return <td></td>;
-    }
-  }
-
-  selectOperation(operation) {
-    switch (operation) {
-      case "Inoltra al professore":
-        this.sendToProfessor(this.state.selectedNotice);
+      case "Assegnato":
+        return this.assignedOperation(element);
+        break;
+      case "Terminato":
+        return this.closedOperation(element);
         break;
     }
   }
 
+  closedAssignment(element) {
+    console.log(element);
+  }
+
   render() {
-    const closeConfirm = () => {};
+    const closeModalComment = () => {
+      this.setState({
+        showInsertComment: false
+      });
+    };
     const { type, assignments } = this.props;
     return (
       <div>
@@ -102,7 +140,8 @@ export default class TypedAssignments extends Component {
             })}
           </tbody>
         </Table>
-        {/* Modal to confirm operation */}
+
+        {/* Modal to insert comment */}
         <Modal
           style={{
             borderRadius: "6px",
@@ -111,25 +150,26 @@ export default class TypedAssignments extends Component {
             left: "35%",
             position: "absolute"
           }}
-          show={this.state.showConfirm}
-          onHide={closeConfirm}
+          show={this.state.showInsertComment}
+          onHide={closeModalComment}
           animation={false}
         >
           <Modal.Header style={{ width: "350px" }} closeButton>
             <Modal.Title style={{ color: "#274F77" }}>
-              {this.state.operationToConfrim}
+              Inserire un Commento
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body
-            style={{ width: "350px", padding: "7px", fontSize: "25px" }}
-          >
-            Confermare l'operazione?
+          <Modal.Body style={{ width: "350px", padding: "7px" }}>
+            <textarea
+              id="comment"
+              style={{ resize: "none", height: "55px", width: "341px" }}
+            ></textarea>
           </Modal.Body>
-          <Modal.Footer style={{ width: "350px", paddingTop: "20px" }}>
+          <Modal.Footer style={{ width: "350px" }}>
             <CustomButton
               className="buttonHover button"
               variant="secondary"
-              onClick={closeConfirm}
+              onClick={closeModalComment}
             >
               Annulla
             </CustomButton>
@@ -137,10 +177,10 @@ export default class TypedAssignments extends Component {
               className="buttonHover button"
               variant="primary"
               onClick={() => {
-                this.selectOperation(this.state.operationToConfrim);
+                this.closedAssignment(this.state.selectedAssignment);
               }}
             >
-              Conferma
+              Invia commento
             </CustomButton>
           </Modal.Footer>
         </Modal>

@@ -54,11 +54,5 @@ export const UserNoticeLists = {
 
 export const UserAssignmentLists = {
   Student: ["Richiesta", "Assegnato"],
-  "Teaching Office": [
-    "Non assegnato",
-    "In attesa",
-    "Prenotato",
-    "Assegnato",
-    "Terminato"
-  ]
+  "Teaching Office": ["Assegnato", "Terminato"]
 };
