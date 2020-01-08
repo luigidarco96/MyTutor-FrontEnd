@@ -52,11 +52,9 @@ class Assignmets extends Component {
         })
         .catch(error => {
           console.log(error);
-          /*
-            if (error) {
+          if (error) {
             window.location = "/signin";
           }
-          */
         });
     }
   }

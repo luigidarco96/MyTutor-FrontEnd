@@ -33,7 +33,10 @@ export default class DefaultTabs extends Component {
   handleTabSelect(e) {
     const { notices, assignments } = this.props;
 
-    if (window.location.pathname.split("/")[2] === "notices") {
+    if (
+      window.location.pathname.split("/")[2] === "notices" ||
+      window.location.pathname === "/home"
+    ) {
       let filteredNotices = [];
       if (Boolean(notices)) {
         filteredNotices = this.props.notices.filter(notice => {
@@ -45,7 +48,10 @@ export default class DefaultTabs extends Component {
         selectedTab: e,
         filteredNotices: filteredNotices
       });
-    } else if (window.location.pathname.split("/")[2] === "assignments") {
+    } else if (
+      window.location.pathname.split("/")[2] === "assignments" ||
+      window.location.pathname === "/home"
+    ) {
       let filteredAssignments = [];
       filteredAssignments = this.props.assignments.filter(assignment => {
         return StateAssignmentDictionary[assignment.state] === e;
@@ -60,7 +66,10 @@ export default class DefaultTabs extends Component {
 
   componentWillMount() {
     const { tabs, notices, assignments } = this.props;
-    if (window.location.pathname.split("/")[2] === "notices") {
+    if (
+      window.location.pathname.split("/")[2] === "notices" ||
+      window.location.pathname === "/home"
+    ) {
       let filteredNotices = [];
 
       if (Boolean(notices)) {
@@ -99,7 +108,10 @@ export default class DefaultTabs extends Component {
     } = this.state;
 
     const { pathname } = this.props;
-    if (window.location.pathname.split("/")[2] === "notices") {
+    if (
+      window.location.pathname.split("/")[2] === "notices" ||
+      window.location.pathname === "/home"
+    ) {
       return (
         <Tabs
           id="users-tabs"
