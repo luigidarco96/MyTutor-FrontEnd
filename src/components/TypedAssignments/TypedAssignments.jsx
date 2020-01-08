@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import { Table, Modal } from "react-bootstrap";
 import { StateAssignmentDictionary } from "../../static/dicts";
 import CustomButton from "../CustomButton/CustomButton";
+import Axios from "axios";
+import ts from "typescript";
 
 export default class TypedAssignments extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      assignments: [],
       showInsertComment: false,
       selectedAssignment: ""
     };
@@ -96,9 +99,39 @@ export default class TypedAssignments extends Component {
         break;
     }
   }
-
+  //Set the state of an assignment to Over.
   closedAssignment(element) {
+    console.log("Ciao");
+    const closeModalComment = ()=>{
+      this.setState({
+        showInsertComment: false
+      })
+    }
+    const headers = {
+      'Authorization': localStorage.getItem('token')
+    }
+    element.note =''+ document.getElementById('comment').value;
     console.log(element);
+    Axios
+    .post('http://localhost:3001/api/assignments/close', {assignment:element},{headers:headers})
+    .then(blob=>{
+      console.log(blob.data);
+      this.setState({
+        assignments: this.props.assignments
+      })
+      this.props.assignments.forEach((el)=>{
+        if(el.id == element.id && el.student== element.student){
+          element.state='Over';
+          el = element;
+        }
+      })
+      let td = document.getElementById(element.notice_protocol);
+      td.style.color = 'red';
+      this.setState({
+        assignments: this.state.assignments
+      })
+      closeModalComment();
+    })
   }
 
   render() {
@@ -133,7 +166,7 @@ export default class TypedAssignments extends Component {
                   <td>{element.notice_protocol}</td>
                   <td>{element.code}</td>
                   <td>{element.activity_description}</td>
-                  <td>{StateAssignmentDictionary[element.state]}</td>
+                  <td id={''+element.notice_protocol}>{StateAssignmentDictionary[element.state]}</td>
                   <td>{this.displayButtons(type, element)}</td>
                 </tr>
               );
