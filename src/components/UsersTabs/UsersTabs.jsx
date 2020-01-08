@@ -48,10 +48,7 @@ export default class DefaultTabs extends Component {
         selectedTab: e,
         filteredNotices: filteredNotices
       });
-    } else if (
-      window.location.pathname.split("/")[2] === "assignments" ||
-      window.location.pathname === "/home"
-    ) {
+    } else if (window.location.pathname.split("/")[2] === "assignments") {
       let filteredAssignments = [];
       filteredAssignments = this.props.assignments.filter(assignment => {
         return StateAssignmentDictionary[assignment.state] === e;
@@ -84,8 +81,6 @@ export default class DefaultTabs extends Component {
         filteredNotices: filteredNotices
       });
     } else if (window.location.pathname.split("/")[2] === "assignments") {
-      console.log("CIAOOOOOOOOOOOOOOOOOOOOOO");
-
       let filteredAssignments = [];
       filteredAssignments = this.props.assignments.filter(assignment => {
         return StateAssignmentDictionary[assignment.state] === tabs[0];
@@ -147,8 +142,6 @@ export default class DefaultTabs extends Component {
         </Tabs>
       );
     } else if (window.location.pathname.split("/")[2] === "assignments") {
-      console.log(filteredAssignments);
-      console.log("PEPPPEEEEEEEEEEEEEEEEEE");
       return (
         <Tabs
           id="users-tabs"
