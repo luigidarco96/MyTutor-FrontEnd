@@ -273,6 +273,9 @@ const Upload = props => {
     );
 
   }
+  else if(window.location.pathname.split("/P")[0] === "/ddi/uploadRanking"){
+    return (<div>Ciao</div>)
+  }
   else{
       return (
         <Card

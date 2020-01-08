@@ -28,6 +28,7 @@ import DraftNotice from './views/DraftNotice';
 import UpdateCandidatura from './views/UpdateCandidatura';
 import UserProfile from './views/UserProfile';
 import UploadNotice from './views/UploadNotice';
+import UploadRanking from './views/UploadRanking';
 
 const dashboardRoutes = {
   home: [
@@ -124,6 +125,11 @@ const dashboardRoutes = {
       path: '/uploadNotice/:id',
       name: 'Carica Bando',
       component: UploadNotice,
+    },
+    {
+      path: '/uploadRanking/:id',
+      name: 'Carica graduatoria',
+      component: UploadRanking,
     },
     {
       path: '/rankings',

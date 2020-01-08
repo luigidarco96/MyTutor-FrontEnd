@@ -146,8 +146,8 @@ class Rankings extends Component {
                                                             {
                                                                 //Controllare i campi da inserire nella tabella
                                                             }
-                                                            <td style={{ paddingLeft: '27px', paddingRight: '0px' }}>{element.protocol}</td>
-                                                            <td style={{ paddingLeft: '0px' }}>{StateNoticeDictionary[element.state]}</td>
+                                                            <td style={{ paddingLeft: '27px', paddingRight: '0px' }}> {element.protocol} </td>
+                                                            <td style={{ paddingLeft: '0px' }}> {StateNoticeDictionary[element.state]} </td>
                                                             <td style={{paddingLeft:'42px'}}>
 
                                                                 <Button
@@ -155,31 +155,7 @@ class Rankings extends Component {
                                                                     className='buttonHover'
                                                                     bsStyle="primary"
                                                                     bsSize="xs"
-                                                                    onClick={() => {
-                                                                        const headers = {
-                                                                            'Authorization': localStorage.getItem('token'),
-                                                                        }
-                                                                        const candidature = {
-                                                                            candidature: element,
-
-                                                                        }
-                                                                        //Call servise to downnload ranking
-                                                                        /*
-                                                                        axios
-                                                                            .post('http://localhost:3001/api/candidatures/all', candidature, { headers: headers, responseType: 'blob' })
-                                                                            .then(blob => {
-                                                                                const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
-                                                                                let a = document.createElement('a');
-                                                                                var url = window.URL.createObjectURL(blob.data);
-                                                                                a.href = url;
-                                                                                a.download = fileName;
-                                                                                a.click();
-                                                                                window.URL.revokeObjectURL(url);
-                                                                                a.remove();
-
-                                                                            })
-                                                                            */
-                                                                    }}
+                                                                    onClick={()=>{window.open('http://localhost:3000/ddi/uploadRanking/'+element.protocol,'_blank')}}
 
 
                                                                 >
@@ -202,10 +178,11 @@ class Rankings extends Component {
                                                                             candidature: element,
 
                                                                         }
-                                                                        //Call servise to downnload documents of a candidature
-                                                                        /*
+                                                                        //Call servise to download graded list
+
+                                                                        console.log(element.protocol);
                                                                         axios
-                                                                            .post('http://localhost:3001/api/candidatures/all', candidature, { headers: headers, responseType: 'blob' })
+                                                                            .get('http://localhost:3001/api/notices/grades/pdf/' + element.protocol, { headers: headers, responseType: 'blob' })
                                                                             .then(blob => {
                                                                                 const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
                                                                                 let a = document.createElement('a');
@@ -217,7 +194,7 @@ class Rankings extends Component {
                                                                                 a.remove();
 
                                                                             })
-                                                                            */
+                                                                    
                                                                     }}
 
 
