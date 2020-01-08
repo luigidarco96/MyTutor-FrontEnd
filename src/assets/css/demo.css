@@ -917,9 +917,14 @@ a:hover{
   border-radius: 6px;
   outline: 0;
   box-shadow: 0 3px 9px rgba(0,0,0,.5);
+ 
+}
+
+.myClass{
   height: 200px;
   width: 351px;
 }
+
 
 .commentHover:hover {
   color:red;

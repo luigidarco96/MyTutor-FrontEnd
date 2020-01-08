@@ -3,7 +3,6 @@ import { Table, Modal } from "react-bootstrap";
 import { StateAssignmentDictionary } from "../../static/dicts";
 import CustomButton from "../CustomButton/CustomButton";
 import Axios from "axios";
-import ts from "typescript";
 
 export default class TypedAssignments extends Component {
   constructor(props) {
@@ -12,7 +11,8 @@ export default class TypedAssignments extends Component {
     this.state = {
       assignments: [],
       showInsertComment: false,
-      selectedAssignment: ""
+      selectedAssignment: "",
+      showDetails: false
     };
   }
 
@@ -21,6 +21,12 @@ export default class TypedAssignments extends Component {
     this.setState({
       showInsertComment: true
     });
+  }
+
+  showDetails() {
+    this.setState({
+      showDetails: true
+    })
   }
 
   assignedOperation(element) {
@@ -37,8 +43,10 @@ export default class TypedAssignments extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-
-              //Inserisci logica
+              this.setState({
+                selectedAssignment: element
+              })
+              this.showDetails();
             }}
           >
             Dettagli
@@ -78,8 +86,10 @@ export default class TypedAssignments extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-
-              //Inserisci logica
+              this.setState({
+                selectedAssignment: element
+              })
+              this.showDetails();
             }}
           >
             Dettagli
@@ -101,8 +111,8 @@ export default class TypedAssignments extends Component {
   }
   //Set the state of an assignment to Over.
   closedAssignment(element) {
-    console.log("Ciao");
-    const closeModalComment = ()=>{
+
+    const closeModalComment = () => {
       this.setState({
         showInsertComment: false
       })
@@ -110,36 +120,45 @@ export default class TypedAssignments extends Component {
     const headers = {
       'Authorization': localStorage.getItem('token')
     }
-    element.note =''+ document.getElementById('comment').value;
+    element.note = '' + document.getElementById('comment').value;
     console.log(element);
     Axios
-    .post('http://localhost:3001/api/assignments/close', {assignment:element},{headers:headers})
-    .then(blob=>{
-      console.log(blob.data);
-      this.setState({
-        assignments: this.props.assignments
+      .post('http://localhost:3001/api/assignments/close', { assignment: element }, { headers: headers })
+      .then(blob => {
+        console.log(blob.data);
+        this.setState({
+          assignments: this.props.assignments
+        })
+        this.props.assignments.forEach((el) => {
+          if (el.id == element.id && el.student == element.student) {
+            element.state = 'Over';
+            el = element;
+          }
+        })
+        let td = document.getElementById(element.notice_protocol);
+        td.style.color = 'red';
+        this.setState({
+          assignments: this.state.assignments
+        })
+        closeModalComment();
       })
-      this.props.assignments.forEach((el)=>{
-        if(el.id == element.id && el.student== element.student){
-          element.state='Over';
-          el = element;
-        }
-      })
-      let td = document.getElementById(element.notice_protocol);
-      td.style.color = 'red';
-      this.setState({
-        assignments: this.state.assignments
-      })
-      closeModalComment();
-    })
   }
 
+
+
   render() {
+
     const closeModalComment = () => {
       this.setState({
         showInsertComment: false
       });
     };
+
+    const closeModalDetails = () => {
+      this.setState({
+        showDetails: false
+      })
+    }
     const { type, assignments } = this.props;
     return (
       <div>
@@ -166,7 +185,7 @@ export default class TypedAssignments extends Component {
                   <td>{element.notice_protocol}</td>
                   <td>{element.code}</td>
                   <td>{element.activity_description}</td>
-                  <td id={''+element.notice_protocol}>{StateAssignmentDictionary[element.state]}</td>
+                  <td id={'' + element.notice_protocol}>{StateAssignmentDictionary[element.state]}</td>
                   <td>{this.displayButtons(type, element)}</td>
                 </tr>
               );
@@ -180,9 +199,11 @@ export default class TypedAssignments extends Component {
             borderRadius: "6px",
             overflow: "hidden",
             marginTop: "13%",
-            left: "35%",
+            left: "10%",
             position: "absolute"
           }}
+          dialogClassName="myClass"
+          size='sm'
           show={this.state.showInsertComment}
           onHide={closeModalComment}
           animation={false}
@@ -214,6 +235,72 @@ export default class TypedAssignments extends Component {
               }}
             >
               Invia commento
+            </CustomButton>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Modal to show details */}
+        <Modal
+          style={{
+            borderRadius: "6px",
+            overflow: "hidden",
+            marginTop: "13%",
+            left: "10%",
+            position: "absolute",
+
+
+          }}
+          size='lg'
+
+          show={this.state.showDetails}
+          onHide={closeModalDetails}
+          animation={false}
+        >
+
+          <Modal.Header closeButton>
+            <Modal.Title style={{ color: "#274F77" }}>
+              Dettagli assegno
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Table key={type} striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Ore totali</th>
+                  <th>Titolo</th>
+                  <th>Costo orario</th>
+                  <th>Commento</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <tr
+                  id={this.state.selectedAssignment.protocol}
+                  key={this.state.selectedAssignment.protocol}
+                  onClick={e => e.preventDefault()}
+                >
+
+                  <td>{this.state.selectedAssignment.student}</td>
+                  <td>{this.state.selectedAssignment.total_number_hours}</td>
+                  <td>{this.state.selectedAssignment.title}</td>
+                  <td>{this.state.selectedAssignment.hourly_cost}</td>
+                  <td style={{wordBreak:'break-all'}}>
+                    <div style={{overflowY: 'scroll',maxHeight:'100px'}}>
+                      {this.state.selectedAssignment.note}
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          </Modal.Body>
+          <Modal.Footer>
+            <CustomButton
+              className="buttonHover button"
+              variant="secondary"
+              onClick={closeModalDetails}
+            >
+              Chiudi
             </CustomButton>
           </Modal.Footer>
         </Modal>
