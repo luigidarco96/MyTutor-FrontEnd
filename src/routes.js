@@ -16,7 +16,7 @@
 
 */
 import Notices from 'views/Notices';
-import DetailsNotice from 'views/DetailsNotice.jsx';
+import Notice from 'views/Notice.jsx';
 import Error404 from './views/Error404';
 import Candidature from './views/Candidature';
 import Rankings from './views/Rankings';
@@ -34,7 +34,7 @@ const dashboardRoutes = {
     {
       path: '/detailNotices/:id',
       name: 'Dettaglio bando',
-      component: DetailsNotice
+      component: Notice
     },
 
     {
@@ -58,7 +58,7 @@ const dashboardRoutes = {
     {
       path: '/detailNotices/:id',
       name: 'Dettaglio Bando',
-      component: DetailsNotice
+      component: Notice
     },
 
     {
@@ -98,7 +98,7 @@ const dashboardRoutes = {
     {
       path: '/detailNotices/:id',
       name: 'Dettaglio Bando',
-      component: DetailsNotice
+      component: Notice
     },
 
     {
@@ -117,7 +117,7 @@ const dashboardRoutes = {
     {
       path: '/detailNotices/:id',
       name: 'Dettaglio Bando',
-      component: DetailsNotice
+      component: Notice
     },
     
     {
@@ -146,7 +146,7 @@ const dashboardRoutes = {
     {
       path: '/detailNotices/:id',
       name: 'Dettaglio Bando',
-      component: DetailsNotice
+      component: Notice
     },
     {
       path: '/draftNotice',
