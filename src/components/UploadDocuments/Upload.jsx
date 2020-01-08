@@ -3,7 +3,6 @@ import { useDropzone } from "react-dropzone";
 import Card from "../Card/Card";
 import Button from "components/CustomButton/CustomButton";
 import axios from "axios";
-import { Modal } from "react-bootstrap";
 
 const Upload = props => {
   //Update of the candidatures.

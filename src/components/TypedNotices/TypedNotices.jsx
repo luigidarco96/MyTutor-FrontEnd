@@ -810,9 +810,10 @@ export default class TypedNotices extends Component {
             borderRadius: '6px',
             overflow: 'hidden',
             marginTop: '13%',
-            left: '35%',
+            left: '10%',
             position: 'absolute'
           }}
+          dialogClassName="myClass"
           show={this.state.show}
           onHide={closeModalComment}
           animation={false}
@@ -853,9 +854,10 @@ export default class TypedNotices extends Component {
             borderRadius: '6px',
             overflow: 'hidden',
             marginTop: '13%',
-            left: '35%',
+            left: '10%',
             position: 'absolute'
           }}
+          dialogClassName="myClass"
           show={this.state.showComment}
           onHide={closeModalComment}
           animation={false}
@@ -874,9 +876,10 @@ export default class TypedNotices extends Component {
             borderRadius: '6px',
             overflow: 'hidden',
             marginTop: '13%',
-            left: '35%',
+            left: '10%',
             position: 'absolute'
           }}
+          dialogClassName="myClass"
           show={this.state.showConfirm}
           onHide={closeConfirm}
           animation={false}

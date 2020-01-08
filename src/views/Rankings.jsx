@@ -1,6 +1,6 @@
 
 import React, { Component } from "react";
-import { Grid, Row, Table, Col, Button, Modal } from 'react-bootstrap';
+import { Grid, Row, Table, Col, Button } from 'react-bootstrap';
 import Card from 'components/Card/Card.jsx';
 import axios from "axios";
 import Upload from "../components/UploadDocuments/Upload";
