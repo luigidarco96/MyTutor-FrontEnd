@@ -12,7 +12,6 @@ import Button from "../CustomButton/CustomButton";
 import { login, logout } from "../../utils/auth";
 import axios from "axios";
 import Fuse from "fuse.js";
-import Card from "../Card/Card";
 
 export class ProfessorList extends Component {
   state = {
@@ -35,7 +34,7 @@ export class ProfessorList extends Component {
 
     var options = {
       shouldSort: true,
-      threshold: 0,
+      threshold: 0.15,
       location: 0,
       distance: 100,
       maxPatternLength: 32,
@@ -45,8 +44,6 @@ export class ProfessorList extends Component {
     var fuse = new Fuse(professors, options); // "list" is the item array
     var result = fuse.search(e.target.value);
 
-    console.log(e.target.value);
-    console.log(result);
     if (e.target.value === "") {
       this.setState({
         search: false
@@ -223,7 +220,7 @@ export class ProfessorList extends Component {
             >
               <Button
                 onClick={handleShowEmail}
-                style={{ border: "1px solid #274F77" }}
+                style={{ border: "1px solid #274F77", padding: "top" }}
                 className="buttonHover"
                 bsStyle="primary"
               >
@@ -378,7 +375,6 @@ export class ProfessorList extends Component {
               </Button>
             </span>
             {this.searchProfessor()}
-
             <Row>
               <Col md={12}>
                 <Table hover>
