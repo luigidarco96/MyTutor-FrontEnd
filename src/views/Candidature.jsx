@@ -12,12 +12,16 @@ class Candidature extends Component {
   state = {
     header: [],
     candidatures: [],
+    protocol: null,
     show: false
   };
+
   componentDidMount() {
     const {
       match: { params }
     } = this.props;
+
+    let id = params.id;
 
     console.log(params.id);
     if (window.location.pathname === '/admin/candidatures') {
@@ -48,7 +52,12 @@ class Candidature extends Component {
     };
 
     axios
-      .get('http://localhost:3001/api/candidatures', { headers: headers })
+      .get('http://localhost:3001/api/candidatures', {
+        params: {
+          protocol: id
+        },
+        headers: headers
+      })
       .then(blob => {
         console.log(blob.data);
         this.setState({
@@ -56,6 +65,7 @@ class Candidature extends Component {
         });
       });
   }
+
   render() {
     let updateButton = element => {
       if (element.state === 'Editable')
