@@ -63,9 +63,9 @@ const dashboardRoutes = {
     },
 
     {
-      path: '/tasks',
+      path: '/assignments',
       name: 'Incarichi',
-      component: Tasks
+      component: Assignmets
     },
 
     {

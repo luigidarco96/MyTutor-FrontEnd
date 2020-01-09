@@ -10,9 +10,11 @@ export default class TypedAssignments extends Component {
 
     this.state = {
       assignments: [],
+      showConfirm: false,
       showInsertComment: false,
       selectedAssignment: "",
-      showDetails: false
+      showDetails: false,
+      operationToConfirm: ""
     };
   }
 
@@ -20,6 +22,11 @@ export default class TypedAssignments extends Component {
   showInsertComment() {
     this.setState({
       showInsertComment: true
+    });
+  }
+  showConfirm() {
+    this.setState({
+      showConfirm: true
     });
   }
 
@@ -99,50 +106,210 @@ export default class TypedAssignments extends Component {
     }
   }
 
+  requestOperation(element){
+    const user = JSON.parse(localStorage.getItem('user'));
+    const headers = {
+      'Authorization' : localStorage.getItem('token')
+    }
+    if(user.role=='Student'){
+        //TODO: inserire logica richieste.
+        return(
+          <div>
+            
+            <CustomButton
+              bsStyle = 'success'
+              
+            
+              onClick={
+                ()=>{
+                  this.setState({
+                    selectedAssignment: element,
+                    operationToConfirm: "Prenota firma"
+                  })
+                  this.showConfirm();
+              }}
+            >
+              Prenota firma    
+            </CustomButton>
+  
+            <CustomButton
+              bsStyle = 'primary'
+              onClick = {
+                ()=>{
+
+                  this.setState({
+                    selectedAssignment : element
+                  })
+
+                  this.showDetails();
+                }
+              }
+            >
+              Dettagli    
+            </CustomButton>
+  
+            <CustomButton
+              bsStyle='danger'
+              onClick ={
+                ()=>{
+                  this.setState({
+                    selectedAssignment: element,
+                    operationToConfirm: 'Rifiuta'
+                  })
+                  this.showConfirm();
+                }
+              }
+            >
+              Rifiuta    
+            </CustomButton>
+            
+          </div>
+        )
+      
+
+    }
+  }
+
+  bookedAssignmnent(){
+    const closeConfirm = ()=>{
+      this.setState({
+        showConfirm: false,
+      })
+    }
+
+    const headers = {
+      'Authorization' : localStorage.getItem('token'),
+    }
+    
+    Axios
+    .post('http://localhost:3001/api/assignments/book',{assignment:this.state.selectedAssignment},{headers:headers})
+    .then(blob=>{
+      console.log(blob.data);
+      //TODO inserisci modal di successo.
+      this.setState({
+        assignments: this.props.assignments
+      })
+
+      this.props.assignments.forEach((el) => {
+        if (el.id == this.state.selectedAssignment.id && el.student == this.state.selectedAssignment.student) {
+          this.state.selectedAssignment.state = 'Booked';
+          el = this.state.selectedAssignment;
+        }
+      })
+      let td = document.getElementById(this.state.selectedAssignment.id);
+      td.style.color = 'red';
+      this.setState({
+        assignments: this.state.assignments
+      })
+
+      closeConfirm();
+      
+    })
+    .catch(error=>{
+      //TODO gestire errore.
+      console.log(error);
+    })
+  
+  }
+
+
+//Set the state of an assignment to Over.
+closedAssignment(element) {
+
+  const closeModalComment = () => {
+    this.setState({
+      showInsertComment: false
+    })
+  }
+  const headers = {
+    'Authorization': localStorage.getItem('token')
+  }
+  element.note = '' + document.getElementById('comment').value;
+  console.log(element);
+  Axios
+    .post('http://localhost:3001/api/assignments/close', { assignment: element }, { headers: headers })
+    .then(blob => {
+      console.log(blob.data);
+      this.setState({
+        assignments: this.props.assignments
+      })
+      this.props.assignments.forEach((el) => {
+        if (el.id == element.id && el.student == element.student) {
+          element.state = 'Over';
+          el = element;
+        }
+      })
+      let td = document.getElementById(element.id);
+      td.style.color = 'red';
+      this.setState({
+        assignments: this.state.assignments
+      })
+      closeModalComment();
+    })
+}
+
+rejectAssignment(){
+  const headers = {
+    'Authorization' : localStorage.getItem('token')
+  }
+  const closeConfirm = ()=>{
+    this.setState({
+      showConfirm: false
+    })
+  }
+
+  Axios
+  .post('http://localhost:3001/api/assignments/decline',{assignment:this.state.selectedAssignment},{headers:headers})
+  .then(blob=>{
+    this.setState({
+      assignments: this.props.assignments
+    })
+
+    this.props.assignments.forEach((el) => {
+      if (el.id == this.state.selectedAssignment.id && el.student == this.state.selectedAssignment.student) {
+        this.state.selectedAssignment.state = 'Over';
+        el = this.state.selectedAssignment;
+      }
+    })
+    let td = document.getElementById(this.state.selectedAssignment.id);
+    td.style.color = 'red';
+    this.setState({
+      assignments: this.state.assignments
+    })
+
+    closeConfirm();
+    
+  })
+  .catch(error=>{
+    //TODO errorr modal
+  })
+}
   displayButtons(type, element) {
     switch (type) {
       case "Assegnato":
         return this.assignedOperation(element);
-        break;
+
       case "Terminato":
         return this.closedOperation(element);
-        break;
+        
+      case "Richiesto":
+        return this.requestOperation(element);
+     // case "Assegnato":
+     //   return this.assignedOperation(element);
     }
   }
-  //Set the state of an assignment to Over.
-  closedAssignment(element) {
 
-    const closeModalComment = () => {
-      this.setState({
-        showInsertComment: false
-      })
+  selectOperation(operation){
+    switch(operation){
+      case 'Prenota firma':
+        this.bookedAssignmnent();
+        break;
+      case 'Rifiuta':
+        this.rejectAssignment();
     }
-    const headers = {
-      'Authorization': localStorage.getItem('token')
-    }
-    element.note = '' + document.getElementById('comment').value;
-    console.log(element);
-    Axios
-      .post('http://localhost:3001/api/assignments/close', { assignment: element }, { headers: headers })
-      .then(blob => {
-        console.log(blob.data);
-        this.setState({
-          assignments: this.props.assignments
-        })
-        this.props.assignments.forEach((el) => {
-          if (el.id == element.id && el.student == element.student) {
-            element.state = 'Over';
-            el = element;
-          }
-        })
-        let td = document.getElementById(element.notice_protocol);
-        td.style.color = 'red';
-        this.setState({
-          assignments: this.state.assignments
-        })
-        closeModalComment();
-      })
+
   }
+  
 
 
 
@@ -157,8 +324,15 @@ export default class TypedAssignments extends Component {
     const closeModalDetails = () => {
       this.setState({
         showDetails: false
+      })  
+    }
+
+    const closeConfirm = () =>{
+      this.setState({
+        showConfirm : false
       })
     }
+
     const { type, assignments } = this.props;
     return (
       <div>
@@ -185,7 +359,7 @@ export default class TypedAssignments extends Component {
                   <td>{element.notice_protocol}</td>
                   <td>{element.code}</td>
                   <td>{element.activity_description}</td>
-                  <td id={'' + element.notice_protocol}>{StateAssignmentDictionary[element.state]}</td>
+                  <td id={'' + element.id}>{StateAssignmentDictionary[element.state]}</td>
                   <td>{this.displayButtons(type, element)}</td>
                 </tr>
               );
@@ -301,6 +475,50 @@ export default class TypedAssignments extends Component {
               onClick={closeModalDetails}
             >
               Chiudi
+            </CustomButton>
+          </Modal.Footer>
+        </Modal>
+     
+          {/* Modal to confirm operation */ }
+        <Modal
+          style={{
+            borderRadius: '6px',
+            overflow: 'hidden',
+            marginTop: '13%',
+            left: '10%',
+            position: 'absolute'
+          }}
+          dialogClassName="myClass"
+          show={this.state.showConfirm}
+          onHide={closeConfirm}
+          animation={false}
+        >
+          <Modal.Header style={{ width: '350px' }} closeButton>
+            <Modal.Title style={{ color: '#274F77' }}>
+              {this.state.operationToConfirm}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body
+            style={{ width: '350px', padding: '7px', fontSize: '25px' }}
+          >
+            Confermare l'operazione?
+          </Modal.Body>
+          <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+            <CustomButton
+              className='buttonHover button'
+              variant='secondary'
+              onClick={closeConfirm}
+            >
+              Annulla
+            </CustomButton>
+            <CustomButton
+              className='buttonHover button'
+              variant='primary'
+              onClick={() => {
+                this.selectOperation(this.state.operationToConfirm);
+              }}
+            >
+              Conferma
             </CustomButton>
           </Modal.Footer>
         </Modal>

@@ -100,7 +100,30 @@ class DetailsNotice extends Component {
                 Scarica bando
               </CustomButton>
               <br></br>
-              <CustomButton bsStyle='primary' block={true} disabled>
+              <CustomButton
+              
+                bsStyle='primary'
+                block={true} 
+                disabled={!(this.state.noticeJSON.state==="Closed")}
+                onClick = {()=>{
+                  const headers ={
+                    'Authorization': localStorage.getItem('token'),
+                  }
+                  Axios
+                  .get('http://localhost:3001/api/notices/grades/pdf/' + this.state.noticeJSON.protocol, { headers: headers, responseType: 'blob' })
+                  .then(blob => {
+                      const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
+                      let a = document.createElement('a');
+                      var url = window.URL.createObjectURL(blob.data);
+                      a.href = url;
+                      a.download = fileName;
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                      a.remove();
+
+                  })
+                }}
+                >
                 Scarica graduatoria
               </CustomButton>
             </Col>

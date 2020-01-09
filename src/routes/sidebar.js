@@ -5,7 +5,7 @@ const studentSidebar = [
     icon: 'pe-7s-news-paper'
   },
   {
-    path: '/student/tasks',
+    path: '/student/assignments',
     name: 'Incarichi',
     icon: 'pe-7s-news-paper'
   },

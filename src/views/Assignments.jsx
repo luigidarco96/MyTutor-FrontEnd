@@ -61,6 +61,7 @@ class Assignmets extends Component {
 
   render() {
     const { pathname, isLoaded, assignments } = this.state;
+    const user = JSON.parse(localStorage.getItem('user'));
     if (!isLoaded) {
       return (
         <div className="container-fluid">
@@ -75,7 +76,7 @@ class Assignmets extends Component {
             <Row>
               <Col md={12}>
                 <Card
-                  title="Lista Assegni"
+                  title={user.role==="Student"?"Lista incarichi":"Lista assegni"}
                   ctTableFullWidth
                   ctTableResponsive
                   content={this.handleDifferentUsers(pathname, assignments)}

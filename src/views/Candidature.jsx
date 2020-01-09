@@ -12,15 +12,19 @@ class Candidature extends Component {
   state = {
     header: [],
     candidatures: [],
+    protocol: null,
     show: false
   };
+
   componentDidMount() {
     const {
       match: { params }
     } = this.props;
 
+    let id = params.id;
+    let pathRegex = /admin\/candidatures\/*/;
     console.log(params.id);
-    if (window.location.pathname === '/admin/candidatures') {
+    if (window.location.pathname === '/admin/candidatures' || pathRegex.test(window.location.pathname)) {
       this.setState({
         header: [
           'Studente',
@@ -48,7 +52,12 @@ class Candidature extends Component {
     };
 
     axios
-      .get('http://localhost:3001/api/candidatures', { headers: headers })
+      .get('http://localhost:3001/api/candidatures', {
+        params: {
+          protocol: id
+        },
+        headers: headers
+      })
       .then(blob => {
         console.log(blob.data);
         this.setState({
@@ -56,7 +65,9 @@ class Candidature extends Component {
         });
       });
   }
+
   render() {
+   
     let updateButton = element => {
       if (element.state === 'Editable')
         return (
@@ -172,6 +183,7 @@ class Candidature extends Component {
         );
       }
     };
+
     let rejectCandidature = element => {
       if (element.state === 'In Evaluation') {
         return (
@@ -237,6 +249,7 @@ class Candidature extends Component {
         );
       }
     };
+   
     let statusCandidature = status => {
       switch (status) {
         case 'Editable':
@@ -271,7 +284,9 @@ class Candidature extends Component {
       }
     };
     const { header, candidatures } = this.state;
-    if (window.location.pathname === '/admin/candidatures') {
+    let pathRegex = /admin\/candidatures\/*/;
+    console.log(pathRegex.test(window.location.pathname))
+    if (window.location.pathname === '/admin/candidatures'  || pathRegex.test(window.location.pathname)) {
       return (
         <div className='content'>
           <Grid fluid>
@@ -299,7 +314,7 @@ class Candidature extends Component {
                           candidatures.map(element => {
                             return (
                               <tr key={element.last_edit}>
-                                <td>{element.student}</td>
+                                <td>{element.student.email}</td>
                                 <td style={{ paddingLeft: '35px' }}>
                                   {element.notice_protocol}
                                 </td>
@@ -339,6 +354,7 @@ class Candidature extends Component {
             <div>
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
+
                 src='/assets/images/statusCandidatureInEvaluation.png'
               />
               Candidatura in valutazione
@@ -353,7 +369,8 @@ class Candidature extends Component {
           </Grid>
         </div>
       );
-    } else {
+    } 
+    else  {
       return (
         <div className='content'>
           <Grid fluid>
@@ -381,7 +398,7 @@ class Candidature extends Component {
                           candidatures.map(element => {
                             return (
                               <tr key={element.last_edit}>
-                                <td>{element.student}</td>
+                                <td>{element.student.email}</td>
                                 <td style={{ paddingLeft: '35px' }}>
                                   {element.notice_protocol}
                                 </td>

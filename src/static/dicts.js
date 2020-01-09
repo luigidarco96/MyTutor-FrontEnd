@@ -12,7 +12,7 @@ export const StateNoticeDictionary = {
 
 export const StateAssignmentDictionary = {
   Unassigned: "Non assegnato",
-  Waiting: "In attesa",
+  Waiting: "Richiesto",
   Booked: "Prenotato",
   Assigned: "Assegnato",
   Over: "Terminato"
@@ -53,6 +53,6 @@ export const UserNoticeLists = {
 };
 
 export const UserAssignmentLists = {
-  Student: ["Richiesta", "Assegnato"],
+  Student: ["Richiesto", "Assegnato"],
   "Teaching Office": ["Assegnato", "Terminato"]
 };

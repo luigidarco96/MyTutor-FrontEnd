@@ -53,6 +53,7 @@ export default class DefaultTabs extends Component {
       filteredAssignments = this.props.assignments.filter(assignment => {
         return StateAssignmentDictionary[assignment.state] === e;
       });
+      console.log(filteredAssignments);
 
       this.setState({
         selectedTab: e,
