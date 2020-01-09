@@ -21,7 +21,8 @@ export default class TypedNotices extends Component {
       selectedNotice: '',
       selectedComment: '',
       operationToConfrim: '',
-      disabled: ""
+      disabled: "",
+      isLoadedButton: true,
 
     };
   }
@@ -233,11 +234,14 @@ export default class TypedNotices extends Component {
       const headers = {
         'Authorization' : localStorage.getItem('token')
       }
+      if(this.state.isLoadedButton ===true){
+
       axios
       .post('http://localhost:3001/api/ratings/exists',{noticeProtocol:element.protocol},{headers:headers})
       .then(blob=>{
        this.setState({
           disabled: !blob.data.exists,
+          isLoadedButton: false,
         })
        
         
@@ -246,6 +250,7 @@ export default class TypedNotices extends Component {
         console.log('error');
         //TODO: inserire modal errore.
       })
+    }
       return (
         <td>
           <CustomButton
@@ -847,7 +852,7 @@ export default class TypedNotices extends Component {
                 >
                   <td>{index}</td>
                   <td>{element.protocol}</td>
-                  <td>{element.deadline.split('T')[0]}</td>
+                  <td>{element.deadline}</td>
                   <td>{element.type}</td>
                   <td>{StateNoticeDictionary[element.state]}</td>
                   {this.displayButtons(type, element)}
