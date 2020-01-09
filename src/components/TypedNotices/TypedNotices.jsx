@@ -20,7 +20,9 @@ export default class TypedNotices extends Component {
       showConfirm: false,
       selectedNotice: '',
       selectedComment: '',
-      operationToConfrim: ''
+      operationToConfrim: '',
+      disabled: ""
+
     };
   }
 
@@ -223,10 +225,27 @@ export default class TypedNotices extends Component {
     }
   }
 
-  expiredOperation() {
+  expiredOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (Boolean(user) && user.role === 'Teaching Office') {
+      console.log(element);
+      const headers = {
+        'Authorization' : localStorage.getItem('token')
+      }
+      axios
+      .post('http://localhost:3001/api/ratings/exists',{noticeProtocol:element.protocol},{headers:headers})
+      .then(blob=>{
+       this.setState({
+          disabled: !blob.data.exists,
+        })
+       
+        
+       })
+      .catch(error=>{
+        console.log('error');
+        //TODO: inserire modal errore.
+      })
       return (
         <td>
           <CustomButton
@@ -240,25 +259,43 @@ export default class TypedNotices extends Component {
           >
             Visualizza candidature
           </CustomButton>
+          
           <CustomButton
-            bsStyle='primary'
-            pullRight
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
-            }}
-          >
-            Inoltra graduatoria
-          </CustomButton>
-        </td>
-      );
+          bsStyle='primary'
+          pullRight
+          disabled={this.state.disabled}
+         
+          onClick={e => {
+            e.stopPropagation();
+            e.preventDefault();
+            this.setState({
+              operationToConfrim: 'Inoltra graduatoria',
+              selectedNotice: element,
+            })
+            this.showConfirm();
+          }}
+        >
+          Inoltra graduatoria
+        </CustomButton>
+        
+        </td>   
+      )
+  
+
     } else {
       return this.publishedOperation();
     }
   }
 
-  waitingForGradedListOperation() {
+  waitingForGradedListOperation(element) {
+    return (
+      <td>
+
+      </td>
+    )
+  }
+
+  closedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (Boolean(user) && user.role === 'Teaching Office') {
@@ -270,34 +307,10 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+              window.location.replace('http://localhost:3000/admin/rating/'+element.protocol);
             }}
           >
-            Pubblica graduatoria
-          </CustomButton>
-        </td>
-      );
-    } else {
-      return this.publishedOperation();
-    }
-  }
-
-  closedOperation() {
-    let user = JSON.parse(localStorage.getItem('user'));
-
-    if (Boolean(user) && user.role === 'Teaching Office') {
-      return (
-        <td>
-          <CustomButton
-            bsStyle='primary'
-            pullRight
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
-            }}
-          >
-            Scarica graduatoria
+            Visualizza tabella
           </CustomButton>
         </td>
       );
@@ -441,6 +454,7 @@ export default class TypedNotices extends Component {
 
   //element is the notice selected
   displayButtons(type, element) {
+   
     switch (type) {
       case 'Bozza':
         return this.draftOperation(element);
@@ -451,11 +465,11 @@ export default class TypedNotices extends Component {
       case 'Approvato':
         return this.approvedOperation(element);
       case 'Scaduto':
-        return this.expiredOperation();
-      case 'In attesa di graduatoria':
-        return this.waitingForGradedListOperation();
+        return this.expiredOperation(element);
+      case 'In attesa della graduatoria':
+        return this.waitingForGradedListOperation(element);
       case 'Chiuso':
-        return this.closedOperation();
+        return this.closedOperation(element);
       case 'In accettazione':
         return this.acceptingOperation(element);
       case 'In Approvazione':
@@ -574,7 +588,7 @@ export default class TypedNotices extends Component {
   }
 
   //Send a notice to DDI
-  sendToDDI(element) {
+  sendNoticeToDDI(element) {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false
@@ -674,6 +688,41 @@ export default class TypedNotices extends Component {
     closeConfirm();
   }
 
+  //Send a ranking to DDI
+  sendRankingToDDI(element) {
+    const closeConfirm = () => {
+      this.setState({
+        showConfirm: false
+      });
+    };
+    const headers = {
+      Authorization: localStorage.getItem('token')
+    };
+    element.state = 'Waiting for Graded List';
+    element.deadline = element.deadline.split('T')[0];
+    axios
+      .patch(
+        'http://localhost:3001/api/notices/state',
+        { notice: element },
+        { headers: headers }
+      )
+      .then(blob => {
+        this.setState({
+          notices: this.props.notices
+        });
+
+        this.state.notices.forEach(el => {
+          if (el.protocol === element.protocol) {
+            el = element;
+          }
+        });
+
+        this.setState({
+          notices: this.state.notices
+        });
+        closeConfirm();
+      });
+  }
   //Select the operation to do when user confirm an operation.
   selectOperation(operation) {
     switch (operation) {
@@ -687,13 +736,16 @@ export default class TypedNotices extends Component {
         this.notAcceptNotice(this.state.selectedNotice);
         break;
       case 'Inoltra al DDI':
-        this.sendToDDI(this.state.selectedNotice);
+        this.sendNoticeToDDI(this.state.selectedNotice);
         break;
       case 'Pubblica bando':
         this.publishNotice(this.state.selectedNotice);
         break;
       case 'Elimina bando':
         this.deleteDraftNotice(this.state.selectedNotice);
+        break;
+      case 'Inoltra graduatoria':
+        this.sendRankingToDDI(this.state.selectedNotice);
         break;
     }
   }
