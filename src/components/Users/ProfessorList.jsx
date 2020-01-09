@@ -34,7 +34,7 @@ export class ProfessorList extends Component {
 
     var options = {
       shouldSort: true,
-      threshold: 0.15,
+      threshold: 0.05,
       location: 0,
       distance: 100,
       maxPatternLength: 32,
