@@ -13,7 +13,7 @@ export default class Notice extends Component {
             selectedTab: 'bando',
             noticeJSON: {},
             assignmentsJSON: {},
-            isAdmin: false
+            isProfessor: false
         };
     }
 
@@ -32,8 +32,8 @@ export default class Notice extends Component {
 
         var user = JSON.parse(localStorage.getItem('user'));
         if (user)
-            if (user.role == 'Teaching Office') {
-                this.setState({ isAdmin: true })
+            if (user.role == 'Professor') {
+                this.setState({ isProfessor: true })
             }
 
         if (
@@ -65,8 +65,8 @@ export default class Notice extends Component {
     }
 
     render() {
-        const { selectedTab, noticeJSON, assignmentsJSON, isAdmin } = this.state;
-        if (isAdmin) {
+        const { selectedTab, noticeJSON, assignmentsJSON, isProfessor } = this.state;
+        if (isProfessor) {
             return (
                 <div className='content' style={{ height: '30vw', overflowY: 'scroll' }}>
                     <Card

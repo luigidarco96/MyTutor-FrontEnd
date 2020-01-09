@@ -124,42 +124,74 @@ export default class Rating extends Component {
 
         let token = localStorage.getItem('token');
         let user = JSON.parse(localStorage.getItem('user'));
-        let promiseList = []
 
-        const iterateStudents = (ass) => {
-            const list = ass.student
-            list.forEach((st) => {
-                const studentPromise = axios({
-                    url: 'http://localhost:3001/api/users/search',
-                    method: 'POST',
-                    data: {
-                        param: {
-                            role: 'Student',
-                            name: st.name,
-                            surname: st.surname
+        axios({
+            url: `http://localhost:3001/api/candidatures/`,
+            method: 'GET',
+            headers: {
+                Authorization: token
+            },
+            params: {
+                protocol: assignments[0].notice_protocol
+            }
+        }).then((result) => {
+            if (result.status == '200') {
+                if (result.data.candidatures && result.data.candidatures.length > 0) {
+                    let candidatureList = result.data.candidatures;
+                    let ratingList = []
+                    assignments.forEach(ass => {
+                        console.log(ass)
+                        ass.student.forEach(st => {
+                            let student = null
+                            candidatureList.forEach(candidature => {
+                                if (candidature.student.name == st.name && candidature.student.surname == st.surname) {
+                                    student = candidature.student;
+                                }
+                            })
+                            if (student) {
+                                ratingList.push({
+                                    student: student,
+                                    assignment_id: ass.id,
+                                    titles_score: st.titles_score,
+                                    interview_score: st.interview_score,
+                                })
+                            }
+                        })
+                    })
+                    console.log(ratingList)
+                    axios({
+                        url: 'http://localhost:3001/api/ratings',
+                        method: 'PUT',
+                        data: {
+                            ratingList: ratingList
+                        },
+                        headers: {
+                            Authorization: token
                         }
-                    },
-                    headers: {
-                        Authorization: token
-                    }
-                })
-                    .then((result) => {
-                        return {
-                            student: result.data.list[0],
-                            assignment_id: ass.id,
-                            titles_score: st.titles_score,
-                            interview_score: st.interview_score,
+                    }).then(response => {
+                        if (response.status == '200') {
+                            this.setModal('Tabella creata con successo!')
+                        }
+                    }).catch(err => {
+                        if (err.response.data.error) {
+                            this.setModal(err.response.data.error)
                         }
                     })
-                promiseList.push(studentPromise)
-            })
-        }
+                }
+                else {
+                    this.setModal('ATTENZIONE! Non sono stati rilevati candidati per questo bando')
+                    return []
+                }
+            }
+        }).catch(err => {
+            this.setModal(err.response.data.error + 'Riprovare più tardi o controllare i candidati al bando!')
+        })
 
-        assignments.forEach(iterateStudents)
 
-        Promise.all(promiseList)
+       /* Promise.all(studentList)
             .then((ratingList) => {
-                axios({
+                console.log(promiseList)
+                /*axios({
                     url: 'http://localhost:3001/api/ratings',
                     method: 'PUT',
                     data: {
@@ -179,10 +211,10 @@ export default class Rating extends Component {
                 })
             })
             .catch((err) => {
-                if (err.response.data.error) {
-                    this.setModal(err.response.data.error)
+                if (err) {
+                    this.setModal(err.message)
                 }
-            })
+            })*/
     }
 
     validateForm = () => {
