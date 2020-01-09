@@ -127,7 +127,94 @@ const Upload = props => {
 
 
   }
+  const uploadRanking = () => {
+    const headers = {
+      'Authorization': localStorage.getItem('token'),
+    }
+    acceptedFiles.map(acceptedFile => {
+      function getBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
+      }
+      let rankingPdf;
+      getBase64(acceptedFile)
+        .then(result => {
+          rankingPdf = {
+            gradedList: result,
+          }
 
+
+          axios
+          .put('http://localhost:3001/api/notices/grades/pdf/'+props.notice_protocol,rankingPdf,{headers:headers})
+          .then(blob=>{
+            console.log(blob);
+            axios
+            .get('http://localhost:3001/api/notices/'+props.notice_protocol,{headers:headers})
+            .then(blob=>{
+              const element = blob.data.notices[0];
+              element.state='Closed';
+              element.deadline = element.deadline.split("T")[0];
+              axios
+              .patch('http://localhost:3001/api/notices/state',{notice:element},{headers:headers})
+              .then(blob=>{
+                if (document.getElementById('2') != null) {
+                  let el = document.getElementById('2');
+                  el.remove();
+                }
+  
+                var para = document.createElement("p");
+                var node = document.createTextNode("Inserimento effettuto con successo");
+                para.appendChild(node);
+                para.style.cssText = 'color:green;, margin-top:3px;';
+                para.id = '2'
+                document.getElementById('1').appendChild(para);
+  
+              })
+              .catch(error=>{
+                if (document.getElementById('2') != null) {
+                  let el = document.getElementById('2');
+                  el.remove();
+                }
+  
+                var para = document.createElement("p");
+                var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
+                para.appendChild(node);
+                para.style.cssText = 'color:red; margin-top:3px;';
+                para.id = '2';
+                document.getElementById('1').appendChild(para);
+              })
+            })
+          })
+          .catch(error=>{
+            if (document.getElementById('2') != null) {
+              let el = document.getElementById('2');
+              el.remove();
+            }
+  
+              var para = document.createElement("p");
+              var node = document.createTextNode("Errore, impossibile effettuare l'inserimento.");
+              para.appendChild(node);
+              para.style.cssText = 'color:red; margin-top:3px;';
+              para.id = '2';
+              document.getElementById('1').appendChild(para);
+  
+          })
+        })
+        .catch(error => {
+          console.log(error);
+         
+        })
+
+        
+
+
+    })
+  
+  }
   //Upload and approve notice and approve notice.
   const uploadAndApproveNotice = ()=>{
     const headers = {
@@ -273,7 +360,38 @@ const Upload = props => {
 
   }
   else if(window.location.pathname.split("/P")[0] === "/ddi/uploadRanking"){
-    return (<div>Ciao</div>)
+    return (
+      <Card
+        plain={props.plain}
+        title="Carica graduatoria"
+        content={
+          <div className="text-center">
+            <div {...getRootProps()}>
+              <input {...getInputProps()} />
+              {!isDragActive && "Click here or drop a file to upload!"}
+              {isDragActive && !isDragReject && "Drop it like it's hot!"}
+              {isDragReject && "File type not accepted, sorry!"}
+              {isFileTooLarge && (
+                <div className="text-danger mt-2">File is too large.</div>
+              )}
+            </div>
+
+            <ul className="list-group mt-2">
+              {acceptedFiles.length > 0 &&
+                acceptedFiles.map(acceptedFile => (
+                  <li className="list-group-item list-group-item-success">
+                    {acceptedFile.name}
+                    <i className="pe-7s-close" onClick="elimina"></i>
+                  </li>
+                ))}
+            </ul>
+            <div id='1'></div>
+            <Button bsStyle="primary" onClick={uploadRanking}>Carica graduatoria firmata</Button>
+          </div>
+        }
+      />
+    );
+
   }
   else{
       return (
