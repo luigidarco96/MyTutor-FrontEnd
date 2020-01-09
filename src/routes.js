@@ -120,16 +120,16 @@ const dashboardRoutes = {
       name: 'Dettaglio Bando',
       component: Notice
     },
-    
+
     {
       path: '/uploadNotice/:id',
       name: 'Carica Bando',
-      component: UploadNotice,
+      component: UploadNotice
     },
     {
       path: '/uploadRanking/:id',
       name: 'Carica graduatoria',
-      component: UploadRanking,
+      component: UploadRanking
     },
     {
       path: '/rankings',
@@ -175,10 +175,10 @@ const dashboardRoutes = {
       name: 'Assegni',
       component: Assignmets
     },
-    
+
     {
-      path: '/candidatures',
-      name:'Candidature',
+      path: '/candidatures/:id',
+      name: 'Candidature',
       component: Candidature
     },
 

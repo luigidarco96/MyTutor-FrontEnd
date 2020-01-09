@@ -35,58 +35,31 @@ export default class CreateNotice extends Component {
       user: {},
       professors: [],
       notice: {
-        protocol: '',
-        referent_professor: '',
-        description: '',
-        notice_subject: '',
-        admission_requirements: '',
-        assessable_titles: '',
-        how_to_submit_applications: '',
-        selection_board: '',
-        acceptance: '',
-        incompatibility: '',
-        termination_of_the_assignment: '',
-        nature_of_the_assignment: '',
-        unused_funds: '',
-        responsible_for_the_procedure: '',
-        notice_funds: 0,
+        protocol: null,
+        referent_professor: null,
+        description: null,
+        notice_subject: null,
+        admission_requirements: null,
+        assessable_titles: null,
+        how_to_submit_applications: null,
+        selection_board: null,
+        acceptance: null,
+        incompatibility: null,
+        termination_of_the_assignment: null,
+        nature_of_the_assignment: null,
+        unused_funds: null,
+        responsible_for_the_procedure: null,
+        notice_funds: null,
         state: 'DRAFT',
-        type: '',
-        deadline: '',
+        type: null,
+        deadline: null,
         notice_file: null,
         graded_list_file: null,
-        articles: [],
-        evaluation_criteria: [],
+        articles: null,
+        evaluation_criteria: null,
         application_sheet: null,
-        assignments: [],
+        assignments: null,
         comment: null
-      },
-      noticeControl: {
-        protocol: false,
-        referent_professor: true,
-        description: false,
-        notice_subject: false,
-        admission_requirements: false,
-        assessable_titles: false,
-        how_to_submit_applications: false,
-        selection_board: false,
-        acceptance: false,
-        incompatibility: false,
-        termination_of_the_assignment: false,
-        nature_of_the_assignment: false,
-        unused_funds: false,
-        responsible_for_the_procedure: false,
-        notice_funds: false,
-        state: true,
-        type: false,
-        deadline: true,
-        notice_file: true,
-        graded_list_file: true,
-        assignments: [],
-        evaluation_criteria: [],
-        articles: [],
-        application_sheet: true,
-        comment: true
       }
     };
   }
@@ -105,60 +78,19 @@ export default class CreateNotice extends Component {
 
   handleFormSubmit(e) {
     e.preventDefault();
-    const { noticeControl, notice } = this.state;
+    const { notice } = this.state;
 
     const {
       match: { params }
     } = this.props;
 
-    let allTrue = true;
-
     console.clear();
     console.info('Funzione per creare il bando.');
-    console.log(noticeControl);
     console.log(notice);
-    for (let el in noticeControl) {
-      if (
-        el === 'articles' ||
-        el === 'evaluation_criteria' ||
-        el === 'assignments'
-      ) {
-        let cur = el;
-        if (noticeControl[cur].lengh === 0) {
-          allTrue = false;
-        } else {
-          noticeControl[cur].map((article, index) => {
-            for (let key in noticeControl[cur][index]) {
-              if (noticeControl[cur][index][key] === false) {
-                allTrue = false;
-              }
-            }
-          });
-        }
-      } else {
-        if (noticeControl[el] === false) {
-          allTrue = false;
-        }
-      }
-    }
-
-    if (!allTrue) {
-      this.setState({
-        error: (
-          <Alert bsStyle='danger'>
-            Attenzione! Controllare se sono stati inseriti tutti i parametri.
-          </Alert>
-        )
-      });
-      return false;
-    }
 
     this.setState({
       error: null
     });
-
-    // Add space for timestamp
-    notice.deadline = notice.deadline + ' ';
 
     if (params.id) {
       // Change the notice
@@ -204,13 +136,17 @@ export default class CreateNotice extends Component {
       });
     }
 
-    window.location = 'notices';
+    // window.location = 'notices';
   }
 
   handleAddArticle(e) {
     e.preventDefault();
 
-    const { notice, noticeControl } = this.state;
+    const { notice } = this.state;
+
+    if (notice.articles === null) {
+      notice.articles = [];
+    }
 
     notice.articles.push({
       notice_protocol: notice.protocol,
@@ -218,22 +154,19 @@ export default class CreateNotice extends Component {
       initial: ''
     });
 
-    noticeControl.articles.push({
-      notice_protocol: notice.protocol.length > 0,
-      text: false,
-      initial: false
-    });
-
     this.setState({
-      notice: notice,
-      noticeControl: noticeControl
+      notice: notice
     });
   }
 
   handleAddCriteria(e) {
     e.preventDefault();
 
-    const { notice, noticeControl } = this.state;
+    const { notice } = this.state;
+
+    if (notice.evaluation_criteria === null) {
+      notice.evaluation_criteria = [];
+    }
 
     notice.evaluation_criteria.push({
       notice_protocol: notice.protocol,
@@ -241,22 +174,19 @@ export default class CreateNotice extends Component {
       max_score: 0
     });
 
-    noticeControl.evaluation_criteria.push({
-      notice_protocol: notice.protocol.length > 0,
-      name: false,
-      max_score: false
-    });
-
     this.setState({
-      notice: notice,
-      noticeControl: noticeControl
+      notice: notice
     });
   }
 
   handleAddAssignment(e) {
     e.preventDefault();
 
-    const { notice, noticeControl } = this.state;
+    const { notice } = this.state;
+
+    if (notice.assignments === null) {
+      notice.assignments = [];
+    }
 
     notice.assignments.push({
       notice_protocol: notice.protocol,
@@ -271,50 +201,35 @@ export default class CreateNotice extends Component {
       note: null
     });
 
-    noticeControl.assignments.push({
-      notice_protocol: notice.protocol.length > 0,
-      student: true,
-      code: false,
-      activity_description: false,
-      total_number_hours: false,
-      title: false,
-      hourly_cost: false,
-      ht_fund: true,
-      state: true,
-      note: true
-    });
-
     this.setState({
-      notice: notice,
-      noticeControl: noticeControl
+      notice: notice
     });
   }
 
   handleChange(e) {
-    const { notice, noticeControl } = this.state;
+    const { notice } = this.state;
     const el = e.target;
 
     let value = '' + el.value;
 
     if (el.name === 'protocol') {
-      notice.assignments.map(element => {
-        element.notice_protocol = value;
-      });
-      notice.evaluation_criteria.map(element => {
-        element.notice_protocol = value;
-      });
-      notice.articles.map(element => {
-        element.notice_protocol = value;
-      });
-      noticeControl.assignments.map(element => {
-        element.notice_protocol = value.length > 0;
-      });
-      noticeControl.evaluation_criteria.map(element => {
-        element.notice_protocol = value.length > 0;
-      });
-      noticeControl.articles.map(element => {
-        element.notice_protocol = value.length > 0;
-      });
+      if (notice.assignments) {
+        notice.assignments.map(element => {
+          element.notice_protocol = value;
+        });
+      }
+
+      if (notice.evaluation_criteria) {
+        notice.evaluation_criteria.map(element => {
+          element.notice_protocol = value;
+        });
+      }
+
+      if (notice.articles) {
+        notice.articles.map(element => {
+          element.notice_protocol = value;
+        });
+      }
     }
 
     let elClass = '' + el.className;
@@ -327,22 +242,16 @@ export default class CreateNotice extends Component {
 
       if (el.type === 'number') {
         notice[elKey][index][elName] = Number(value);
-        noticeControl[elKey][index][elName] = Number(value) > 0;
       } else {
         notice[elKey][index][elName] = value;
-        noticeControl[elKey][index][elName] =
-          elName !== 'ht_fund' ? value.length > 0 : true;
       }
     } else {
       if (el.type === 'number') {
         notice[elName] = Number(value);
-        noticeControl[elName] = Number(value) > 0;
       } else if (el.type === 'date') {
         notice[elName] = value;
-        noticeControl[elName] = Boolean(value + ' ');
       } else {
         notice[elName] = value;
-        noticeControl[elName] = value.length > 0;
       }
     }
 
@@ -400,69 +309,7 @@ export default class CreateNotice extends Component {
             }
           })
           .then(blob => {
-            let notice = blob.data.notices[0];
-            notice.deadline = notice.deadline.split('T')[0];
-
-            noticeControl = {
-              protocol: true,
-              referent_professor: true,
-              description: true,
-              notice_subject: true,
-              admission_requirements: true,
-              assessable_titles: true,
-              how_to_submit_applications: true,
-              selection_board: true,
-              acceptance: true,
-              incompatibility: true,
-              termination_of_the_assignment: true,
-              nature_of_the_assignment: true,
-              unused_funds: true,
-              responsible_for_the_procedure: true,
-              notice_funds: true,
-              state: true,
-              type: true,
-              deadline: true,
-              notice_file: true,
-              graded_list_file: true,
-              assignments: [],
-              evaluation_criteria: [],
-              articles: [],
-              application_sheet: true,
-              comment: true
-            };
-
-            notice.assignments.map(el => {
-              noticeControl.assignments.push({
-                notice_protocol: notice.protocol.length > 0,
-                student: true,
-                code: true,
-                activity_description: true,
-                total_number_hours: true,
-                title: true,
-                hourly_cost: true,
-                ht_fund: true,
-                state: true,
-                note: true
-              });
-            });
-
-            notice.articles.map(el => {
-              noticeControl.articles.push({
-                notice_protocol: notice.protocol.length > 0,
-                text: true,
-                initial: true
-              });
-            });
-
-            notice.evaluation_criteria.map(el => {
-              noticeControl.evaluation_criteria.push({
-                notice_protocol: notice.protocol.length > 0,
-                name: true,
-                max_score: true
-              });
-            });
-
-            this.setState({ notice: notice, noticeControl: noticeControl });
+            this.setState({ notice: blob.data.notices[0] });
           });
       }
     }
@@ -499,8 +346,6 @@ export default class CreateNotice extends Component {
       error,
       professors
     } = this.state;
-
-    console.log(notice);
 
     return (
       <div className='container-fluid custom-body-view'>
@@ -557,7 +402,7 @@ export default class CreateNotice extends Component {
             <Row className='create-notice-row'>
               <Col xs={12} md={12}>
                 <ControlLabel>Incarichi</ControlLabel>
-                <Table id='assignments' striped bordered hover responsive>
+                <Table id='assignments' striped bordered responsive>
                   <thead>
                     <tr>
                       <th>Codice</th>
@@ -569,96 +414,96 @@ export default class CreateNotice extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {/*TODO: Lista incarichi */
-                    assignments.map((el, index) => {
-                      return (
-                        <tr key={el.id}>
-                          <td>
-                            <FormControl
-                              className={index + '.assignments list'}
-                              name='code'
-                              value={el.code}
-                              type='text'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                          <td>
-                            <FormControl
-                              className={index + '.assignments list'}
-                              name='activity_description'
-                              value={el.activity_description}
-                              componentClass='textarea'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                          <td>
-                            <FormControl
-                              className={index + '.assignments list'}
-                              name='total_number_hours'
-                              value={el.total_number_hours}
-                              type='number'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                          <td>
-                            <FormControl
-                              className={index + '.assignments list'}
-                              name='hourly_cost'
-                              value={el.hourly_cost}
-                              type='number'
-                              step='0.01'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                          <td>
-                            <FormControl
-                              componentClass='select'
-                              className={index + '.assignments list'}
-                              name='title'
-                              value={el.title}
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            >
-                              <option value=''>Nessuna Scelta</option>
-                              <option value='PhD'>Dottorato</option>
-                              <option value='Master'>Magistrale</option>
-                            </FormControl>
-                          </td>
-                          <td>
-                            <FormControl
-                              className={index + '.assignments list'}
-                              name='ht_fund'
-                              value={el.ht_fund}
-                              type='text'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {assignments &&
+                      assignments.map((el, index) => {
+                        return (
+                          <tr key={el.id}>
+                            <td>
+                              <FormControl
+                                className={index + '.assignments list'}
+                                name='code'
+                                value={el.code}
+                                type='text'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                            <td>
+                              <FormControl
+                                className={index + '.assignments list'}
+                                name='activity_description'
+                                value={el.activity_description}
+                                componentClass='textarea'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                            <td>
+                              <FormControl
+                                className={index + '.assignments list'}
+                                name='total_number_hours'
+                                value={el.total_number_hours}
+                                type='number'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                            <td>
+                              <FormControl
+                                className={index + '.assignments list'}
+                                name='hourly_cost'
+                                value={el.hourly_cost}
+                                type='number'
+                                step='0.01'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                            <td>
+                              <FormControl
+                                componentClass='select'
+                                className={index + '.assignments list'}
+                                name='title'
+                                value={el.title}
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              >
+                                <option value=''>Nessuna Scelta</option>
+                                <option value='PhD'>Dottorato</option>
+                                <option value='Master'>Magistrale</option>
+                              </FormControl>
+                            </td>
+                            <td>
+                              <FormControl
+                                className={index + '.assignments list'}
+                                name='ht_fund'
+                                value={el.ht_fund}
+                                type='text'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </Table>
                 <CustomButton
@@ -735,7 +580,7 @@ export default class CreateNotice extends Component {
               <Col xs={12} md={12}>
                 <ControlLabel>Criteri di valutazione</ControlLabel>
 
-                <Table id='criteria' striped bordered hover>
+                <Table id='criteria' striped bordered responsive>
                   <thead>
                     <tr>
                       <th>Nome</th>
@@ -743,39 +588,39 @@ export default class CreateNotice extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {/*TODO: Aggiungere Criteri di valutazione*/
-                    evaluation_criteria.map((el, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <FormControl
-                              className={index + '.evaluation_criteria list'}
-                              name='name'
-                              value={el.name}
-                              type='text'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                          <td>
-                            <FormControl
-                              className={index + '.evaluation_criteria list'}
-                              name='max_score'
-                              value={el.max_score}
-                              type='number'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {evaluation_criteria &&
+                      evaluation_criteria.map((el, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>
+                              <FormControl
+                                className={index + '.evaluation_criteria list'}
+                                name='name'
+                                value={el.name}
+                                type='text'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                            <td>
+                              <FormControl
+                                className={index + '.evaluation_criteria list'}
+                                name='max_score'
+                                value={el.max_score}
+                                type='number'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </Table>
                 <CustomButton
@@ -962,7 +807,7 @@ export default class CreateNotice extends Component {
             <Row className='create-notice-row'>
               <Col xs={12} md={12}>
                 <ControlLabel>Articoli</ControlLabel>
-                <Table id='articles' striped bordered hover>
+                <Table id='articles' striped bordered responsive>
                   <thead>
                     <tr>
                       <th>Sigla</th>
@@ -970,40 +815,40 @@ export default class CreateNotice extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {/* TODO: aggiungere articoli*/
-                    articles.map((el, index) => {
-                      return (
-                        <tr key={index}>
-                          <td>
-                            <FormControl
-                              className={index + '.articles list'}
-                              name='initial'
-                              value={el.initial}
-                              type='text'
-                              placeholder='Es: VISTO, VISTA, ...'
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                          <td>
-                            <FormControl
-                              className={index + '.articles list'}
-                              type='text'
-                              name='text'
-                              value={el.text}
-                              onFocus={e => this.handleFocus(e)}
-                              onBlur={e => this.handleBlur(e)}
-                              onMouseEnter={e => this.handleMouseEnter(e)}
-                              onMouseOut={e => this.handleMouseOut(e)}
-                              onChange={e => this.handleChange(e)}
-                            />
-                          </td>
-                        </tr>
-                      );
-                    })}
+                    {articles &&
+                      articles.map((el, index) => {
+                        return (
+                          <tr key={index}>
+                            <td>
+                              <FormControl
+                                className={index + '.articles list'}
+                                name='initial'
+                                value={el.initial}
+                                type='text'
+                                placeholder='Es: VISTO, VISTA, ...'
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                            <td>
+                              <FormControl
+                                className={index + '.articles list'}
+                                type='text'
+                                name='text'
+                                value={el.text}
+                                onFocus={e => this.handleFocus(e)}
+                                onBlur={e => this.handleBlur(e)}
+                                onMouseEnter={e => this.handleMouseEnter(e)}
+                                onMouseOut={e => this.handleMouseOut(e)}
+                                onChange={e => this.handleChange(e)}
+                              />
+                            </td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </Table>
                 <CustomButton
