@@ -180,7 +180,6 @@ class Rankings extends Component {
                                                                         }
                                                                         //Call servise to download graded list
 
-                                                                        console.log(element.protocol);
                                                                         axios
                                                                             .get('http://localhost:3001/api/notices/grades/pdf/' + element.protocol, { headers: headers, responseType: 'blob' })
                                                                             .then(blob => {

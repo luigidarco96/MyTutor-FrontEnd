@@ -259,7 +259,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
+              window.location.replace('http://localhost:3000/admin/candidatures/'+element.protocol);
             }}
           >
             Visualizza candidature
