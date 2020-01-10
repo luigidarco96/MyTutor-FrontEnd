@@ -28,6 +28,7 @@ import { style } from "variables/Variables.jsx";
 import routes from "routes.js";
 
 import image from "assets/img/sidebar-3.jpg";
+import GuestNavbar from "../components/Navbars/GuestNavbar";
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -38,17 +39,18 @@ class Home extends Component {
   }
 
   getRoutes = routes => {
-
     const pathname = this.props.location.pathname.split("/")[1];
-    const dictionaryPath ={
-      'Student' : 'student',
-      'Professor': 'professor',
-      'DDI': 'ddi',
-      'Teaching Office':'admin',
-  }
-    if(pathname==='home' && localStorage.getItem('token')!=null){
-      let user = JSON.parse(localStorage.getItem('user'));  
-      window.location.replace('http://localhost:3000/'+dictionaryPath[user.role]+'/notices'); 
+    const dictionaryPath = {
+      Student: "student",
+      Professor: "professor",
+      DDI: "ddi",
+      "Teaching Office": "admin"
+    };
+    if (pathname === "home" && localStorage.getItem("token") != null) {
+      let user = JSON.parse(localStorage.getItem("user"));
+      window.location.replace(
+        "http://localhost:3000/" + dictionaryPath[user.role] + "/notices"
+      );
     }
     let list = routes[pathname];
     return list.map((prop, key) => {
@@ -71,10 +73,9 @@ class Home extends Component {
     const pathnameRoule = this.props.location.pathname.split("/")[1];
     const pathnameView = this.props.location.pathname.split("/")[2];
     let list = routes[pathnameRoule];
-    for(let i = 0; i<list.length; i++){
+    for (let i = 0; i < list.length; i++) {
       console.log(list[i]);
-      if(list[i].path.split("/")[1] === pathnameView)
-        return list[i].name;
+      if (list[i].path.split("/")[1] === pathnameView) return list[i].name;
     }
   };
 
@@ -93,21 +94,16 @@ class Home extends Component {
     }
   }
 
-  
   render() {
-
     return (
-        <div>
-          <HomeNavbar
-            {...this.props}
-            brandText={this.getBrandText(this.props.location.pathname)}
-          />
-          <Switch>
-            {this.getRoutes(routes)}
-          </Switch>
-          <Footer className="pull-right"/>
-        </div>
-     
+      <div>
+        <GuestNavbar
+          {...this.props}
+          brandText={this.getBrandText(this.props.location.pathname)}
+        />
+        <Switch>{this.getRoutes(routes)}</Switch>
+        <Footer className="pull-right" />
+      </div>
     );
   }
 }

@@ -18,3 +18,31 @@
     transform: rotateY(130deg);
   }
 }
+
+@media (max-width: 991px) {
+  .navbar-header {
+    float: left !important;
+  }
+
+  .auth_buttons {
+    float: right !important;
+  }
+}
+
+@media all and (max-width: 480px) {
+  .auth_buttons {
+    text-align: center !important;
+    float: none !important;
+  }
+
+  .navbar {
+    max-height: inherit !important;
+  }
+
+  .navbar-header {
+    float: none !important;
+  }
+}
+
+@media all and (max-width: 720px) {
+}
