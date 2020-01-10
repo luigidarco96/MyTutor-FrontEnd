@@ -928,7 +928,7 @@ a:hover{
   border-color: #274F77!important;
   color: #274F77 !important; 
  }
- .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active,
+ .btn-primary:active, .btn-primary.active,
  .open > .btn-primary.dropdown-toggle {
    background-color: #274F77 !important;
    color: white!important;
