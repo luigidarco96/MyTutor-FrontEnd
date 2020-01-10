@@ -6,7 +6,8 @@ import {
   Col,
   Modal,
   Glyphicon,
-  FormControl
+  FormControl,
+  Alert
 } from "react-bootstrap";
 import Button from "../CustomButton/CustomButton";
 import { login, logout } from "../../utils/auth";
@@ -22,7 +23,8 @@ export class ProfessorList extends Component {
     showInsertEmail: false,
     selectedProfessor: "",
     professorsSearch: [],
-    search: false
+    search: false,
+    showErrorAlert:false
   };
 
   constructor(props) {
@@ -108,16 +110,9 @@ export class ProfessorList extends Component {
       const emailProfessorExp = /^[a-z]*(\.[a-z]*)?\@unisa\.it$/;
 
       if (!emailProfessorExp.test(emailVerified)) {
-        if (document.getElementById("2") != null) {
-          let el = document.getElementById("2");
-          el.remove();
-        }
-        var para = document.createElement("span");
-        var node = document.createTextNode("Email non valida");
-        para.appendChild(node);
-        para.style.cssText = "color:red; margin-top:3px;";
-        para.id = "2";
-        document.getElementById("errorEmail").appendChild(para);
+        this.setState({
+          showErrorAlert: true
+        })
       }
       const headers = {
         Authorization: localStorage.getItem("token")
@@ -189,7 +184,8 @@ export class ProfessorList extends Component {
       });
     const handleCloseEmail = () =>
       this.setState({
-        showInsertEmail: false
+        showInsertEmail: false,
+        showErrorAlert: false
       });
 
     const handleShowEmail = () =>
@@ -197,11 +193,13 @@ export class ProfessorList extends Component {
         showInsertEmail: true
       });
     const inputTextStyle = {
-      height: "18px",
-      width: "100%",
-      borderRadius: "10px",
-      border: "1px solid #274F77",
-      paddingLeft: "5px"
+      width: '100%',
+      padding: '12px 20px',
+      margin: '8px 0',
+      display: 'inline-block',
+      border: '1px solid #ccc',
+      borderRadius: '4px',
+      boxSizing: 'border-box'
     };
 
     const { header, professorsSearch, search } = this.state;
@@ -220,11 +218,10 @@ export class ProfessorList extends Component {
             >
               <Button
                 onClick={handleShowEmail}
-                style={{ border: "1px solid #274F77", padding: "top" }}
-                className="buttonHover"
+                style={{borderColor:'#274F77',padding: "top", color:'#274F77'}}
                 bsStyle="primary"
               >
-                Inserisci professore
+                Inserisci email verificata professore
               </Button>
             </span>
             {this.searchProfessor()}
@@ -305,57 +302,65 @@ export class ProfessorList extends Component {
             </Button>
           </Modal.Footer>
         </Modal>
-            {/* Modal to insert a email */}
-            <Modal
-              style={{
-                borderRadius: "6px",
-                overflow: "hidden",
-                marginTop: "15%",
-                left: "45%",
-                position: "absolute",
-                height: "210px",
-                width: "350px"
-              }}
-              show={this.state.showInsertEmail}
-              onHide={handleCloseEmail}
-              animation={false}
-            >
-              <Modal.Header style={{ width: "350px" }} closeButton>
-                <Modal.Title style={{ color: "#274F77" }}>
-                  Inserisci email
-                </Modal.Title>
-              </Modal.Header>
-
-              <Modal.Body style={{ width: "350px", padding: "7px" }}>
-                <input
+                
+        {/* Modal to insert comment */}
+        <Modal
+          style={{
+            borderRadius: '6px',
+            overflow: 'hidden',
+            marginTop: '13%',
+            left: '10%',
+            position: 'absolute'
+          }}
+          dialogClassName="myClass"
+          show={this.state.showInsertEmail}
+          onHide={handleCloseEmail}
+          animation={false}
+        >
+          <Modal.Header style={{ width: '350px' }} closeButton>
+            <Modal.Title style={{ color: '#274F77' }}>
+              Inserire un'email
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ width: '350px', padding: '7px' }}>
+          <input
                   id="emailText"
                   type="text"
                   style={inputTextStyle}
-                ></input>
-                <div id="errorEmail"></div>
-              </Modal.Body>
+            >
 
-              <Modal.Footer style={{ width: "350px" }}>
-                <Button
-                  className="buttonHover button"
-                  variant="secondary"
-                  onClick={handleCloseEmail}
-                >
-                  Annulla
-                </Button>
-                <Button
-                  className="buttonHover button"
-                  variant="primary"
-                  onClick={() => {
-                    setEmailVerified(
-                      document.getElementById("emailText").value
-                    );
-                  }}
-                >
-                  Inserisci
-                </Button>
-              </Modal.Footer>
-            </Modal>
+            </input>
+            {
+            this.state.showErrorAlert?
+            <Alert 
+              bsStyle="danger"
+            >
+              <p>Email non valida</p>
+             </Alert>
+             :
+              <div></div>
+
+            }
+          </Modal.Body>
+          <Modal.Footer style={{ width: '350px' }}>
+            <Button
+              bsStyle='primary'
+              onClick={handleCloseEmail}
+            >
+              Annulla
+            </Button>
+            <Button
+              bsStyle='success'
+              onClick={() => {
+                setEmailVerified(
+                  document.getElementById("emailText").value
+                );
+              }}
+            >
+              Inserisci email
+            </Button>
+          </Modal.Footer>
+        </Modal>
           </Grid>
         </div>
       );
