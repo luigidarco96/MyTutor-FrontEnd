@@ -231,6 +231,10 @@ export default class TypedNotices extends Component {
         <td>
           <CustomButton
             bsStyle='primary'
+            className = 'btn-color-blue'
+            style = {{
+              float: 'right'
+            }}
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -258,6 +262,10 @@ export default class TypedNotices extends Component {
         <td>
           <CustomButton
             bsStyle='primary'
+            className = 'btn-color-blue'
+            style = {{
+              float: 'right'
+            }}
             pullRight
             onClick={e => {
               e.stopPropagation();
