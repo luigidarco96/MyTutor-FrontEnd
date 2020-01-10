@@ -285,7 +285,8 @@ export class ProfessorList extends Component {
           <Modal.Body
             style={{ width: '350px', padding: '7px',fontSize:'15px'}}
           >
-            Confermare l'operazione?
+            
+            <span style={{paddingLeft:'12px'}}>Confermare l'operazione?</span>
           </Modal.Body>
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <Button
