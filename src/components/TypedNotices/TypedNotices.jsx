@@ -25,7 +25,7 @@ export default class TypedNotices extends Component {
       showConfirm: false,
       selectedNotice: '',
       selectedComment: '',
-      operationToConfrim: '',
+      operationToConfirm: '',
       isLoadedButton: true,
       error: false
 
@@ -161,7 +161,7 @@ export default class TypedNotices extends Component {
                 let deletedNotice = this.props.notices[noticeIndex];
                 this.setState({
                   selectedNotice: deletedNotice,
-                  operationToConfrim: 'Elimina bando',
+                  operationToConfirm: 'Elimina bando',
                   error: true
                 });
                 this.showConfirm();
@@ -179,7 +179,7 @@ export default class TypedNotices extends Component {
 
                 this.setState({
                   selectedNotice: element,
-                  operationToConfrim: 'Inoltra al professore'
+                  operationToConfirm: 'Inoltra al professore'
                 });
 
                 this.showConfirm();
@@ -240,7 +240,7 @@ export default class TypedNotices extends Component {
               e.stopPropagation();
               e.preventDefault();
               this.setState({
-                operationToConfrim: 'Inoltra al DDI',
+                operationToConfirm: 'Inoltra al DDI',
                 selectedNotice: element
               });
               this.showConfirm();
@@ -273,7 +273,7 @@ export default class TypedNotices extends Component {
 
               this.setState({
                 selectedNotice: element,
-                operationToConfrim: 'Pubblica bando'
+                operationToConfirm: 'Pubblica bando'
               });
 
               this.showConfirm();
@@ -325,7 +325,7 @@ export default class TypedNotices extends Component {
               e.stopPropagation();
               e.preventDefault();
               this.setState({
-                operationToConfrim: 'Inoltra graduatoria',
+                operationToConfirm: 'Inoltra graduatoria',
                 selectedNotice: element,
               })
               this.showConfirm();
@@ -396,7 +396,7 @@ export default class TypedNotices extends Component {
               e.preventDefault();
               this.setState({
                 selectedNotice: element,
-                operationToConfrim: 'Accetta'
+                operationToConfirm: 'Accetta'
               });
               this.showConfirm();
             }}
@@ -412,7 +412,7 @@ export default class TypedNotices extends Component {
               e.preventDefault();
               this.setState({
                 selectedNotice: element,
-                operationToConfrim: 'Non accetta'
+                operationToConfirm: 'Non accetta'
               });
               this.showConfirm();
             }}
@@ -1003,7 +1003,7 @@ export default class TypedNotices extends Component {
         >
           <Modal.Header style={{ width: '350px' }} closeButton>
             <Modal.Title style={{ color: '#274F77' }}>
-              {this.state.operationToConfrim}
+              {this.state.operationToConfirm}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body
@@ -1022,7 +1022,7 @@ export default class TypedNotices extends Component {
             <CustomButton
               bsStyle={this.state.error ? 'danger' : 'success'}
               onClick={() => {
-                this.selectOperation(this.state.operationToConfrim);
+                this.selectOperation(this.state.operationToConfirm);
               }}
             >
               Conferma
