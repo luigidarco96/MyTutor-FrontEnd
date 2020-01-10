@@ -312,7 +312,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace('http://localhost:3000/admin/rating/'+element.protocol);
+              window.location.replace('http://localhost:3000/admin/valutations/'+element.protocol);
             }}
           >
             Visualizza tabella
