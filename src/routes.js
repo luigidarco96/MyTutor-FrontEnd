@@ -29,6 +29,7 @@ import UpdateCandidatura from './views/UpdateCandidatura';
 import UserProfile from './views/UserProfile';
 import UploadNotice from './views/UploadNotice';
 import UploadRanking from './views/UploadRanking';
+import Valutation from './views/Valutation';
 
 const dashboardRoutes = {
   home: [
@@ -147,6 +148,11 @@ const dashboardRoutes = {
       path: '/notices',
       name: 'Bandi',
       component: Notices
+    },
+    {
+      path: '/valutations/:id',
+      name: 'Valutazioni',
+      component: Valutation
     },
 
     {

@@ -59,7 +59,9 @@ button.close {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   font-family: "Roboto","Helvetica Neue",Arial,sans-serif;
-  font-weight: 400; }
+  font-weight: 400;
+  outline: none;
+}
 
 h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
   font-weight: 300;
