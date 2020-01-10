@@ -1,0 +1,9 @@
+
+.nav-tabs>li.active>a {
+    color: #274F77 !important;
+    font-weight: bold;
+}
+
+.nav-tabs>li>a {
+    color: black;
+}

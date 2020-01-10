@@ -12,3 +12,28 @@ body{
     overflow-y: scroll;
 
 }
+
+.nav-tabs>li {
+    border-top-style: none;
+    border-left-style: none;
+    border-right-style: none;
+    border-bottom-style: solid;
+    border-width: 0px;
+    border-color: white;
+    border-radius: 3px;
+}
+
+.nav-tabs>li>a.active {
+    border-top-style: solid;
+    border-left-style: solid;
+    border-right-style: solid;
+    border-bottom-style: none;
+    border-width: 1px;
+    border-color: #81818175;
+    border-radius: 3px;
+}
+
+.nav-tabs>li>a.active{
+    color: #274F77;
+    font-weight: bold;
+}
