@@ -218,7 +218,7 @@ export class ProfessorList extends Component {
             >
               <Button
                 onClick={handleShowEmail}
-                style={{borderColor:'#274F77',padding: "top", color:'#274F77'}}
+                className="btn-color-blue"
                 bsStyle="primary"
               >
                 Inserisci email verificata professore
@@ -287,8 +287,9 @@ export class ProfessorList extends Component {
           </Modal.Body>
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <Button
-              className=''
+              className='btn-color-blue'
               bsStyle='primary'
+
               onClick={handleClose}
             >
               Annulla
@@ -345,6 +346,8 @@ export class ProfessorList extends Component {
           <Modal.Footer style={{ width: '350px' }}>
             <Button
               bsStyle='primary'
+              
+              className='btn-color-blue'
               onClick={handleCloseEmail}
             >
               Annulla
