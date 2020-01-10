@@ -263,47 +263,47 @@ export class ProfessorList extends Component {
                 </Table>
               </Col>
             </Row>
-
-            <Modal
-              style={{
-                borderRadius: "6px",
-                overflow: "hidden",
-                marginTop: "15%",
-                left: "45%",
-                position: "absolute",
-                height: "210px",
-                width: "350px"
-              }}
-              show={this.state.show}
-              onHide={handleClose}
-              animation={false}
+        {/* Modal to confirm operation */}
+        <Modal
+          style={{
+            borderRadius: '6px',
+            overflow: 'hidden',
+            marginTop: '13%',
+            left: '10%',
+            position: 'absolute'
+          }}
+          dialogClassName="myClass"
+          show={this.state.show}
+          onHide={handleClose}
+          animation={false}
+        >
+          <Modal.Header style={{ width: '350px' }} closeButton>
+            <Modal.Title style={{ color: '#274F77', fontSize:'25px',fontWeight:'20px' }}>
+            Elimina studente
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body
+            style={{ width: '350px', padding: '7px',fontSize:'15px'}}
+          >
+            Confermare l'operazione?
+          </Modal.Body>
+          <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+            <Button
+              className=''
+              bsStyle='primary'
+              onClick={handleClose}
             >
-              <Modal.Header style={{ width: "350px" }} closeButton>
-                <Modal.Title style={{ color: "#274F77" }}>
-                  Elimina professore
-                </Modal.Title>
-              </Modal.Header>
-
-              <Modal.Body style={{ width: "350px", padding: "7px" }}>
-                Confermare l'eliminazione?
-              </Modal.Body>
-              <Modal.Footer style={{ width: "350px" }}>
-                <Button
-                  className="buttonHover button"
-                  variant="secondary"
-                  onClick={handleClose}
-                >
-                  Annulla
-                </Button>
-                <Button
-                  className="buttonHover button"
-                  variant="primary"
-                  onClick={deleteProfessor}
-                >
-                  Elimina
-                </Button>
-              </Modal.Footer>
-            </Modal>
+              Annulla
+            </Button>
+            <Button
+              className=''
+              bsStyle='danger'
+              onClick={deleteProfessor}
+            >
+              Conferma
+            </Button>
+          </Modal.Footer>
+        </Modal>
             {/* Modal to insert a email */}
             <Modal
               style={{
