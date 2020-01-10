@@ -6,6 +6,11 @@ import CustomButton from '../CustomButton/CustomButton';
 import '../../assets/css/detailNotice.css';
 import axios from 'axios';
 
+let disabled = [{
+  protocol: '',
+  bool: false,
+}];
+
 export default class TypedNotices extends Component {
   constructor(props) {
     super(props);
@@ -21,12 +26,47 @@ export default class TypedNotices extends Component {
       selectedNotice: '',
       selectedComment: '',
       operationToConfrim: '',
-      disabled: "",
       isLoadedButton: true,
+      error: false
 
     };
   }
 
+  componentDidMount() {
+    const headers = {
+      'Authorization': localStorage.getItem('token')
+    }
+    let notices;
+    axios
+      .post('http://localhost:3001/api/notices/search', {}, { headers: headers })
+      .then(blob => {
+        notices = blob.data.notices;
+        notices.forEach(element => {
+          if (element.state === 'Expired') {
+            axios
+              .post('http://localhost:3001/api/ratings/exists', { noticeProtocol: element.protocol }, { headers: headers })
+              .then(blob => {
+                let obj = {
+                  protocol: element.protocol,
+                  bool: !blob.data.exists
+                }
+                disabled.push(obj);
+               console.log(disabled);
+              })
+              .catch(error => {
+                //TODO: inserire modal errore.
+              })
+          }
+
+        })
+
+
+      })
+      .catch(error => {
+
+      })
+
+  }
   //Show the modal to confirm an operation.
   showConfirm() {
     this.setState({
@@ -73,73 +113,81 @@ export default class TypedNotices extends Component {
     if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
-          <i
-            className='pe-7s-comment commentHover'
-            onClick={e => {
-              showComment(e, element);
-            }}
-            style={{ fontSize: '20px' }}
-          ></i>
-          <CustomButton
-            bsStyle='primary'
-            pullRight
-            onClick={e => {
-              // Prevent propagation and the default action
-              e.stopPropagation();
-              e.preventDefault();
+          <div>
+            <i
+              className='pe-7s-comment commentHover'
+              onClick={e => {
+                showComment(e, element);
+              }}
+              style={{ fontSize: '20px' }}
+            ></i>
 
-              // Take the notice's protocol
-              let id = e.target.parentElement.parentElement.id;
+            <CustomButton
 
-              // Redirect to the modifications page
-              window.location = `manageNotice/${id}`;
-            }}
-          >
-            Modifica
+              bsStyle='primary'
+              className='btn-color-blue'
+              style={{
+                float: 'right'
+              }}
+              onClick={e => {
+                // Prevent propagation and the default action
+                e.stopPropagation();
+                e.preventDefault();
+
+                // Take the notice's protocol
+                let id = e.target.parentElement.parentElement.id;
+
+                // Redirect to the modifications page
+                window.location = `manageNotice/${id}`;
+              }}
+            >
+              Modifica
           </CustomButton>
-          <CustomButton
-            bsStyle='warning'
-            pullRight
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
+            <CustomButton
+              bsStyle='danger'
+              pullRight
+              onClick={e => {
+                e.stopPropagation();
+                e.preventDefault();
 
-              // Take the notice's protocol and element index
-              let id = e.target.parentElement.parentElement.id;
-              let noticeIndex = Number(
-                e.target.parentElement.parentElement.children[0].innerHTML
-              );
+                // Take the notice's protocol and element index
+                let id = e.target.parentElement.parentElement.id;
+                let noticeIndex = Number(
+                  e.target.parentElement.parentElement.children[0].innerHTML
+                );
 
-              // Take the target element
-              let notices = new Array(this.props.notices);
-              let deletedNotice = this.props.notices[noticeIndex];
-              this.setState({
-                selectedNotice: deletedNotice,
-                operationToConfrim: 'Elimina bando'
-              });
-              this.showConfirm();
-            }}
-          >
-            Elimina
+                // Take the target element
+                let notices = new Array(this.props.notices);
+                let deletedNotice = this.props.notices[noticeIndex];
+                this.setState({
+                  selectedNotice: deletedNotice,
+                  operationToConfrim: 'Elimina bando',
+                  error: true
+                });
+                this.showConfirm();
+              }}
+            >
+              Elimina
           </CustomButton>
 
-          <CustomButton
-            bsStyle='success'
-            pullRight
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
+            <CustomButton
+              bsStyle='success'
+              pullRight
+              onClick={e => {
+                e.stopPropagation();
+                e.preventDefault();
 
-              this.setState({
-                selectedNotice: element,
-                operationToConfrim: 'Inoltra al professore'
-              });
+                this.setState({
+                  selectedNotice: element,
+                  operationToConfrim: 'Inoltra al professore'
+                });
 
-              this.showConfirm();
-            }}
-          >
-            Inoltra al professore
+                this.showConfirm();
+              }}
+            >
+              Inoltra al professore
           </CustomButton>
+          </div>
         </td>
       );
     }
@@ -151,6 +199,10 @@ export default class TypedNotices extends Component {
       <td>
         <CustomButton
           bsStyle='primary'
+          className='btn-color-blue'
+          style={{
+            float: 'right'
+          }}
           pullRight
           onClick={e => {
             e.stopPropagation();
@@ -230,62 +282,53 @@ export default class TypedNotices extends Component {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (Boolean(user) && user.role === 'Teaching Office') {
-      console.log(element);
       const headers = {
-        'Authorization' : localStorage.getItem('token')
+        'Authorization': localStorage.getItem('token')
       }
-      if(this.state.isLoadedButton ===true){
-
-      axios
-      .post('http://localhost:3001/api/ratings/exists',{noticeProtocol:element.protocol},{headers:headers})
-      .then(blob=>{
-       this.setState({
-          disabled: !blob.data.exists,
-          isLoadedButton: false,
-        })
-       
-        
-       })
-      .catch(error=>{
-        console.log('error');
-        //TODO: inserire modal errore.
+      let showButton;
+      disabled.forEach(el=>{
+        if(el.protocol===element.protocol)
+          showButton = el.bool;
       })
-    }
       return (
         <td>
           <CustomButton
             bsStyle='primary'
+            className='btn-color-blue'
+            style={{
+              float: 'right'
+            }}
             pullRight
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace('http://localhost:3000/admin/candidatures/'+element.protocol);
+              window.location.replace('http://localhost:3000/admin/candidatures/' + element.protocol);
             }}
           >
             Visualizza candidature
           </CustomButton>
-          
+
           <CustomButton
-          bsStyle='primary'
-          pullRight
-          disabled={this.state.disabled}
-         
-          onClick={e => {
-            e.stopPropagation();
-            e.preventDefault();
-            this.setState({
-              operationToConfrim: 'Inoltra graduatoria',
-              selectedNotice: element,
-            })
-            this.showConfirm();
-          }}
-        >
-          Inoltra graduatoria
+            bsStyle='success'
+            pullRight
+            disabled={showButton}
+
+            onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+              this.setState({
+                operationToConfrim: 'Inoltra graduatoria',
+                selectedNotice: element,
+              })
+              this.showConfirm();
+            }}
+          >
+            Inoltra graduatoria
         </CustomButton>
-        
-        </td>   
+
+        </td>
       )
-  
+
 
     } else {
       return this.publishedOperation();
@@ -308,11 +351,14 @@ export default class TypedNotices extends Component {
         <td>
           <CustomButton
             bsStyle='primary'
-            pullRight
+            className='btn-color-blue'
+            style={{
+              float: 'right'
+            }}
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace('http://localhost:3000/admin/valutations/'+element.protocol);
+              window.location.replace('http://localhost:3000/admin/valutations/' + element.protocol);
             }}
           >
             Visualizza tabella
@@ -387,21 +433,18 @@ export default class TypedNotices extends Component {
 
     //Show the modal to comment a notice.
     const showModalComment = element => {
-      console.log(element);
-      console.log('Initial show:' + this.state.show);
       this.setState({
         show: true,
         selectedNotice: element
       });
-      console.log('Show changed ' + this.state.show);
-      console.log('Slected notice: ' + this.state.selectedNotice);
+
     };
 
     if (Boolean(user) && user.role === 'DDI') {
       return (
         <td>
           <CustomButton
-            bsStyle='primary'
+            bsStyle='danger'
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -413,6 +456,7 @@ export default class TypedNotices extends Component {
           </CustomButton>
           <CustomButton
             bsStyle='primary'
+            className='btn-color-blue'
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -421,25 +465,28 @@ export default class TypedNotices extends Component {
                 'Authorization': localStorage.getItem('token'),
               }
               axios
-              .get('http://localhost:3001/api/notices/pdf/'+element.protocol,{headers:headers, responseType: 'blob'})
-              .then(blob=>{
-                console.log(blob);
-                const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
-                let a = document.createElement('a');
-                var url = window.URL.createObjectURL(blob.data);
-                a.href = url;
-                a.download = fileName;
-                a.click();
-                window.URL.revokeObjectURL(url);
-                a.remove();                          
+                .get('http://localhost:3001/api/notices/pdf/' + element.protocol, { headers: headers, responseType: 'blob' })
+                .then(blob => {
+                  const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
+                  let a = document.createElement('a');
+                  var url = window.URL.createObjectURL(blob.data);
+                  a.href = url;
+                  a.download = fileName;
+                  a.click();
+                  window.URL.revokeObjectURL(url);
+                  a.remove();
 
-              })
+                })
             }}
           >
             Scarica bando
           </CustomButton>
           <CustomButton
+            style={{
+              marginLeft: '27px'
+            }}
             bsStyle='primary'
+            className="btn-color-blue"
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -459,7 +506,7 @@ export default class TypedNotices extends Component {
 
   //element is the notice selected
   displayButtons(type, element) {
-   
+
     switch (type) {
       case 'Bozza':
         return this.draftOperation(element);
@@ -488,11 +535,11 @@ export default class TypedNotices extends Component {
     //Close the modal show to confirm the operation.
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        error: false
       });
     };
 
-    console.log(element);
     element.state = 'Accepted';
     element.deadline = element.deadline.split('T')[0];
     const headers = {
@@ -523,11 +570,11 @@ export default class TypedNotices extends Component {
   notAcceptNotice(element) {
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        error: false
       });
     };
 
-    console.log(element);
     element.state = 'Draft';
     element.deadline = element.deadline.split('T')[0];
     const headers = {
@@ -560,7 +607,8 @@ export default class TypedNotices extends Component {
   sendToProfessor(element) {
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        error: false
       });
     };
     const headers = {
@@ -596,7 +644,8 @@ export default class TypedNotices extends Component {
   sendNoticeToDDI(element) {
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        error: false
       });
     };
     const headers = {
@@ -667,7 +716,8 @@ export default class TypedNotices extends Component {
   deleteDraftNotice(deletedNotice) {
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        error: false
       });
     };
     // Retrieve from localStorage the user token
@@ -686,7 +736,7 @@ export default class TypedNotices extends Component {
       let error = blob.data.error;
       window.location.replace('http://localhost:3000/admin/notices');
       if (error) {
-        console.log(error);
+
       }
     });
 
@@ -697,7 +747,8 @@ export default class TypedNotices extends Component {
   sendRankingToDDI(element) {
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        error: false
       });
     };
     const headers = {
@@ -766,7 +817,8 @@ export default class TypedNotices extends Component {
     //Close the modal show when you try to confirm an operation
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        error: false
       });
     };
     //Disapprove notice
@@ -815,7 +867,6 @@ export default class TypedNotices extends Component {
 
     let noticesForProf;
     let user = JSON.parse(localStorage.getItem('user'));
-    console.log('Tab selezionato ' + this.props.type);
     let acceptingNotice;
     if (user && this.props.type === 'In accettazione') {
       noticesForProf = this.props.notices.filter(notice => {
@@ -883,20 +934,19 @@ export default class TypedNotices extends Component {
           <Modal.Body style={{ width: '350px', padding: '7px' }}>
             <textarea
               id='comment'
-              style={{ height: '55px', width: '341px' }}
+              style={{ height: '55px', width: '341px', resize: 'none' }}
             ></textarea>
           </Modal.Body>
           <Modal.Footer style={{ width: '350px' }}>
             <CustomButton
-              className='buttonHover button'
-              variant='secondary'
+              className='btn-color-blue'
+              bsStyle='primary'
               onClick={closeModalComment}
             >
               Annulla
             </CustomButton>
             <CustomButton
-              className='buttonHover button'
-              variant='primary'
+              bsStyle='success'
               onClick={() => {
                 disapproveNotice(this.state.selectedNotice);
               }}
@@ -905,6 +955,7 @@ export default class TypedNotices extends Component {
             </CustomButton>
           </Modal.Footer>
         </Modal>
+
         {/* Modal to show comment */}
         <Modal
           style={{
@@ -927,6 +978,7 @@ export default class TypedNotices extends Component {
             {this.state.selectedComment}
           </Modal.Body>
         </Modal>
+
         {/* Modal to confirm operation */}
         <Modal
           style={{
@@ -947,21 +999,20 @@ export default class TypedNotices extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body
-            style={{ width: '350px', padding: '7px', fontSize: '25px' }}
+            style={{ width: '350px', padding: '7px 7px 7px 16px', fontSize: '15px' }}
           >
-            Confermare l'operazione?
+            <span>Confermare l'operazione?</span>
           </Modal.Body>
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <CustomButton
-              className='buttonHover button'
-              variant='secondary'
+              className='btn-color-blue'
+              bsStyle='primary'
               onClick={closeConfirm}
             >
               Annulla
             </CustomButton>
             <CustomButton
-              className='buttonHover button'
-              variant='primary'
+              bsStyle={this.state.error ? 'danger' : 'success'}
               onClick={() => {
                 this.selectOperation(this.state.operationToConfrim);
               }}
