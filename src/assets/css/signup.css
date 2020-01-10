@@ -1,0 +1,14 @@
+.container-div {
+    width: 98vw;
+    margin: auto;
+}
+
+.container-row {
+    width: 100%; 
+    margin-left: 1px;
+}
+
+body{
+    overflow-y: scroll;
+
+}
