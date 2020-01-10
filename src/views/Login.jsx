@@ -62,13 +62,6 @@ export default function Login(props) {
             content={
               <div className="Login">
                 Login
-                {showError === true ? (
-                  <Alert bsStyle="danger">
-                    <p>{loginError}</p>
-                  </Alert>
-                ) : (
-                  <div></div>
-                )}
                 <form onSubmit={handleSubmit}>
                   <FormGroup controlId="email" bsSize="large">
                     <ControlLabel>Email</ControlLabel>
@@ -87,7 +80,15 @@ export default function Login(props) {
                       type="password"
                     />
                   </FormGroup>
+                  {showError === true ? (
+                    <Alert bsStyle="danger">
+                      <p>{loginError}</p>
+                    </Alert>
+                  ) : (
+                    <div></div>
+                  )}
                   <Button
+                    bsStyle="primary"
                     block
                     bsSize="large"
                     disabled={!validateForm()}
@@ -97,7 +98,6 @@ export default function Login(props) {
                         .then(blob => {})
                         .catch(error => {
                           setLoginError(error);
-
                           setShowError(true);
                         });
                     }}
