@@ -16,43 +16,6 @@ const SignUp = (props) => {
         if (activeTab !== tab) {
             setActiveTab(tab);
         }
-        if (tab == 1) {
-            document.getElementById('1').style.borderTopStyle = 'solid'
-            document.getElementById('1').style.borderLeftStyle = 'solid'
-            document.getElementById('1').style.borderRightStyle = 'solid'
-            document.getElementById('1').style.borderBottomtStyle = 'none'
-            document.getElementById('1').style.borderWidth = '1px'
-            document.getElementById('1').style.borderColor = '#81818175'
-            document.getElementById('1').style.borderRadius = '3px'
-            document.getElementById('1').firstChild.style.color = '#274F77'
-
-            document.getElementById('2').style.borderTopStyle = 'none'
-            document.getElementById('2').style.borderLeftStyle = 'none'
-            document.getElementById('2').style.borderRightStyle = 'none'
-            document.getElementById('2').style.borderBottomStyle = 'solid'
-            document.getElementById('2').style.borderWidth = '0px'
-            document.getElementById('2').style.borderColor = 'white'
-            document.getElementById('2').style.borderRadius = '3px'
-            document.getElementById('2').firstChild.style.color = 'black'
-        } else {
-            document.getElementById('2').style.borderTopStyle = 'solid'
-            document.getElementById('2').style.borderLeftStyle = 'solid'
-            document.getElementById('2').style.borderRightStyle = 'solid'
-            document.getElementById('2').style.borderBottomStyle = 'none'
-            document.getElementById('2').style.borderWidth = '1px'
-            document.getElementById('2').style.borderColor = '#81818175'
-            document.getElementById('2').style.borderRadius = '3px'
-            document.getElementById('2').firstChild.style.color = '#274F77'
-
-            document.getElementById('1').style.borderTopStyle = 'none'
-            document.getElementById('1').style.borderLeftStyle = 'none'
-            document.getElementById('1').style.borderRightStyle = 'none'
-            document.getElementById('1').style.borderBottomStyle = 'solid'
-            document.getElementById('1').style.borderWidth = '0px'
-            document.getElementById('1').style.borderColor = 'white'
-            document.getElementById('1').style.borderRadius = '3px'
-            document.getElementById('1').firstChild.style.color = 'black'
-        }
     }
 
     const setBackground = () => {

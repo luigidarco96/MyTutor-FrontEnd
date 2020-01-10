@@ -10,6 +10,7 @@ import {
   StateAssignmentDictionary
 } from "../../static/dicts";
 import TypedAssignments from "../TypedAssignments/TypedAssignments";
+import '../../assets/css/tabs.css'
 
 /**
  * DefaultTabs.jsx
@@ -43,7 +44,7 @@ export default class DefaultTabs extends Component {
           return StateNoticeDictionary[notice.state] === e;
         });
       }
-
+      
       this.setState({
         selectedTab: e,
         filteredNotices: filteredNotices
@@ -118,7 +119,7 @@ export default class DefaultTabs extends Component {
           {tabs.map((tab, index) => {
             if (tab === "Bozza") {
               return (
-                <Tab eventKey={tab} title={tab} key={index}>
+                <Tab eventKey={tab} title={tab} key={index} name={tab}>
                   <Link className="link" to="draftNotice">
                     Crea bando
                   </Link>
@@ -131,7 +132,7 @@ export default class DefaultTabs extends Component {
               );
             }
             return (
-              <Tab eventKey={tab} title={tab} key={index}>
+              <Tab eventKey={tab} title={tab} key={index} name={tab}>
                 <TypedNotices
                   pathname={pathname}
                   notices={filteredNotices}
@@ -152,7 +153,7 @@ export default class DefaultTabs extends Component {
         >
           {tabs.map((tab, index) => {
             return (
-              <Tab eventKey={tab} title={tab} key={index}>
+              <Tab eventKey={tab} title={tab} key={index} name={tab}>
                 <TypedAssignments
                   pathname={pathname}
                   assignments={filteredAssignments}
