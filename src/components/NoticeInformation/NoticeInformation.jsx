@@ -24,15 +24,16 @@ export class NoticeInformation extends Component {
                 <b className='text-center center-block margin-top'>
                   IL DIRETTORE
                 </b>
-                {notice.articles.map(current => {
-                  return (
-                    <Fragment>
-                      <b style={{ margin: '10px' }}>{current.initial}</b>
-                      <p style={{ display: 'inline' }}>{current.text}</p>
-                      <br></br>
-                    </Fragment>
-                  );
-                })}
+                {notice.articles &&
+                  notice.articles.map(current => {
+                    return (
+                      <Fragment>
+                        <b style={{ margin: '10px' }}>{current.initial}</b>
+                        <p style={{ display: 'inline' }}>{current.text}</p>
+                        <br></br>
+                      </Fragment>
+                    );
+                  })}
               </div>
               <div className='margin-top'>
                 <b className='text-center center-block margin-top'>DECRETA</b>
@@ -50,16 +51,17 @@ export class NoticeInformation extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {notice.assignments.map(el => {
-                      return (
-                        <tr>
-                          <td>{el.code}</td>
-                          <td>{el.activity_description}</td>
-                          <td>{el.total_number_hours}</td>
-                          <td>{el.hourly_cost}</td>
-                        </tr>
-                      );
-                    })}
+                    {notice.assignments &&
+                      notice.assignments.map(el => {
+                        return (
+                          <tr>
+                            <td>{el.code}</td>
+                            <td>{el.activity_description}</td>
+                            <td>{el.total_number_hours}</td>
+                            <td>{el.hourly_cost}</td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </Table>
                 <TextField
@@ -101,14 +103,15 @@ export class NoticeInformation extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {notice.evaluation_criteria.map(el => {
-                      return (
-                        <tr>
-                          <td>{el.name}</td>
-                          <td>{el.max_score}</td>
-                        </tr>
-                      );
-                    })}
+                    {notice.evaluation_criteria &&
+                      notice.evaluation_criteria.map(el => {
+                        return (
+                          <tr>
+                            <td>{el.name}</td>
+                            <td>{el.max_score}</td>
+                          </tr>
+                        );
+                      })}
                   </tbody>
                 </Table>
               </div>

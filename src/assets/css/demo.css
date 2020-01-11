@@ -924,7 +924,15 @@ a:hover{
   height: 200px;
   width: 351px;
 }
-
+.btn-color-blue {
+  border-color: #274F77!important;
+  color: #274F77 !important; 
+ }
+ .btn-primary:active, .btn-primary.active,
+ .open > .btn-primary.dropdown-toggle {
+   background-color: #274F77 !important;
+   color: white!important;
+   border-color: #274F77 !important; }
 
 .commentHover:hover {
   color:red;

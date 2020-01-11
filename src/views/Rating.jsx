@@ -20,17 +20,23 @@ export default class Rating extends Component {
                 titles_score: /^[0-9]+$/,
                 interview_score: /^[0-9]+$/
             },
-            modal: false,
+            modalSuccess: false,
+            modalError: false,
             modalContent: ''
         }
     }
 
-    setModal = (content) => {
-        this.setState({ modal: !this.state.modal, modalContent: content })
+    setModalSuccess = (content) => {
+        this.setState({ modalSuccess: !this.state.modalSuccess, modalContent: content })
     }
 
+    
+    setModalError = (content) => {
+        this.setState({ modalError: !this.state.modalError, modalContent: content })
+    }
     handleClose = () => this.setState({
-        modal: false,
+        modalSuccess: false,
+        modalError: false
     });
 
     componentDidMount() {
@@ -170,51 +176,51 @@ export default class Rating extends Component {
                         }
                     }).then(response => {
                         if (response.status == '200') {
-                            this.setModal('Tabella creata con successo!')
+                            this.setModalSuccess('Tabella creata con successo!')
                         }
                     }).catch(err => {
                         if (err.response.data.error) {
-                            this.setModal(err.response.data.error)
+                            this.setModalError(err.response.data.error)
                         }
                     })
                 }
                 else {
-                    this.setModal('ATTENZIONE! Non sono stati rilevati candidati per questo bando')
+                    this.setModalError('ATTENZIONE! Non sono stati rilevati candidati per questo bando')
                     return []
                 }
             }
         }).catch(err => {
-            this.setModal(err.response.data.error + 'Riprovare più tardi o controllare i candidati al bando!')
+            this.setModalError(err.response.data.error + 'Riprovare più tardi o controllare i candidati al bando!')
         })
 
 
-       /* Promise.all(studentList)
-            .then((ratingList) => {
-                console.log(promiseList)
-                /*axios({
-                    url: 'http://localhost:3001/api/ratings',
-                    method: 'PUT',
-                    data: {
-                        ratingList: ratingList
-                    },
-                    headers: {
-                        Authorization: token
-                    }
-                }).then(response => {
-                    if (response.status == '200') {
-                        this.setModal('Tabella creata con successo!')
-                    }
-                }).catch(err => {
-                    if (err.response.data.error) {
-                        this.setModal(err.response.data.error)
-                    }
-                })
-            })
-            .catch((err) => {
-                if (err) {
-                    this.setModal(err.message)
-                }
-            })*/
+        /* Promise.all(studentList)
+             .then((ratingList) => {
+                 console.log(promiseList)
+                 /*axios({
+                     url: 'http://localhost:3001/api/ratings',
+                     method: 'PUT',
+                     data: {
+                         ratingList: ratingList
+                     },
+                     headers: {
+                         Authorization: token
+                     }
+                 }).then(response => {
+                     if (response.status == '200') {
+                         this.setModal('Tabella creata con successo!')
+                     }
+                 }).catch(err => {
+                     if (err.response.data.error) {
+                         this.setModal(err.response.data.error)
+                     }
+                 })
+             })
+             .catch((err) => {
+                 if (err) {
+                     this.setModal(err.message)
+                 }
+             })*/
     }
 
     validateForm = () => {
@@ -418,7 +424,10 @@ export default class Rating extends Component {
                                     </tbody>
                                 </Table>
                                 <CustomButton
-                                    style={{ marginTop: '20px' }}
+                                    style={{ marginTop: '20px', borderColor:'#274F77', color:'#274F77'}}
+                                    bsStyle='primary'
+                                    block={true}
+                                    className='btn-clolor-blue '
                                     block={true}
                                     className='create-notice-csbutton pull-right'
                                     onClick={e => this.handleAddStudent(e, i)}
@@ -430,18 +439,82 @@ export default class Rating extends Component {
                     })}
                     <CustomButton
                         type='submit'
-                        style={{ marginTop: '60px' }}
-                        bsStyle='primary'
-                        block={true}
-                        className='create-notice-csbutton '
+                        bsStyle='success'
                         disabled={!this.validateForm()}
                     >
                         Conferma
-                            </CustomButton>
-                    <Modal style={{ borderRadius: '6px', overflow: 'hidden', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={this.handleClose} animation={false}>
-                        <Modal.Header style={{ width: '350px' }} closeButton />
-                        <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px' }}>{modalContent}</Modal.Body>
-                    </Modal>
+                    </CustomButton>
+                    <Modal
+                    style={{
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        marginTop: '13%',
+                        left: '10%',
+                        position: 'absolute'
+                    }}
+                    dialogClassName="myClass"
+                    show={this.state.modalSuccess}
+                    onHide={()=>this.handleClose()}
+                    animation={false}
+                >
+                    <Modal.Header style={{ width: '350px' }} closeButton>
+                        <Modal.Title style={{ color: '#274F77' }}>Info</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body
+                     id='modalBodyError'
+                     style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
+                        {modalContent}
+                    </Modal.Body>
+                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                        <CustomButton
+                            className='btn-color-blue'
+                            bsStyle='primary'
+                            onClick={()=>this.handleClose()}
+                        >
+                            Chiudi
+                        </CustomButton>
+
+                    </Modal.Footer>
+
+                </Modal>
+
+
+                <Modal
+                    style={{
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        marginTop: '13%',
+                        left: '10%',
+                        position: 'absolute'
+                    }}
+                    dialogClassName="myClass"
+                    show={this.state.modalError}
+                    onHide={()=>this.handleClose()}
+                    animation={false}
+                >
+                    <Modal.Header style={{ width: '350px' }} closeButton>
+                        <Modal.Title style={{ color: 'red' }}>Errore</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body id='modalBodyError' style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
+                        {modalContent}
+                    </Modal.Body>
+                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                        <CustomButton
+                            className='btn-color-blue'
+                            bsStyle='primary'
+                            onClick={()=>this.handleClose()}
+                        >
+                            Chiudi
+                        </CustomButton>
+
+                    </Modal.Footer>
+
+                </Modal>
+
+
+
                 </Form>
             </div >
         )

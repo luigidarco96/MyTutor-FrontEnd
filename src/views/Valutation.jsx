@@ -22,10 +22,11 @@ class Valutation extends Component {
         header: [],
         valutations: [],
         assignments: [],
-        operationToConfrim: '',
+        operationToConfirm: '',
         selectedValutation: '',
         selectedAssignment:'',
-        showConfirm: false
+        showConfirm: false,
+        error: false
     }
 
     constructor(props) {
@@ -101,7 +102,7 @@ class Valutation extends Component {
                             ()=>{
                                 
                                 this.setState({
-                                    operationToConfrim: 'Assegna incarico',
+                                    operationToConfirm: 'Assegna incarico',
                                     selectedValutation: valutation,
                                     selectedAssignment: assignment, 
                                 })
@@ -122,12 +123,12 @@ class Valutation extends Component {
                 <div style={{position:'relative', right:'50px'}}>
                 <CustomButton
                     block
-                    bsStyle='primary'
+                    bsStyle='success'
                     onClick = {
                         ()=>{
                             
                             this.setState({
-                                operationToConfrim: 'Invia richiesta',
+                                operationToConfirm: 'Invia richiesta',
                                 selectedValutation: valutation,
                                 selectedAssignment: assignment, 
                             })
@@ -223,8 +224,8 @@ class Valutation extends Component {
 
     //Select operation to confirm.
     selectOperation(){
-        const {operationToConfrim} = this.state;
-        switch(operationToConfrim){
+        const {operationToConfirm} = this.state;
+        switch(operationToConfirm){
             case 'Assegna incarico':
                 this.assignStudent();
                 break;
@@ -300,51 +301,48 @@ class Valutation extends Component {
                             />
                         </Col>
                     </Row>
-                                     {/* Modal to confirm operation */}
+        {/* Modal to confirm operation */}
         <Modal
-            
-            style={{
-              borderRadius: '6px',
-              overflow: 'hidden',
-              marginTop: '13%',
-              left: '10%',
-              position: 'absolute'
-            }}
-            dialogClassName="myClass"
-            show={this.state.showConfirm}
-            onHide={closeConfirm}
-            animation={false}
+          style={{
+            borderRadius: '6px',
+            overflow: 'hidden',
+            marginTop: '13%',
+            left: '10%',
+            position: 'absolute'
+          }}
+          dialogClassName="myClass"
+          show={this.state.showConfirm}
+          onHide={closeConfirm}
+          animation={false}
+        >
+          <Modal.Header style={{ width: '350px' }} closeButton>
+            <Modal.Title style={{ color: '#274F77' }}>
+              {this.state.operationToConfirm}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body
+            style={{ width: '350px', padding: '7px 7px 7px 16px', fontSize: '15px' }}
           >
-            <Modal.Header style={{ width: '350px' }} closeButton>
-              <Modal.Title style={{ color: '#274F77' }}>
-                {this.state.operationToConfrim}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body
-              style={{ width: '350px', padding: '7px', fontSize: '25px' }}
+            <span>Confermare l'operazione?</span>
+          </Modal.Body>
+          <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+            <CustomButton
+              className='btn-color-blue'
+              bsStyle='primary'
+              onClick={closeConfirm}
             >
-              Confermare l'operazione?
-            </Modal.Body>
-            <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
-              <CustomButton
-                className='buttonHover button'
-                variant='secondary'
-                onClick={closeConfirm}
-              >
-                Annulla
-              </CustomButton>
-              <CustomButton
-                className='buttonHover button'
-                variant='primary'
-                onClick={() => {
-                  this.selectOperation(this.state.operationToConfrim);
-                }}
-              >
-                Conferma
-              </CustomButton>
-            </Modal.Footer>
-          </Modal>
-  
+              Annulla
+            </CustomButton>
+            <CustomButton
+              bsStyle={this.state.error ? 'danger' : 'success'}
+              onClick={() => {
+                this.selectOperation(this.state.operationToConfirm);
+              }}
+            >
+              Conferma
+            </CustomButton>
+          </Modal.Footer>
+        </Modal> 
        
                     </Grid>
                 

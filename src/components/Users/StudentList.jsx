@@ -232,7 +232,7 @@ export class StudentList extends Component {
           </Modal.Body>
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <Button
-              className=''
+              className='btn-color-blue'
               bsStyle='primary'
               onClick={handleClose}
             >

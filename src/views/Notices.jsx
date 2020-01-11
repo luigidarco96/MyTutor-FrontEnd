@@ -112,7 +112,7 @@ class Notices extends Component {
         })
         .catch(error => {
           if (error) {
-            window.location = '/signin';
+            //window.location = '/signin';
           }
         });
     } else {

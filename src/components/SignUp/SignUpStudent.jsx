@@ -50,7 +50,8 @@ export class SignUpStudent extends Component {
             matricola: '',
             confirmEmail: '',
             confirmPass: '',
-            modal: false,
+            modalSuccess: false,
+            modalError: false,
             modalContent: '',
             errors: {
                 nome: '',
@@ -195,43 +196,48 @@ export class SignUpStudent extends Component {
             }
             axios.post('http://localhost:3001/api/auth/registerStudent', { student: user })
                 .then(response => {
-                    if(response.data.status = '200') {
-                        if(isLogin) {
+                    if (response.data.status = '200') {
+                        if (isLogin) {
                             localStorage.removeItem('status');
                             localStorage.removeItem('token');
                             localStorage.removeItem('user');
                         }
-                        
+
                         localStorage.setItem('status', response.data.status);
-                        localStorage.setItem('token',response.data.token);
+                        localStorage.setItem('token', response.data.token);
                         localStorage.setItem('user', JSON.stringify(response.data.student));
                         let user = JSON.parse(localStorage.getItem('user'));
-                        switch(user.role){
-                 
+                        switch (user.role) {
+
                             case 'DDI': window.location.replace("http://localhost:3000/ddi/notices");
                                 break;
                             case 'Professor': window.location.replace("http://localhost:3000/professor/notices");
                                 break;
-                            case 'Student': window.location.replace("http://localhost:3000/student/notices");    
+                            case 'Student': window.location.replace("http://localhost:3000/student/notices");
                                 break;
                             case 'Teaching Office': window.location.replace("http://localhost:3000/admin/notices");
                                 break;
                         }
                     }
                 }).catch(err => {
-                    if(err.response != undefined)
-                        setModal(err.response.data.error)
+                    if (err.response != undefined)
+                        setModalError(err.response.data.error)
                 })
 
         }
 
-        const setModal = (content) => {
-            this.setState({ modal: !this.state.modal,modalContent: content })
+        const setModalSuccess = (content) => {
+            this.setState({ modalSuccess: !this.state.modalSuccess, modalContent: content })
+        }
+
+        const setModalError = (content) => {
+            this.setState({ modalError: !this.state.modalError, modalContent: content })
         }
 
         const handleClose = () => this.setState({
-            modal:false,
-          });
+            modalSuccess: false,
+            modalError: false
+        });
         return (
             <Form onSubmit={handleSubmit}>
                 <FormGroup>
@@ -348,15 +354,83 @@ export class SignUpStudent extends Component {
                 </FormGroup>
                 <Button
                     disabled={!validateForm()}
-                    variant="dark"
+                    bsStyle = 'primary'
+                    className = 'btn-color-blue pull-right'
                     type='submit'
-                    className='pull-right'
                     style={{ 'margin': '1.5rem' }}>
-                    Registrati</Button>
-                <Modal style={{ borderRadius: '6px', overflow: 'hidden', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={handleClose} animation={false}>
-                    <Modal.Header style={{ width: '350px' }} closeButton />
-                    <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px' }}>{modalContent}</Modal.Body>
+                    Registrati
+                </Button>
+                <Modal
+                    style={{
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        marginTop: '13%',
+                        left: '10%',
+                        position: 'absolute'
+                    }}
+                    dialogClassName="myClass"
+                    show={this.state.modalSuccess}
+                    onHide={handleClose}
+                    animation={false}
+                >
+                    <Modal.Header style={{ width: '350px' }} closeButton>
+                        <Modal.Title style={{ color: '#274F77' }}>Info</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body
+                     id='modalBodyError'
+                     style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
+                        {modalContent}
+                    </Modal.Body>
+                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                        <Button
+                            className='btn-color-blue'
+                            bsStyle='primary'
+                            onClick={handleClose}
+                        >
+                            Chiudi
+                        </Button>
+
+                    </Modal.Footer>
+
                 </Modal>
+
+
+                <Modal
+                    style={{
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        marginTop: '13%',
+                        left: '10%',
+                        position: 'absolute'
+                    }}
+                    dialogClassName="myClass"
+                    show={this.state.modalError}
+                    onHide={handleClose}
+                    animation={false}
+                >
+                    <Modal.Header style={{ width: '350px' }} closeButton>
+                        <Modal.Title style={{ color: 'red' }}>Errore</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body id='modalBodyError' style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
+                        {modalContent}
+                    </Modal.Body>
+                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                        <Button
+                            className='btn-color-blue'
+                            bsStyle='primary'
+                            onClick={handleClose}
+                        >
+                            Chiudi
+                        </Button>
+
+                    </Modal.Footer>
+
+                </Modal>
+
+
+
             </Form>
         )
     }

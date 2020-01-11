@@ -14,7 +14,8 @@ export default class TypedAssignments extends Component {
       showInsertComment: false,
       selectedAssignment: "",
       showDetails: false,
-      operationToConfirm: ""
+      operationToConfirm: "",
+      error:false
     };
   }
 
@@ -46,6 +47,10 @@ export default class TypedAssignments extends Component {
         <div>
           <CustomButton
             bsStyle="primary"
+            className="btn-color-blue"
+            style = {{
+              float : 'right'
+            }}
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -88,7 +93,12 @@ export default class TypedAssignments extends Component {
       return (
         <div>
           <CustomButton
-            bsStyle="primary"
+             bsStyle="primary"
+             className="btn-color-blue"
+             style = {{
+               float : 'right'
+             }}
+           
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -118,7 +128,7 @@ export default class TypedAssignments extends Component {
             
             <CustomButton
               bsStyle = 'success'
-              
+              pullRight
             
               onClick={
                 ()=>{
@@ -133,7 +143,12 @@ export default class TypedAssignments extends Component {
             </CustomButton>
   
             <CustomButton
-              bsStyle = 'primary'
+                bsStyle="primary"
+                className="btn-color-blue"
+                style = {{
+                  float : 'right'
+                }}
+              
               onClick = {
                 ()=>{
 
@@ -150,11 +165,13 @@ export default class TypedAssignments extends Component {
   
             <CustomButton
               bsStyle='danger'
+              pullRight
               onClick ={
                 ()=>{
                   this.setState({
                     selectedAssignment: element,
-                    operationToConfirm: 'Rifiuta'
+                    operationToConfirm: 'Rifiuta',
+                    error: true
                   })
                   this.showConfirm();
                 }
@@ -254,7 +271,8 @@ rejectAssignment(){
   }
   const closeConfirm = ()=>{
     this.setState({
-      showConfirm: false
+      showConfirm: false,
+      error:false
     })
   }
 
@@ -395,15 +413,14 @@ rejectAssignment(){
           </Modal.Body>
           <Modal.Footer style={{ width: "350px" }}>
             <CustomButton
-              className="buttonHover button"
-              variant="secondary"
+              className="btn-color-blue"
+              bsStyle='primary'
               onClick={closeModalComment}
             >
               Annulla
             </CustomButton>
             <CustomButton
-              className="buttonHover button"
-              variant="primary"
+              bsStyle="success"
               onClick={() => {
                 this.closedAssignment(this.state.selectedAssignment);
               }}
@@ -480,7 +497,7 @@ rejectAssignment(){
         </Modal>
      
           {/* Modal to confirm operation */ }
-        <Modal
+          <Modal
           style={{
             borderRadius: '6px',
             overflow: 'hidden',
@@ -499,21 +516,20 @@ rejectAssignment(){
             </Modal.Title>
           </Modal.Header>
           <Modal.Body
-            style={{ width: '350px', padding: '7px', fontSize: '25px' }}
+            style={{ width: '350px', padding: '7px 7px 7px 16px', fontSize: '15px' }}
           >
-            Confermare l'operazione?
+            <span>Confermare l'operazione?</span>
           </Modal.Body>
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <CustomButton
-              className='buttonHover button'
-              variant='secondary'
+              className='btn-color-blue'
+              bsStyle='primary'
               onClick={closeConfirm}
             >
               Annulla
             </CustomButton>
             <CustomButton
-              className='buttonHover button'
-              variant='primary'
+              bsStyle={this.state.error ? 'danger' : 'success'}
               onClick={() => {
                 this.selectOperation(this.state.operationToConfirm);
               }}
@@ -521,8 +537,7 @@ rejectAssignment(){
               Conferma
             </CustomButton>
           </Modal.Footer>
-        </Modal>
-      </div>
+        </Modal>     </div>
     );
   }
 }

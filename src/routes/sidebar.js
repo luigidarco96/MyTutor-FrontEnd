@@ -7,12 +7,12 @@ const studentSidebar = [
   {
     path: '/student/assignments',
     name: 'Incarichi',
-    icon: 'pe-7s-news-paper'
+    icon: 'pe-7s-note2'
   },
   {
     path: '/student/candidature',
     name: 'Candidature',
-    icon: 'pe-7s-news-paper'
+    icon: 'pe-7s-note'
   }
 ];
 
@@ -33,7 +33,7 @@ const ddiSidebar = [
   {
     path: '/ddi/rankings',
     name: 'Graduatorie',
-    icon: 'pe-7s-news-paper'
+    icon: 'pe-7s-study'
   }
 ];
 
@@ -46,12 +46,12 @@ const adminSidebar = [
   {
     path: '/admin/users',
     name: 'Utenti',
-    icon: 'pe-7s-news-paper'
+    icon: 'pe-7s-users'
   },
   {
     path: '/admin/assignments',
     name: 'Assegni',
-    icon: 'pe-7s-news-paper'
+    icon: 'pe-7s-note2'
   }
 ];
 

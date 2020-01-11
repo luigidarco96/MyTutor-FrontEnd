@@ -43,7 +43,7 @@ const Upload = props => {
 
     const data = {
       candidature: {
-        student: user.email,
+        student: user,
         notice_protocol: props.notice_protocol,
         last_edit: last_edit,
         state: 'Editable',
@@ -352,7 +352,7 @@ const Upload = props => {
                 ))}
             </ul>
             <div id='1'></div>
-            <Button bsStyle="primary" onClick={uploadAndApproveNotice}>Approva e invia bando</Button>
+            <Button bsStyle="success" onClick={uploadAndApproveNotice}>Approva e invia bando</Button>
           </div>
         }
       />
@@ -420,7 +420,7 @@ const Upload = props => {
                   ))}
               </ul>
               <div id='1'></div>
-              <Button bsStyle="primary" onClick={updateCandidature}>Invia Candidatura</Button>
+              <Button bsStyle="success" onClick={updateCandidature}>Invia Candidatura</Button>
   
             </div>
           }

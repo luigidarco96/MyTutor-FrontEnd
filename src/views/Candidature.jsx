@@ -80,9 +80,9 @@ class Candidature extends Component {
               );
             }}
             style={{ border: '1px solid #274F77' }}
-            className='buttonHover'
+            className='btn-color-blue'
             bsStyle='primary'
-            bsSize='xs'
+            
           >
             Modifica documenti
           </Button>
@@ -94,7 +94,7 @@ class Candidature extends Component {
             onClick=''
             style={{ border: '1px solid #274F77' }}
             bsStyle='primary'
-            bsSize='xs'
+            className='btn-color-blue'
           >
             Modifica documenti
           </Button>
@@ -302,7 +302,7 @@ class Candidature extends Component {
                         <tr>
                           {header.map((prop, key) => {
                             return (
-                              <th style={{ paddingLeft: '40px' }} key={key}>
+                              <th key={key}>
                                 {prop}
                               </th>
                             );
@@ -386,7 +386,7 @@ class Candidature extends Component {
                         <tr>
                           {header.map((prop, key) => {
                             return (
-                              <th style={{ paddingLeft: '40px' }} key={key}>
+                              <th style={{ paddingLeft: '60px' }} key={key}>
                                 {prop}
                               </th>
                             );
@@ -398,14 +398,14 @@ class Candidature extends Component {
                           candidatures.map(element => {
                             return (
                               <tr key={element.last_edit}>
-                                <td>{element.student.email}</td>
-                                <td style={{ paddingLeft: '35px' }}>
+                                <td style={{ paddingLeft: '5px' }}>{element.student.email}</td>
+                                <td style={{ paddingLeft: '45px' }}>
                                   {element.notice_protocol}
                                 </td>
-                                <td style={{ paddingLeft: '50px' }}>
+                                <td style={{ paddingLeft: '45px' }}>
                                   {element.last_edit.split('T')[0]}
                                 </td>
-                                <td style={{ paddingLeft: '40px' }}>
+                                <td style={{ paddingLeft: '60px' }}>
                                   {statusCandidature(element.state)}
                                 </td>
                                 <td>{updateButton(element)}</td>
