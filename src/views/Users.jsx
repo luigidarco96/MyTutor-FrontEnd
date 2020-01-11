@@ -6,7 +6,7 @@ import Card from "components/Card/Card.jsx";
 import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 import ProfessorList from '../components/Users/ProfessorList';
-
+import '../assets/css/nav-tabs.css'
 
 
 
@@ -18,48 +18,9 @@ const Users = (props) => {
         if (activeTab !== tab) {
             setActiveTab(tab);
         }
-
-        if (tab == 1) {
-            document.getElementById('1').style.backgroundColor = '#f0f0f0'
-            document.getElementById('1').style.borderTopStyle = 'solid'
-            document.getElementById('1').style.borderLeftStyle = 'solid'
-            document.getElementById('1').style.borderRightStyle = 'solid'
-            document.getElementById('1').style.borderWidth = '1px'
-            document.getElementById('1').style.borderColor = '#81818175'
-            document.getElementById('1').style.borderRadius = '3px'
-
-            document.getElementById('2').style.backgroundColor = 'white'
-            document.getElementById('2').style.borderTopStyle = 'none'
-            document.getElementById('2').style.borderLeftStyle = 'none'
-            document.getElementById('2').style.borderRightStyle = 'none'
-            document.getElementById('2').style.borderWidth = '0px'
-            document.getElementById('2').style.borderColor = 'white'
-            document.getElementById('2').style.borderRadius = '3px'
-        } else {
-            document.getElementById('2').style.backgroundColor = '#f0f0f0'
-            document.getElementById('2').style.borderTopStyle = 'solid'
-            document.getElementById('2').style.borderLeftStyle = 'solid'
-            document.getElementById('2').style.borderRightStyle = 'solid'
-            document.getElementById('2').style.borderWidth = '1px'
-            document.getElementById('2').style.borderColor = '#81818175'
-            document.getElementById('2').style.borderRadius = '3px'
-
-            document.getElementById('1').style.backgroundColor = 'white'
-            document.getElementById('1').style.borderTopStyle = 'none'
-            document.getElementById('1').style.borderLeftStyle = 'none'
-            document.getElementById('1').style.borderRightStyle = 'none'
-            document.getElementById('1').style.borderWidth = '0px'
-            document.getElementById('1').style.borderColor = 'white'
-            document.getElementById('1').style.borderRadius = '3px'
-        }
    }
    
-    const styileInitialTab={
-        backgroundColor: '#f0f0f0',
-        border: '1px solid #81818175',
-        borderBottom: 'none',
-        borderRadius: '3px',
-    }
+  
     return (
         <div onLoad={()=>{toggle('1');}}> 
             <div> 
@@ -74,9 +35,9 @@ const Users = (props) => {
                             content={
                                 <div> 
                                     <Nav tabs>
-                                        <NavItem id='1' style={styileInitialTab}>
+                                        <NavItem id='1'>
                                             <NavLink
-                                                className={classnames({ active: activeTab === '1' }), 'tabLink'}
+                                                className={classnames({ active: activeTab === '1' })}
                                                 onClick={() => { toggle('1'); }}
                                             
                                             >
@@ -86,7 +47,7 @@ const Users = (props) => {
                                         <NavItem id='2'>
                                             <NavLink
                                             
-                                                className={classnames({ active: activeTab === '2' }), 'tabLink'}
+                                                className={classnames({ active: activeTab === '2' })}
                                                 onClick={() => { toggle('2'); }}
                                             >
                                                 Professori

@@ -7,7 +7,7 @@ import { TabContent, TabPane, Nav, NavItem, NavLink, Row, Col } from 'reactstrap
 import classnames from 'classnames';
 import bg from '../assets/img/background-image2.jpg'
 import GuestNavbar from '../components/Navbars/GuestNavbar';
-import '../assets/css/signup.css'
+import '../assets/css/nav-tabs.css'
 
 const SignUp = (props) => {
     const [activeTab, setActiveTab] = useState('1');
