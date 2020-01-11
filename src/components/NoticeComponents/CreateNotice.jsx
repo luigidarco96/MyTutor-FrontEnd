@@ -15,7 +15,8 @@ import {
   OverlayTrigger,
   Tooltip,
   Table,
-  Alert
+  Alert,
+  Glyphicon
 } from 'react-bootstrap';
 
 /**
@@ -31,6 +32,9 @@ export default class CreateNotice extends Component {
   constructor() {
     super();
     this.state = {
+      token: null,
+      editNoticeLoaded: false,
+      professorsLoaded: false,
       error: null,
       user: {},
       professors: [],
@@ -84,10 +88,6 @@ export default class CreateNotice extends Component {
       match: { params }
     } = this.props;
 
-    console.clear();
-    console.info('Funzione per creare il bando.');
-    console.log(notice);
-
     this.setState({
       error: null
     });
@@ -104,16 +104,27 @@ export default class CreateNotice extends Component {
         headers: {
           Authorization: this.state.token
         }
-      }).then(blob => {
-        let error = blob.data.error;
-
-        if (Boolean(error)) {
+      })
+        .then(blob => {
+          window.location = '/notices';
+        })
+        .catch(error => {
           this.setState({
-            error: <Alert bsStyle='danger'>{error}</Alert>
+            error: (
+              <Alert bsStyle='danger'>
+                {JSON.stringify(error.response.data)}
+              </Alert>
+            )
           });
-        }
-      });
+        });
     } else {
+      if (!notice.protocol) {
+        this.setState({
+          error: <Alert bsStyle='danger'>Inserisci il protocollo</Alert>
+        });
+        return;
+      }
+
       // Create the notice
       axios({
         method: 'PUT',
@@ -125,18 +136,49 @@ export default class CreateNotice extends Component {
         headers: {
           Authorization: this.state.token
         }
-      }).then(blob => {
-        let error = blob.data.error;
-
-        if (Boolean(error)) {
+      })
+        .then(blob => {
+          window.location = '/notices';
+        })
+        .catch(error => {
           this.setState({
-            error: <Alert bsStyle='danger'>{error}</Alert>
+            error: <Alert bsStyle='danger'>{error.response.data}</Alert>
           });
-        }
-      });
+        });
     }
+  }
 
-    // window.location = 'notices';
+  handleAssignmentDeletion(e, element) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const { notice } = this.state;
+    notice.assignments.splice(notice.assignments.indexOf(element), 1);
+
+    this.setState({ notice });
+  }
+
+  handleArticleDeletion(e, element) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const { notice } = this.state;
+    notice.articles.splice(notice.articles.indexOf(element), 1);
+
+    this.setState({ notice });
+  }
+
+  handleEvaluationCriterionDeletion(e, element) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    const { notice } = this.state;
+    notice.evaluation_criteria.splice(
+      notice.evaluation_criteria.indexOf(element),
+      1
+    );
+
+    this.setState({ notice });
   }
 
   handleAddArticle(e) {
@@ -149,9 +191,10 @@ export default class CreateNotice extends Component {
     }
 
     notice.articles.push({
+      id: null,
       notice_protocol: notice.protocol,
-      text: '',
-      initial: ''
+      text: null,
+      initial: null
     });
 
     this.setState({
@@ -170,8 +213,8 @@ export default class CreateNotice extends Component {
 
     notice.evaluation_criteria.push({
       notice_protocol: notice.protocol,
-      name: '',
-      max_score: 0
+      name: null,
+      max_score: null
     });
 
     this.setState({
@@ -189,14 +232,15 @@ export default class CreateNotice extends Component {
     }
 
     notice.assignments.push({
+      id: null,
       notice_protocol: notice.protocol,
       student: null,
-      code: '',
-      activity_description: '',
-      total_number_hours: 0,
-      title: '',
-      hourly_cost: 0,
-      ht_fund: '',
+      code: null,
+      activity_description: null,
+      total_number_hours: null,
+      title: null,
+      hourly_cost: null,
+      ht_fund: null,
       state: 'Unassigned',
       note: null
     });
@@ -268,7 +312,7 @@ export default class CreateNotice extends Component {
     const el = e.target;
 
     let value = '' + el.value;
-    el.disabled = el.name !== 'ht_fund' ? value.length > 0 : true;
+    el.disabled = value.length > 0;
 
     el.className = el.className.replace('typing', '');
     el.className = el.className.trim();
@@ -293,7 +337,8 @@ export default class CreateNotice extends Component {
   componentDidMount() {
     let user = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
-    let noticeControl;
+
+    const { professorsLoaded, editNoticeLoaded } = this.state;
 
     const {
       match: { params }
@@ -301,7 +346,11 @@ export default class CreateNotice extends Component {
 
     // Fetch notice information if the protocol its been passed
     if (params.id) {
-      if (user != null && user.role === 'Teaching Office') {
+      if (
+        user != null &&
+        user.role === 'Teaching Office' &&
+        !editNoticeLoaded
+      ) {
         axios
           .get(`http://localhost:3001/api/notices/${params.id}`, {
             headers: {
@@ -309,31 +358,39 @@ export default class CreateNotice extends Component {
             }
           })
           .then(blob => {
-            this.setState({ notice: blob.data.notices[0] });
+            this.setState({
+              notice: blob.data.notices[0],
+              editNoticeLoaded: true
+            });
           });
       }
     }
-    // Fetch all professor
-    axios
-      .post(
-        'http://localhost:3001/api/users/search',
-        {
-          param: {
-            role: 'Professor'
-          }
-        },
-        {
-          headers: { Authorization: token }
-        }
-      )
-      .then(blob => {
-        this.setState({
-          professors: blob.data.list,
-          user: user,
-          token: token
-        });
-      });
 
+    // Fetch all professor
+    if (!professorsLoaded) {
+      axios
+        .post(
+          'http://localhost:3001/api/users/search',
+          {
+            param: {
+              role: 'Professor'
+            }
+          },
+          {
+            headers: { Authorization: token }
+          }
+        )
+        .then(blob => {
+          this.setState({
+            professors: blob.data.list,
+            professorsLoaded: true
+          });
+        });
+    }
+
+    this.setState({
+      token: token
+    });
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -348,7 +405,7 @@ export default class CreateNotice extends Component {
     } = this.state;
 
     return (
-      <div className='container-fluid custom-body-view'>
+      <div className='container-fluid'>
         <Form onSubmit={e => this.handleFormSubmit(e)}>
           <FormGroup>
             <Row className='create-notice-row'>
@@ -405,6 +462,7 @@ export default class CreateNotice extends Component {
                 <Table id='assignments' striped bordered responsive>
                   <thead>
                     <tr>
+                      <th>Elimina</th>
                       <th>Codice</th>
                       <th>Descrizione</th>
                       <th>Ore totali</th>
@@ -418,6 +476,20 @@ export default class CreateNotice extends Component {
                       assignments.map((el, index) => {
                         return (
                           <tr key={el.id}>
+                            <td className='icon-container'>
+                              <Glyphicon
+                                glyph='trash'
+                                onMouseLeave={e => {
+                                  e.target.style.color = '#565656';
+                                }}
+                                onMouseOver={e => {
+                                  e.target.style.color = '#274f77';
+                                }}
+                                onClick={event =>
+                                  this.handleAssignmentDeletion(event, el)
+                                }
+                              />
+                            </td>
                             <td>
                               <FormControl
                                 className={index + '.assignments list'}
@@ -523,6 +595,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci la descrizione del bando (max. 300 caratteri)'
                   name='description'
+                  rows={4}
                   value={notice.description}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -537,6 +610,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci il responsabile delle procedure'
                   name='responsible_for_the_procedure'
+                  rows={4}
                   value={notice.responsible_for_the_procedure}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -554,6 +628,7 @@ export default class CreateNotice extends Component {
                   placeholder="Inserisci l'oggetto del bando (max. 2000 caratteri)"
                   name='notice_subject'
                   value={notice.notice_subject}
+                  rows={4}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -567,6 +642,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci i requisiti di ammissione (max. 5000 caratteri)'
                   name='admission_requirements'
+                  rows={4}
                   value={notice.admission_requirements}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -583,6 +659,7 @@ export default class CreateNotice extends Component {
                 <Table id='criteria' striped bordered responsive>
                   <thead>
                     <tr>
+                      <th>Elimina</th>
                       <th>Nome</th>
                       <th>Valore Massimo</th>
                     </tr>
@@ -592,6 +669,9 @@ export default class CreateNotice extends Component {
                       evaluation_criteria.map((el, index) => {
                         return (
                           <tr key={index}>
+                            <td className='icon-container'>
+                              <Glyphicon glyph='trash' />
+                            </td>
                             <td>
                               <FormControl
                                 className={index + '.evaluation_criteria list'}
@@ -640,6 +720,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci i titoli valutabili (max. 5000)'
                   name='assessable_titles'
+                  rows={4}
                   value={notice.assessable_titles}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -656,6 +737,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci come inviare la domanda (max. 5000)'
                   name='how_to_submit_applications'
+                  rows={4}
                   value={notice.how_to_submit_applications}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -672,6 +754,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci informazioni riguardo la commissione giudicatrice (max. 5000)'
                   name='selection_board'
+                  rows={4}
                   value={notice.selection_board}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -686,6 +769,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder="Inserisci informazioni riguardo l'accettazione dell'incarico (max. 5000)"
                   name='acceptance'
+                  rows={4}
                   value={notice.acceptance}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -702,6 +786,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci informazioni riguardo le incompatibilità (max. 5000)'
                   name='incompatibility'
+                  rows={4}
                   value={notice.incompatibility}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -716,6 +801,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder="Inserisci informazioni riguardo la cessazione dell'incarico (max. 5000)"
                   name='termination_of_the_assignment'
+                  rows={4}
                   value={notice.termination_of_the_assignment}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -732,6 +818,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder="Inserisci informazioni riguardo la natura dell'incarico (max. 5000)"
                   name='nature_of_the_assignment'
+                  rows={4}
                   value={notice.nature_of_the_assignment}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -746,6 +833,7 @@ export default class CreateNotice extends Component {
                   componentClass='textarea'
                   placeholder='Inserisci informazioni riguardo le borse non utilizzate (max. 5000)'
                   name='unused_funds'
+                  rows={4}
                   value={notice.unused_funds}
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
@@ -810,6 +898,7 @@ export default class CreateNotice extends Component {
                 <Table id='articles' striped bordered responsive>
                   <thead>
                     <tr>
+                      <th>Elimina</th>
                       <th>Sigla</th>
                       <th>Testo</th>
                     </tr>
@@ -819,6 +908,9 @@ export default class CreateNotice extends Component {
                       articles.map((el, index) => {
                         return (
                           <tr key={index}>
+                            <td className='icon-container'>
+                              <Glyphicon glyph='trash' />
+                            </td>
                             <td>
                               <FormControl
                                 className={index + '.articles list'}
