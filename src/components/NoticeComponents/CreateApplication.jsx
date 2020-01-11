@@ -18,11 +18,14 @@ import axios from 'axios';
 const CreateApplication = (props) => {
     const [protocol, setProtocol] = useState("");
     const [description, setDescription] = useState("");
-    const [modal, setModal] = useState(false)
-    const [modalContent, setModalContent] = useState("")
-    const [isMounted, setIsMounted] = useState(false)
-    const [error, setError] = useState('')
-
+    const [modal, setModal] = useState(false);
+    const [modalContent, setModalContent] = useState("");
+    const [isMounted, setIsMounted] = useState(false);
+    const [error, setError] = useState('');
+    const [modalConfirm, setModalConfirm] = useState(false);
+    const [operationToConfirm, setOperationToConfirm] = useState('');
+    const [isErrorOperation, setIsErrorOperation] = useState(false);
+  
     useEffect(() => {
         if (!isMounted) {
             let user = JSON.parse(localStorage.getItem('user'));
@@ -72,11 +75,18 @@ const CreateApplication = (props) => {
             return (
                 <div>
                     <CustomButton
-                        style={{ display: 'block' }}
-                        bsStyle='primary'
+                        style={{}}
+                        bsStyle='danger'
                         create-notice-csbutton
                         type='submit'
-                        onClick={e => handleDelete(e)}>
+                        onClick={e => {
+                            setOperationToConfirm('Elimina');
+                            setModalConfirm(true);
+                            setIsErrorOperation(true);
+
+                            
+
+                        }}>
                         Elimina
                     </CustomButton>
                     <CustomButton
@@ -99,17 +109,16 @@ const CreateApplication = (props) => {
         }
     }
 
-    const handleDelete = (e) => {
+    const handleDelete = () => {
         const {
             match: { params }
         } = props;
-        e.preventDefault()
-
+        setModalConfirm(false);
         let protocolField = document.getElementById('protocolField').value
-        if (error != '' && protocolField == params.id){
+        if (error != '' && protocolField == params.id) {
             setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
             setModal(true)
-        }else if (protocolField == params.id && protocolField != '') {
+        } else if (protocolField == params.id && protocolField != '') {
             let user = JSON.parse(localStorage.getItem('user'));
             let token = localStorage.getItem('token');
 
@@ -167,7 +176,7 @@ const CreateApplication = (props) => {
             if (error != '') {
                 setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
                 setModal(true)
-            }else {
+            } else {
                 //modify applicationSheet
                 axios({
                     method: 'PATCH',
@@ -238,14 +247,17 @@ const CreateApplication = (props) => {
         if (protocol == '' || description == '') {
             document.getElementById('error-message').innerHTML = 'Controlla di aver compilato tutti i campi'
             document.getElementById('error-message').style.visibility = 'visible'
+            return false;
         } else if (protocol != '' && description != '') {
             document.getElementById('error-message').innerHTML = ''
             document.getElementById('error-message').style.visibility = 'hidden'
+            return true;
         }
     }
 
     const handleClose = () => {
-        setModal(false)
+        setModal(false);
+        setModalConfirm(false);
     }
 
     const handleFocus = (e) => {
@@ -279,6 +291,18 @@ const CreateApplication = (props) => {
             el.disabled = value.length > 0;
         }
     }
+
+     
+    //Select operatio to execute
+    const selectOperation = ()=>{
+        switch(operationToConfirm){
+            case 'Elimina' : 
+                handleDelete();
+                break;
+           
+        }
+    }
+  
     return (
         <div className='container-fluid custom-body-view'>
             <Form onSubmit={e => handleFormSubmit(e)}>
@@ -332,10 +356,54 @@ const CreateApplication = (props) => {
                     </Row>
                 </FormGroup>
             </Form>
-            <Modal style={{ borderRadius: '6px', overflow: 'visible', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={handleClose} animation={false}>
-                <Modal.Header style={{ width: '350px' }} closeButton />
-                <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px', textAlign: 'center' }}>{modalContent}</Modal.Body>
+          
+
+            <Modal
+                style={{
+                    borderRadius: '6px',
+                    overflow: 'hidden',
+                    marginTop: '13%',
+                    left: '10%',
+                    position: 'absolute'
+                }}
+                dialogClassName='myClass'
+                show={modalConfirm}
+                onHide={handleClose}
+                animation={false}
+            >
+                <Modal.Header style={{ width: '350px' }} closeButton>
+                    <Modal.Title style={{ color: '#274F77' }}>
+                        {operationToConfirm}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body
+                    style={{
+                        width: '350px',
+                        padding: '7px 7px 7px 16px',
+                        fontSize: '15px'
+                    }}
+                >
+                    <span>Confermare l'operazione?</span>
+                </Modal.Body>
+                <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                    <CustomButton
+                        className='btn-color-blue'
+                        bsStyle='primary'
+                        onClick={handleClose}
+                    >
+                        Annulla
+            </CustomButton>
+                    <CustomButton
+                        bsStyle={isErrorOperation?'danger':'success'}
+                        onClick={() => {
+                            selectOperation();
+                        }}
+                    >
+                        Conferma
+            </CustomButton>
+                </Modal.Footer>
             </Modal>
+
             <Alert style={{ visibility: 'hidden' }} bsStyle='danger' id='error-message'></Alert >
         </div>
     )
