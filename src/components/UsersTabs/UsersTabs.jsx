@@ -1,16 +1,16 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import PropTypes from "prop-types";
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-import { Tabs, Tab } from "react-bootstrap";
+import { Tabs, Tab, Glyphicon } from 'react-bootstrap';
 
-import TypedNotices from "../TypedNotices/TypedNotices";
+import TypedNotices from '../TypedNotices/TypedNotices';
 import {
   StateNoticeDictionary,
   StateAssignmentDictionary
-} from "../../static/dicts";
-import TypedAssignments from "../TypedAssignments/TypedAssignments";
-import '../../assets/css/tabs.css'
+} from '../../static/dicts';
+import TypedAssignments from '../TypedAssignments/TypedAssignments';
+import '../../assets/css/tabs.css';
 
 /**
  * DefaultTabs.jsx
@@ -25,7 +25,7 @@ export default class DefaultTabs extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: "",
+      selectedTab: '',
       tabs: [],
       filteredNotices: [],
       filteredAssignments: []
@@ -35,8 +35,8 @@ export default class DefaultTabs extends Component {
     const { notices, assignments } = this.props;
 
     if (
-      window.location.pathname.split("/")[2] === "notices" ||
-      window.location.pathname === "/home"
+      window.location.pathname.split('/')[2] === 'notices' ||
+      window.location.pathname === '/home'
     ) {
       let filteredNotices = [];
       if (Boolean(notices)) {
@@ -44,12 +44,12 @@ export default class DefaultTabs extends Component {
           return StateNoticeDictionary[notice.state] === e;
         });
       }
-      
+
       this.setState({
         selectedTab: e,
         filteredNotices: filteredNotices
       });
-    } else if (window.location.pathname.split("/")[2] === "assignments") {
+    } else if (window.location.pathname.split('/')[2] === 'assignments') {
       let filteredAssignments = [];
       filteredAssignments = this.props.assignments.filter(assignment => {
         return StateAssignmentDictionary[assignment.state] === e;
@@ -66,8 +66,8 @@ export default class DefaultTabs extends Component {
   componentWillMount() {
     const { tabs, notices, assignments } = this.props;
     if (
-      window.location.pathname.split("/")[2] === "notices" ||
-      window.location.pathname === "/home"
+      window.location.pathname.split('/')[2] === 'notices' ||
+      window.location.pathname === '/home'
     ) {
       let filteredNotices = [];
 
@@ -82,7 +82,7 @@ export default class DefaultTabs extends Component {
         tabs: tabs,
         filteredNotices: filteredNotices
       });
-    } else if (window.location.pathname.split("/")[2] === "assignments") {
+    } else if (window.location.pathname.split('/')[2] === 'assignments') {
       let filteredAssignments = [];
       filteredAssignments = this.props.assignments.filter(assignment => {
         return StateAssignmentDictionary[assignment.state] === tabs[0];
@@ -106,23 +106,26 @@ export default class DefaultTabs extends Component {
 
     const { pathname } = this.props;
     if (
-      window.location.pathname.split("/")[2] === "notices" ||
-      window.location.pathname === "/home"
+      window.location.pathname.split('/')[2] === 'notices' ||
+      window.location.pathname === '/home'
     ) {
       return (
         <Tabs
-          id="users-tabs"
+          id='users-tabs'
           defaultActiveKey={selectedTab}
           onSelect={e => this.handleTabSelect(e)}
           animation={false}
         >
           {tabs.map((tab, index) => {
-            if (tab === "Bozza") {
+            if (tab === 'Bozza') {
               return (
                 <Tab eventKey={tab} title={tab} key={index} name={tab}>
-                  <Link className="link" to="draftNotice">
-                    Crea bando
-                  </Link>
+                  <div className='link'>
+                    <Link to='draftNotice'>
+                      <Glyphicon glyph='plus' />
+                      Crea bando
+                    </Link>
+                  </div>
                   <TypedNotices
                     pathname={pathname}
                     notices={filteredNotices}
@@ -143,10 +146,10 @@ export default class DefaultTabs extends Component {
           })}
         </Tabs>
       );
-    } else if (window.location.pathname.split("/")[2] === "assignments") {
+    } else if (window.location.pathname.split('/')[2] === 'assignments') {
       return (
         <Tabs
-          id="users-tabs"
+          id='users-tabs'
           defaultActiveKey={selectedTab}
           onSelect={e => this.handleTabSelect(e)}
           animation={false}

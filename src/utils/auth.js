@@ -24,8 +24,13 @@ export const tokenExpired = () => {
       }
     })
     .catch(error => {
+      console.log(error.response);
       if (error.response) {
-        isExpired = !error.response.data.status;
+        if (error.response.data.status === 401) {
+          isExpired = !error.response.data.status;
+        } else {
+          isExpired = true;
+        }
       }
     })
     .finally(() => {

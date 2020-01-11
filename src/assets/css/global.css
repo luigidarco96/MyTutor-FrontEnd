@@ -28,6 +28,11 @@ body {
   display: none;
 }
 
+.card > .header > .title {
+  font-weight: bold;
+  color: #274f77;
+}
+
 .tab-content {
   padding: 10px;
 }
@@ -39,6 +44,7 @@ body {
 .row {
   padding: 10px 0;
 }
+/* - - - - - - - - - - - - - - */
 
 /* Custom classes */
 .custom-footer {
@@ -86,7 +92,7 @@ table.table {
   transition-duration: 100ms;
 }
 
-.link > .glyphicon,
+.link .glyphicon,
 .link > a {
   padding: 5px;
 }

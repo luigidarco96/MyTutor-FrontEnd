@@ -10,7 +10,8 @@ const PrivateRoute = ({ component: Component, path: Path, ...rest }) => {
       render={props => {
         let result = isLogin({ Path });
         if (result == true && !tokenExpired()) return <Component {...props} />;
-        else if (result === 'Not Authorized') return <Error401 />;
+        else if (result === 'Not Authorized' && !tokenExpired())
+          return <Error401 />;
         else return <Redirect to='/signin' />;
       }}
     />

@@ -111,8 +111,8 @@ class Notices extends Component {
           });
         })
         .catch(error => {
-          if (error) {
-            //window.location = '/signin';
+          if (error.response.status == 401) {
+            window.location = '/signin';
           }
         });
     } else {

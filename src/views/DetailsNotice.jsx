@@ -15,6 +15,13 @@ class DetailsNotice extends Component {
     };
   }
 
+  isDownloadable() {
+    if (!this.state.isLoaded || this.state.noticeJSON.notice_file) {
+      return false;
+    }
+    return true;
+  }
+
   handleInputForm() {
     const { noticeJSON } = this.state;
     let user = JSON.parse(localStorage.getItem('user'));
@@ -72,48 +79,26 @@ class DetailsNotice extends Component {
               <NoticeInformation noticeJSON={noticeJSON} />
             </Col>
             <Col xs={12} md={3}>
-              <CustomButton 
-                bsStyle='primary' 
-                className = 'btn-color-blue btn-block'
-                onClick={()=>{
-                  const headers = {
-                    'Authorization': localStorage.getItem('token'),
-                  }
-                  Axios
-                  //Call the service to download the notice.
-                  .get('http://localhost:3001/api/notices/pdf/'+this.props.match.params.id,{headers:headers, responseType: 'blob'})
-                  .then(blob=>{
-                    console.log(blob);
-                    const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
-                    let a = document.createElement('a');
-                    var url = window.URL.createObjectURL(blob.data);
-                    a.href = url;
-                    a.download = fileName;
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    a.remove();                          
-    
-                  })
-                }}
-              >
-              
-                Scarica bando
-              </CustomButton>
-              <br></br>
               <CustomButton
-              
                 bsStyle='primary'
-                className = 'btn-color-blue btn-block'
-                 
-                disabled={!(this.state.noticeJSON.state==="Closed")}
-                onClick = {()=>{
-                  const headers ={
-                    'Authorization': localStorage.getItem('token'),
-                  }
+                className='btn-color-blue btn-block'
+                onClick={() => {
+                  const headers = {
+                    Authorization: localStorage.getItem('token')
+                  };
                   Axios
-                  .get('http://localhost:3001/api/notices/grades/pdf/' + this.state.noticeJSON.protocol, { headers: headers, responseType: 'blob' })
-                  .then(blob => {
-                      const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
+                    //Call the service to download the notice.
+                    .get(
+                      'http://localhost:3001/api/notices/pdf/' +
+                        this.props.match.params.id,
+                      { headers: headers, responseType: 'blob' }
+                    )
+                    .then(blob => {
+                      console.log(blob);
+                      const fileName = blob.headers['content-disposition']
+                        .split(';')[1]
+                        .trim()
+                        .split('"')[1];
                       let a = document.createElement('a');
                       var url = window.URL.createObjectURL(blob.data);
                       a.href = url;
@@ -121,10 +106,40 @@ class DetailsNotice extends Component {
                       a.click();
                       window.URL.revokeObjectURL(url);
                       a.remove();
-
-                  })
+                    });
                 }}
-                >
+                disabled={this.isDownloadable()}
+              >
+                Scarica bando
+              </CustomButton>
+              <br></br>
+              <CustomButton
+                bsStyle='primary'
+                className='btn-color-blue btn-block'
+                disabled={!(this.state.noticeJSON.state === 'Closed')}
+                onClick={() => {
+                  const headers = {
+                    Authorization: localStorage.getItem('token')
+                  };
+                  Axios.get(
+                    'http://localhost:3001/api/notices/grades/pdf/' +
+                      this.state.noticeJSON.protocol,
+                    { headers: headers, responseType: 'blob' }
+                  ).then(blob => {
+                    const fileName = blob.headers['content-disposition']
+                      .split(';')[1]
+                      .trim()
+                      .split('"')[1];
+                    let a = document.createElement('a');
+                    var url = window.URL.createObjectURL(blob.data);
+                    a.href = url;
+                    a.download = fileName;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    a.remove();
+                  });
+                }}
+              >
                 Scarica graduatoria
               </CustomButton>
             </Col>
