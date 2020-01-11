@@ -89,7 +89,7 @@ export default function Login(props) {
                   )}
                   <Button
                     bsStyle="primary"
-                    block
+                    className='btn-color-blue btn-block'
                     bsSize="large"
                     disabled={!validateForm()}
                     type="submit"
@@ -102,7 +102,7 @@ export default function Login(props) {
                         });
                     }}
                   >
-                    Invio
+                    Accedi
                   </Button>
                 </form>
               </div>
