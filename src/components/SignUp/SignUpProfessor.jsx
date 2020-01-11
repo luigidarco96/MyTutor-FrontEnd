@@ -39,7 +39,8 @@ export class SignUpProfessor extends Component {
             password: '',
             confirmEmail: '',
             confirmPass: '',
-            modal: false,
+            modalSuccess: false,
+            modalError: false,
             modalContent: '',
             errors: {
                 nome: '',
@@ -160,22 +161,25 @@ export class SignUpProfessor extends Component {
             axios.post('http://localhost:3001/api/auth/registerProfessor', { professor: user })
                 .then(response => {
                     if (response.status == '200' && response.data.status == true) {
-                        setModal('Ti è stata inviata una mail di verifica al tuo indirizzo email. Controllala per confermare la tua registrazione.')
+                        setModalSuccess('Ti è stata inviata una mail di verifica al tuo indirizzo email. Controllala per confermare la tua registrazione.')
                     }
                 })
                 .catch(err => {
-                    if(err.response != undefined)
-                        setModal(err.response.data.error)
+                    if (err.response != undefined)
+                        setModalError(err.response.data.error)
                 })
         }
 
-        const setModal = (content) => {
-            this.setState({ modal: !this.state.modal,modalContent: content })
+        const setModalSuccess = (content) => {
+            this.setState({ modalSuccess: !this.state.modalSuccess, modalContent: content })
         }
-
+        const setModalError = (content) => {
+            this.setState({ modalError: !this.state.modal, modalContent: content })
+        }
         const handleClose = () => this.setState({
-            modal:false,
-          });
+            modalSuccess: false,
+            modalError: false
+        });
 
         return (
             <Form onSubmit={handleSubmit}>
@@ -265,16 +269,84 @@ export class SignUpProfessor extends Component {
                 </FormGroup>
                 <Button
                     disabled={!validateForm()}
-                    variant="dark"
+                    bsStyle='primary'
+                    className = 'btn-color-blue pull-right' 
                     type='submit'
-                    className='pull-right'
-                    style={{ 'margin': '1.5rem' }}>
+                    
+                    style={{ 'margin': '1.5rem' }}
+                >
                     Registrati
                 </Button>
-                <Modal style={{ borderRadius: '6px', overflow: 'hidden', marginTop: '15%', left: '35%', position: 'absolute', height: '200px', width: '350px' }} show={modal} onHide={handleClose} animation={false}>
-                    <Modal.Header style={{ width: '350px' }} closeButton/>
-                    <Modal.Body id='modalBody' style={{ width: '350px', padding: '7px' }}>{modalContent}</Modal.Body>
+
+                <Modal
+                    style={{
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        marginTop: '13%',
+                        left: '10%',
+                        position: 'absolute'
+                    }}
+                    dialogClassName="myClass"
+                    show={this.state.modalSuccess}
+                    onHide={handleClose}
+                    animation={false}
+                >
+                    <Modal.Header style={{ width: '350px' }} closeButton>
+                        <Modal.Title style={{ color: '#274F77' }}>Info</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body
+                     id='modalBodyError'
+                     style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
+                        {modalContent}
+                    </Modal.Body>
+                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                        <Button
+                            className='btn-color-blue'
+                            bsStyle='primary'
+                            onClick={handleClose}
+                        >
+                            Chiudi
+                        </Button>
+
+                    </Modal.Footer>
+
                 </Modal>
+
+
+                <Modal
+                    style={{
+                        borderRadius: '6px',
+                        overflow: 'hidden',
+                        marginTop: '13%',
+                        left: '10%',
+                        position: 'absolute'
+                    }}
+                    dialogClassName="myClass"
+                    show={this.state.modalError}
+                    onHide={handleClose}
+                    animation={false}
+                >
+                    <Modal.Header style={{ width: '350px' }} closeButton>
+                        <Modal.Title style={{ color: 'red' }}>Errore</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body id='modalBodyError' style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
+                        {modalContent}
+                    </Modal.Body>
+                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                        <Button
+                            className='btn-color-blue'
+                            bsStyle='primary'
+                            onClick={handleClose}
+                        >
+                            Chiudi
+                        </Button>
+
+                    </Modal.Footer>
+
+                </Modal>
+
             </Form>
         )
     }
