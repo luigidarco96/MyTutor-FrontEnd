@@ -74,7 +74,7 @@ class DetailsNotice extends Component {
             <Col xs={12} md={3}>
               <CustomButton 
                 bsStyle='primary' 
-                block={true}
+                className = 'btn-color-blue btn-block'
                 onClick={()=>{
                   const headers = {
                     'Authorization': localStorage.getItem('token'),
@@ -103,7 +103,8 @@ class DetailsNotice extends Component {
               <CustomButton
               
                 bsStyle='primary'
-                block={true} 
+                className = 'btn-color-blue btn-block'
+                 
                 disabled={!(this.state.noticeJSON.state==="Closed")}
                 onClick = {()=>{
                   const headers ={
