@@ -5,6 +5,13 @@ import Button from "components/CustomButton/CustomButton";
 import axios from "axios";
 
 const Upload = props => {
+
+  const changeTextInUpload= () => {
+    let element=document.getElementById('textUpload');
+    let childElement= element.childNodes;
+    childElement.innerHTML('<i class-name="pe-7s-cloud-upload"></i>')
+
+  }
   //Update of the candidatures.
   const updateCandidature = () => {
 
@@ -54,10 +61,16 @@ const Upload = props => {
     const headers = {
       'Authorization': localStorage.getItem('token'),
     }
+    //Take all candidatures
     axios
       .get('http://localhost:3001/api/candidatures', { headers: headers })
       .then(blob => {
-        if (blob.data.candidatures.length > 0) {
+        let create=true;
+        blob.data.candidatures.forEach(candidature => 
+          candidature.notice_protocol === props.notice_protocol?create=false:null
+        )
+        //Update candidature.
+        if (!create) {
           axios
             .patch('http://localhost:3001/api/candidatures', data, { headers: headers })
             .then(blob => {
@@ -90,6 +103,7 @@ const Upload = props => {
               document.getElementById('1').appendChild(para);
             })
         }
+        //Create candidature.
         else {
           axios
             .put('http://localhost:3001/api/candidatures', data, { headers: headers })
@@ -318,8 +332,9 @@ const Upload = props => {
     accept: "application/pdf",
     minSize: 0,
     maxSize,
-    multiple: window.location.pathname.split("/P")[0] === '/student/modificaCandidatura',
+    multiple: window.location.pathname.split("/P")[0] === '/student/modificaCandidatura' || window.location.pathname.split('/P')[0]==='/student/detailNotices',
   });
+
 
 
   const isFileTooLarge =
@@ -331,17 +346,16 @@ const Upload = props => {
         plain={props.plain}
         title="Carica bando"
         content={
-          <div className="text-center">
+          <div className="text-center" id='textUpload'>
             <div {...getRootProps()}>
-              <input {...getInputProps()} />
+              <input {...getInputProps() }></input>
               {!isDragActive && "Click here or drop a file to upload!"}
-              {isDragActive && !isDragReject && "Drop it like it's hot!"}
-              {isDragReject && "File type not accepted, sorry!"}
-              {isFileTooLarge && (
-                <div className="text-danger mt-2">File is too large.</div>
-              )}
+                {isDragActive && !isDragReject && "Drop it like it's hot!"}
+                {isDragReject && "File type not accepted, sorry!"}
+                {isFileTooLarge && (
+                  <div className="text-danger mt-2">File is too large.</div>
+                )}
             </div>
-
             <ul className="list-group mt-2">
               {acceptedFiles.length > 0 &&
                 acceptedFiles.map(acceptedFile => (
@@ -402,9 +416,7 @@ const Upload = props => {
             <div className="text-center">
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
-                {!isDragActive && "Click here or drop a file to upload!"}
-                {isDragActive && !isDragReject && "Drop it like it's hot!"}
-                {isDragReject && "File type not accepted, sorry!"}
+                {!isDragActive && <i style={{fontSize:'150px'}}className='pe-7s-cloud-upload'></i>}
                 {isFileTooLarge && (
                   <div className="text-danger mt-2">File is too large.</div>
                 )}
