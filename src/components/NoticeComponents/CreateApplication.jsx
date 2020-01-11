@@ -25,7 +25,10 @@ const CreateApplication = (props) => {
     const [modalConfirm, setModalConfirm] = useState(false);
     const [operationToConfirm, setOperationToConfirm] = useState('');
     const [isErrorOperation, setIsErrorOperation] = useState(false);
-  
+    const [alertError, setAlertError] = useState(false);
+    const [alertSuccess, setAlertSuccess] = useState(false);
+    const [alertText, setAlertText] = useState('');
+
     useEffect(() => {
         if (!isMounted) {
             let user = JSON.parse(localStorage.getItem('user'));
@@ -49,7 +52,6 @@ const CreateApplication = (props) => {
                         .then(response => {
                             if (response.status == '200') {
                                 setIsMounted(true)
-                                console.log(response.data.notices[0])
                                 let applicationSheet = response.data.notices[0].application_sheet
                                 if (applicationSheet != null) {
                                     setDescription(applicationSheet.documents_to_attach)
@@ -84,7 +86,7 @@ const CreateApplication = (props) => {
                             setModalConfirm(true);
                             setIsErrorOperation(true);
 
-                            
+
 
                         }}>
                         Elimina
@@ -92,7 +94,12 @@ const CreateApplication = (props) => {
                     <CustomButton
                         bsStyle='success'
                         create-notice-csbutton
-                        type='submit'>
+                        type='submit'
+                        onClick={() => {
+                            setAlertError(false);
+                            setAlertSuccess(false);
+                        }}
+                    >
                         Applica Modifica
                     </CustomButton>
                 </div>
@@ -113,11 +120,14 @@ const CreateApplication = (props) => {
         const {
             match: { params }
         } = props;
+        //Close the modal to confirm operation.
         setModalConfirm(false);
+
         let protocolField = document.getElementById('protocolField').value
         if (error != '' && protocolField == params.id) {
-            setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
-            setModal(true)
+            setAlertSuccess(false);
+            setAlertText('Domanda con protocollo N. ' + params.id + 'inesistente');
+            setAlertError(true);
         } else if (protocolField == params.id && protocolField != '') {
             let user = JSON.parse(localStorage.getItem('user'));
             let token = localStorage.getItem('token');
@@ -134,31 +144,38 @@ const CreateApplication = (props) => {
                 }
             }).then(response => {
                 if (response.status == '200') {
-                    setModalContent('Domanda eliminata con successo')
+                    setAlertError(false);
+                    setAlertSuccess(true);
+                    setAlertText('Domanda eliminata con successo');
                 }
             }).catch(err => {
-                console.log(err.response)
                 if (err.response != undefined) {
-                    setModalContent('Controlla di aver inserito correttamente il protocollo.')
+                    setAlertSuccess(false);
+                    setAlertError(true);
+                    setAlertText('Controlla di aver inserito correttamente il protocollo.');
                 }
             })
             setModal(true)
         } else if (protocolField != params.id && protocolField != '' && protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) != null) {
-            setModalContent('Attenzione! Hai inserito un nuovo protocollo, se vuoi cancellare un\'altra domanda recati sulla pagina inerente ad esso.')
-            setModal(true)
+            setAlertSuccess(false);
+            setAlertError(true);
+            setAlertText('Attenzione! Hai inserito un nuovo protocollo, se vuoi cancellare un\'altra domanda recati sulla pagina inerente ad esso.');
+
         } else if (protocolField == '') {
-            setModalContent('Devi inserire il protocollo per poter eliminare una domanda.')
-            setModal(true)
+
+            setAlertSuccess(false);
+            setAlertError(true);
+            setAlertText('Devi inserire il protocollo per poter eliminare una domanda.');
+
         } else if (protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) == null) {
-            console.log(protocolField)
-            setModalContent("Protocollo non valido. Rispettare il formato.")
-            setModal(true)
+            setAlertSuccess(false);
+            setAlertError(true);
+            setAlertText("Protocollo non valido. Rispettare il formato.");
         }
     }
 
     const handleFormSubmit = (e) => {
         e.preventDefault()
-
         validateForm()
 
         let applicationSheet = {
@@ -174,8 +191,9 @@ const CreateApplication = (props) => {
 
         if (params.id && params.id == protocol) {
             if (error != '') {
-                setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
-                setModal(true)
+                setAlertSuccess(false);
+                setAlertError(true);
+                setAlertText('Domanda con protocollo N. ' + params.id + ' inesistente.');
             } else {
                 //modify applicationSheet
                 axios({
@@ -190,22 +208,30 @@ const CreateApplication = (props) => {
                     }
                 }).then(response => {
                     if (response.status == '200') {
-                        setModalContent('Domanda modificata con successo')
+                        setAlertError(false);
+                        setAlertSuccess(true);
+                        setAlertText('Domanda modificata con successo');
                     }
                 }).catch(err => {
                     if (err.response != undefined) {
-                        setModalContent(err.response.data.error)
+                        setAlertSuccess(false);
+                        setAlertError(true);
+                        setAlertText(err.response.data.error);
                     }
                 })
-                setModal(true)
             }
         } else if (params.id && params.id != protocol && protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) != null) {
+
             if (error != '' && protocol == params.id) {
-                setModalContent('Domanda con protocollo N. ' + params.id + ' inesistente.')
-                setModal(true)
+                setAlertSuccess(false);
+                setAlertError(true);
+                setAlertText('Domanda con protocollo N. ' + params.id + ' inesistente.');
+
             } else {
-                setModalContent('Attenzione! Hai inserito un nuovo protocollo, se vuoi modificare un\'altra domanda recati sulla pagina inerente ad essa.')
-                setModal(true)
+                setAlertSuccess(false);
+                setAlertError(true);
+                setAlertText('Attenzione! Hai inserito un nuovo protocollo, se vuoi modificare un\'altra domanda recati sulla pagina inerente ad essa.');
+
             }
         } else if (!params.id) {
             //create the applicationSheet
@@ -221,36 +247,41 @@ const CreateApplication = (props) => {
                 }
             }).then(response => {
                 if (response.status == '200') {
-                    setModalContent('Domanda creata con successo')
-                    setModal(true)
+                    setAlertError(false);
+                    setAlertSuccess(true);
+                    setAlertText('Domanda creata con successo');
                 }
             })
                 .catch(err => {
                     if (err.response.data.exception != undefined) {
                         if (err.response.data.exception.match("Duplicate entry")) {
-                            setModalContent(err.response.data.error + "Assicurati che la domanda per questo bando non esista già e riprova.")
-                            setModal(true)
+                            setAlertSuccess(false);
+                            setAlertError(true);
+                            setAlertText("Assicurati che la domanda per questo bando non esista già e riprova.");
                         }
                         else {
-                            setModalContent(err.response.data.error + "Assicurati che il bando collegato alla domanda esista e riprova.")
-                            setModal(true)
+                            setAlertSuccess(false);
+                            setAlertError(true);
+                            setAlertText("Assicurati che il bando collegato alla domanda esista e riprova.");    
+                            
                         }
                     }
                 })
         } else if (protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) == null) {
-            setModalContent("Protocollo non valido. Rispettare il formato.")
-            setModal(true)
+            setAlertSuccess(false);
+            setAlertError(true);
+            setAlertText("Protocollo non valido. Rispettare il formato.");
+
         }
     }
 
     const validateForm = () => {
         if (protocol == '' || description == '') {
-            document.getElementById('error-message').innerHTML = 'Controlla di aver compilato tutti i campi'
-            document.getElementById('error-message').style.visibility = 'visible'
+            setAlertSuccess(false);
+            setAlertError(true);
+            setAlertText('Controlla di aver compilato tutti i campi.');
             return false;
         } else if (protocol != '' && description != '') {
-            document.getElementById('error-message').innerHTML = ''
-            document.getElementById('error-message').style.visibility = 'hidden'
             return true;
         }
     }
@@ -292,17 +323,17 @@ const CreateApplication = (props) => {
         }
     }
 
-     
+
     //Select operatio to execute
-    const selectOperation = ()=>{
-        switch(operationToConfirm){
-            case 'Elimina' : 
+    const selectOperation = () => {
+        switch (operationToConfirm) {
+            case 'Elimina':
                 handleDelete();
                 break;
-           
+
         }
     }
-  
+
     return (
         <div className='container-fluid custom-body-view'>
             <Form onSubmit={e => handleFormSubmit(e)}>
@@ -349,6 +380,23 @@ const CreateApplication = (props) => {
                             </FormControl>
                         </Col>
                     </Row>
+                    {alertError ?
+                        <Alert bsStyle='danger' id='error-message'>
+                            <p>{alertText}</p>
+                        </Alert >
+                        :
+                        <div></div>
+                    }
+
+                    {alertSuccess ?
+                        <Alert bsStyle='success' id='success-message'>
+                            <p>{alertText}</p>
+                        </Alert >
+                        :
+                        <div></div>
+                    }
+
+
                     <Row className='create-notice-row'>
                         <Col xs={12} md={12}>
                             {handleEditType()}
@@ -356,7 +404,6 @@ const CreateApplication = (props) => {
                     </Row>
                 </FormGroup>
             </Form>
-          
 
             <Modal
                 style={{
@@ -394,7 +441,7 @@ const CreateApplication = (props) => {
                         Annulla
             </CustomButton>
                     <CustomButton
-                        bsStyle={isErrorOperation?'danger':'success'}
+                        bsStyle={isErrorOperation ? 'danger' : 'success'}
                         onClick={() => {
                             selectOperation();
                         }}
@@ -404,7 +451,7 @@ const CreateApplication = (props) => {
                 </Modal.Footer>
             </Modal>
 
-            <Alert style={{ visibility: 'hidden' }} bsStyle='danger' id='error-message'></Alert >
+
         </div>
     )
 }
