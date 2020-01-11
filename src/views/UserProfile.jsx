@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import { Collapse, Toast, ToastHeader, ToastBody } from 'reactstrap';
 import {
+  Glyphicon,
   FormControl,
   ControlLabel,
   Col,
@@ -19,6 +20,7 @@ export default class UserProfile extends Component {
 
     this.state = {
       password: '',
+      showPassword: 'password',
       change: false,
       error: null
     };
@@ -29,28 +31,6 @@ export default class UserProfile extends Component {
 
     if (error) {
       return error;
-    }
-  }
-
-  changePassword() {
-    const { change } = this.state;
-
-    if (change) {
-      return (
-        <div>
-          <h6>Cambia password</h6>
-          <FormControl
-            style={{ margin: '5px 0 0 5px' }}
-            type='password'
-            value={this.state.password}
-            placeholder='Inserisci password'
-            onChange={e => this.handleInput(e)}
-          />
-          <CustomButton type='submit' block bsStyle='primary'>
-            Invia
-          </CustomButton>
-        </div>
-      );
     }
   }
 
@@ -66,9 +46,35 @@ export default class UserProfile extends Component {
     e.stopPropagation();
     e.preventDefault();
 
+    if (!this.state.change) {
+      e.target.className = e.target.className.replace(
+        'btn-primary',
+        'btn-warning'
+      );
+
+      e.target.innerHTML = 'Annulla';
+    } else {
+      e.target.className = e.target.className.replace(
+        'btn-warning',
+        'btn-primary'
+      );
+
+      e.target.innerHTML = 'Modifica Password';
+
+      if (this.state.password) {
+        this.setState({ password: '' });
+      }
+    }
+
     this.setState({
       change: !this.state.change
     });
+  }
+
+  handleHover(e) {
+    if (e.target.disabled) {
+      e.target.disabled = false;
+    }
   }
 
   handleSubmit(e) {
@@ -104,12 +110,25 @@ export default class UserProfile extends Component {
           window.location = '/notices';
         })
         .catch(error => {
-          if (Boolean(error)) {
-            this.setState({
-              error: <Alert bsStyle='danger'>{error}</Alert>
-            });
-          }
+          this.setState({
+            error: <Toast></Toast>
+          });
         });
+    }
+  }
+
+  handleSeePassword(e) {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (this.state.showPassword === 'password') {
+      this.setState({
+        showPassword: 'text'
+      });
+    } else {
+      this.setState({
+        showPassword: 'password'
+      });
     }
   }
 
@@ -118,55 +137,94 @@ export default class UserProfile extends Component {
 
     return (
       <div className='container-fluid content'>
-        <Card
-          content={
-            <form onSubmit={e => this.handleSubmit(e)}>
-              <Grid fluid>
-                <Row>
-                  <Col xs={12} md={6}>
-                    <h6>Nome</h6>
+        <Grid fluid>
+          <Col xs={12} md={8}>
+            <Card
+              title='Informazioni personali'
+              content={
+                <Grid fluid>
+                  <Row className='text-center'>
+                    <h4>Nome</h4>
                     <p>{user.name}</p>
-                  </Col>
-                  <Col xs={12} md={3} mdOffset={3}>
-                    <CustomButton
-                      block
-                      bsStyle='primary'
-                      onClick={e => this.handlePasswordChange(e)}
-                    >
-                      Cambia password
-                    </CustomButton>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs={12} md={6}>
-                    <h6>Cognome</h6>
+                  </Row>
+                  <Row className='text-center'>
+                    <h4>Cognome</h4>
                     <p>{user.surname}</p>
-                  </Col>
-                  <Col xs={12} md={3} mdOffset={3}>
-                    {this.changePassword()}
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs={12} md={6}>
-                    <h6>Email</h6>
+                  </Row>
+                  <Row className='text-center'>
+                    <h4>Email</h4>
                     <p>{user.email}</p>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs={12} md={6}>
-                    <h6>Nome</h6>
+                  </Row>
+                  <Row className='text-center'>
+                    <h4>Ruolo</h4>
                     <p>{UserRole[user.role]}</p>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col xs={12} md={12}>
-                    {this.showError()}
-                  </Col>
-                </Row>
-              </Grid>
-            </form>
-          }
-        />
+                  </Row>
+                </Grid>
+              }
+            />
+          </Col>
+          <Col xs={12} md={4}>
+            <Card
+              title='Modifica dati'
+              content={
+                <form onSubmit={e => this.handleSubmit()}>
+                  <Grid fluid>
+                    <Row>
+                      <CustomButton
+                        style={{ margin: '0' }}
+                        bsStyle='primary'
+                        block
+                        fill
+                        onClick={event => this.handlePasswordChange(event)}
+                        onMouseOver={event => this.handleHover(event)}
+                      >
+                        Modifica Password
+                      </CustomButton>
+                    </Row>
+                    <Row>
+                      <Collapse
+                        isOpen={this.state.change}
+                        style={{ textAlign: 'center' }}
+                      >
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center'
+                          }}
+                        >
+                          <FormControl
+                            type={this.state.showPassword}
+                            name='password'
+                            value={this.state.password}
+                            placeholder='Inserisci password'
+                            onChange={event => this.handleInput(event)}
+                            style={{ paddingRight: '10px' }}
+                          />
+                          <Glyphicon
+                            glyph='eye-open'
+                            style={{ marginLeft: '-25px', cursor: 'pointer' }}
+                            onClick={event => {
+                              this.handleSeePassword(event);
+                            }}
+                          />
+                        </div>
+                        <CustomButton
+                          style={{ margin: '10px auto' }}
+                          bsStyle='primary'
+                          block
+                          fill
+                          type='submit'
+                        >
+                          Applica modifiche
+                        </CustomButton>
+                      </Collapse>
+                    </Row>
+                  </Grid>
+                </form>
+              }
+            />
+          </Col>
+        </Grid>
       </div>
     );
   }
