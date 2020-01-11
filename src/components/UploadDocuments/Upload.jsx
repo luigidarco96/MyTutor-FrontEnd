@@ -349,13 +349,10 @@ const Upload = props => {
           <div className="text-center" id='textUpload'>
             <div {...getRootProps()}>
               <input {...getInputProps() }></input>
-              {!isDragActive && "Click here or drop a file to upload!"}
-                {isDragActive && !isDragReject && "Drop it like it's hot!"}
-                {isDragReject && "File type not accepted, sorry!"}
+              {!isDragActive && <i style={{fontSize:'150px'}}className='pe-7s-cloud-upload'></i>}
                 {isFileTooLarge && (
                   <div className="text-danger mt-2">File is too large.</div>
-                )}
-            </div>
+                )}            </div>
             <ul className="list-group mt-2">
               {acceptedFiles.length > 0 &&
                 acceptedFiles.map(acceptedFile => (
@@ -382,12 +379,10 @@ const Upload = props => {
           <div className="text-center">
             <div {...getRootProps()}>
               <input {...getInputProps()} />
-              {!isDragActive && "Click here or drop a file to upload!"}
-              {isDragActive && !isDragReject && "Drop it like it's hot!"}
-              {isDragReject && "File type not accepted, sorry!"}
-              {isFileTooLarge && (
-                <div className="text-danger mt-2">File is too large.</div>
-              )}
+              {!isDragActive && <i style={{fontSize:'150px'}}className='pe-7s-cloud-upload'></i>}
+                {isFileTooLarge && (
+                  <div className="text-danger mt-2">File is too large.</div>
+                )}
             </div>
 
             <ul className="list-group mt-2">
@@ -440,8 +435,6 @@ const Upload = props => {
       );
     
   }
-
-
 };
 
 
