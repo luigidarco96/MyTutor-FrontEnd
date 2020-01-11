@@ -43,7 +43,7 @@ const Upload = props => {
 
     const data = {
       candidature: {
-        student: user.email,
+        student: user,
         notice_protocol: props.notice_protocol,
         last_edit: last_edit,
         state: 'Editable',
