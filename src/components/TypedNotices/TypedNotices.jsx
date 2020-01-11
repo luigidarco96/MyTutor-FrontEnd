@@ -6,10 +6,12 @@ import CustomButton from '../CustomButton/CustomButton';
 import '../../assets/css/detailNotice.css';
 import axios from 'axios';
 
-let disabled = [{
-  protocol: '',
-  bool: false,
-}];
+let disabled = [
+  {
+    protocol: '',
+    bool: false
+  }
+];
 
 export default class TypedNotices extends Component {
   constructor(props) {
@@ -28,44 +30,45 @@ export default class TypedNotices extends Component {
       operationToConfirm: '',
       isLoadedButton: true,
       error: false
-
     };
   }
 
   componentDidMount() {
     const headers = {
-      'Authorization': localStorage.getItem('token')
-    }
+      Authorization: localStorage.getItem('token')
+    };
     let notices;
     axios
-      .post('http://localhost:3001/api/notices/search', {}, { headers: headers })
+      .post(
+        'http://localhost:3001/api/notices/search',
+        {},
+        { headers: headers }
+      )
       .then(blob => {
         notices = blob.data.notices;
         notices.forEach(element => {
           if (element.state === 'Expired') {
             axios
-              .post('http://localhost:3001/api/ratings/exists', { noticeProtocol: element.protocol }, { headers: headers })
+              .post(
+                'http://localhost:3001/api/ratings/exists',
+                { noticeProtocol: element.protocol },
+                { headers: headers }
+              )
               .then(blob => {
                 let obj = {
                   protocol: element.protocol,
                   bool: !blob.data.exists
-                }
+                };
                 disabled.push(obj);
-               console.log(disabled);
+                console.log(disabled);
               })
               .catch(error => {
                 //TODO: inserire modal errore.
-              })
+              });
           }
-
-        })
-
-
+        });
       })
-      .catch(error => {
-
-      })
-
+      .catch(error => {});
   }
   //Show the modal to confirm an operation.
   showConfirm() {
@@ -123,7 +126,6 @@ export default class TypedNotices extends Component {
             ></i>
 
             <CustomButton
-
               bsStyle='primary'
               className='btn-color-blue'
               style={{
@@ -135,14 +137,14 @@ export default class TypedNotices extends Component {
                 e.preventDefault();
 
                 // Take the notice's protocol
-                let id = e.target.parentElement.parentElement.id;
+                let id = e.target.parentElement.parentElement.parentElement.id;
 
                 // Redirect to the modifications page
                 window.location = `manageNotice/${id}`;
               }}
             >
               Modifica
-          </CustomButton>
+            </CustomButton>
             <CustomButton
               bsStyle='danger'
               pullRight
@@ -168,7 +170,7 @@ export default class TypedNotices extends Component {
               }}
             >
               Elimina
-          </CustomButton>
+            </CustomButton>
 
             <CustomButton
               bsStyle='success'
@@ -186,7 +188,7 @@ export default class TypedNotices extends Component {
               }}
             >
               Inoltra al professore
-          </CustomButton>
+            </CustomButton>
           </div>
         </td>
       );
@@ -231,8 +233,8 @@ export default class TypedNotices extends Component {
         <td>
           <CustomButton
             bsStyle='primary'
-            className = 'btn-color-blue'
-            style = {{
+            className='btn-color-blue'
+            style={{
               float: 'right'
             }}
             pullRight
@@ -262,8 +264,8 @@ export default class TypedNotices extends Component {
         <td>
           <CustomButton
             bsStyle='primary'
-            className = 'btn-color-blue'
-            style = {{
+            className='btn-color-blue'
+            style={{
               float: 'right'
             }}
             pullRight
@@ -291,13 +293,12 @@ export default class TypedNotices extends Component {
 
     if (Boolean(user) && user.role === 'Teaching Office') {
       const headers = {
-        'Authorization': localStorage.getItem('token')
-      }
+        Authorization: localStorage.getItem('token')
+      };
       let showButton;
-      disabled.forEach(el=>{
-        if(el.protocol===element.protocol)
-          showButton = el.bool;
-      })
+      disabled.forEach(el => {
+        if (el.protocol === element.protocol) showButton = el.bool;
+      });
       return (
         <td>
           <CustomButton
@@ -310,7 +311,9 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace('http://localhost:3000/admin/candidatures/' + element.protocol);
+              window.location.replace(
+                'http://localhost:3000/admin/candidatures/' + element.protocol
+              );
             }}
           >
             Visualizza candidature
@@ -320,35 +323,27 @@ export default class TypedNotices extends Component {
             bsStyle='success'
             pullRight
             disabled={showButton}
-
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               this.setState({
                 operationToConfirm: 'Inoltra graduatoria',
-                selectedNotice: element,
-              })
+                selectedNotice: element
+              });
               this.showConfirm();
             }}
           >
             Inoltra graduatoria
-        </CustomButton>
-
+          </CustomButton>
         </td>
-      )
-
-
+      );
     } else {
       return this.publishedOperation();
     }
   }
 
   waitingForGradedListOperation(element) {
-    return (
-      <td>
-
-      </td>
-    )
+    return <td></td>;
   }
 
   closedOperation(element) {
@@ -366,7 +361,9 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace('http://localhost:3000/admin/valutations/' + element.protocol);
+              window.location.replace(
+                'http://localhost:3000/admin/valutations/' + element.protocol
+              );
             }}
           >
             Visualizza tabella
@@ -445,7 +442,6 @@ export default class TypedNotices extends Component {
         show: true,
         selectedNotice: element
       });
-
     };
 
     if (Boolean(user) && user.role === 'DDI') {
@@ -470,12 +466,18 @@ export default class TypedNotices extends Component {
               e.stopPropagation();
               e.preventDefault();
               const headers = {
-                'Authorization': localStorage.getItem('token'),
-              }
+                Authorization: localStorage.getItem('token')
+              };
               axios
-                .get('http://localhost:3001/api/notices/pdf/' + element.protocol, { headers: headers, responseType: 'blob' })
+                .get(
+                  'http://localhost:3001/api/notices/pdf/' + element.protocol,
+                  { headers: headers, responseType: 'blob' }
+                )
                 .then(blob => {
-                  const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
+                  const fileName = blob.headers['content-disposition']
+                    .split(';')[1]
+                    .trim()
+                    .split('"')[1];
                   let a = document.createElement('a');
                   var url = window.URL.createObjectURL(blob.data);
                   a.href = url;
@@ -483,8 +485,7 @@ export default class TypedNotices extends Component {
                   a.click();
                   window.URL.revokeObjectURL(url);
                   a.remove();
-
-                })
+                });
             }}
           >
             Scarica bando
@@ -494,7 +495,7 @@ export default class TypedNotices extends Component {
               marginLeft: '27px'
             }}
             bsStyle='primary'
-            className="btn-color-blue"
+            className='btn-color-blue'
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -514,7 +515,6 @@ export default class TypedNotices extends Component {
 
   //element is the notice selected
   displayButtons(type, element) {
-
     switch (type) {
       case 'Bozza':
         return this.draftOperation(element);
@@ -744,7 +744,6 @@ export default class TypedNotices extends Component {
       let error = blob.data.error;
       window.location.replace('http://localhost:3000/admin/notices');
       if (error) {
-
       }
     });
 
@@ -929,7 +928,7 @@ export default class TypedNotices extends Component {
             left: '10%',
             position: 'absolute'
           }}
-          dialogClassName="myClass"
+          dialogClassName='myClass'
           show={this.state.show}
           onHide={closeModalComment}
           animation={false}
@@ -973,7 +972,7 @@ export default class TypedNotices extends Component {
             left: '10%',
             position: 'absolute'
           }}
-          dialogClassName="myClass"
+          dialogClassName='myClass'
           show={this.state.showComment}
           onHide={closeModalComment}
           animation={false}
@@ -996,7 +995,7 @@ export default class TypedNotices extends Component {
             left: '10%',
             position: 'absolute'
           }}
-          dialogClassName="myClass"
+          dialogClassName='myClass'
           show={this.state.showConfirm}
           onHide={closeConfirm}
           animation={false}
@@ -1007,7 +1006,11 @@ export default class TypedNotices extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body
-            style={{ width: '350px', padding: '7px 7px 7px 16px', fontSize: '15px' }}
+            style={{
+              width: '350px',
+              padding: '7px 7px 7px 16px',
+              fontSize: '15px'
+            }}
           >
             <span>Confermare l'operazione?</span>
           </Modal.Body>
