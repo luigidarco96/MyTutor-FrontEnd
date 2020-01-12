@@ -162,6 +162,7 @@ export default class Rating extends Component {
 
 
     handleSubmit = (e) => {
+        console.log('ciao')
         const { assignments } = this.state
         e.preventDefault()
 
@@ -177,7 +178,7 @@ export default class Rating extends Component {
                 protocol: assignments[0].notice_protocol
             }
         }).then((result) => {
-            if (result.status === '200') {
+            
                 if (result.data.candidatures && result.data.candidatures.length > 0) {
                     let candidatureList = result.data.candidatures;
                     let ratingList = []
@@ -211,22 +212,26 @@ export default class Rating extends Component {
                         }
                     }).then(response => {
                         if (response.status === '200') {
-                            this.setModalSuccess('Tabella creata con successo!')
+                            this.setModalSuccess('Tabella creata con successo!');
+                          
                         }
                     }).catch(err => {
                         if (err.response.data.error) {
-                            this.setModalError(err.response.data.error)
-                        }
+                            this.setModalError(err.response.data.error);
+                                                   }
                     })
                 }
                 else {
-                    this.setModalError('ATTENZIONE! Non sono stati rilevati candidati per questo bando')
+                    this.setModalError('ATTENZIONE! Non sono stati rilevati candidati per questo bando');
+                    
                     return []
                 }
-            }
+            
         }).catch(err => {
             this.setModalError(err.response.data.error + 'Riprovare più tardi o controllare i candidati al bando!')
-        })
+            
+          
+      })
 
 
       
