@@ -48,16 +48,18 @@ const CreateApplication = (props) => {
                             }
                         })
                         .then(response => {
-                            if (response.status === '200') {
+                          
                                 setIsMounted(true)
                                 let applicationSheet = response.data.notices[0].application_sheet
                                 if (applicationSheet !== null) {
                                     setDescription(applicationSheet.documents_to_attach)
                                     setProtocol(applicationSheet.notice_protocol)
                                 } else {
-                                    setError('PROTOCOL ERROR')
+                                    setError('ERROR PROTOCOL');
+                                
+                                
                                 }
-                            }
+                            
                         }).catch(err => {
                           
                         })
@@ -141,11 +143,11 @@ const CreateApplication = (props) => {
                     Authorization: token
                 }
             }).then(response => {
-                if (response.status === '200') {
+               
                     setAlertError(false);
                     setAlertSuccess(true);
                     setAlertText('Domanda eliminata con successo');
-                }
+                
             }).catch(err => {
                 if (err.response !== undefined) {
                     setAlertSuccess(false);
@@ -189,9 +191,39 @@ const CreateApplication = (props) => {
 
         if (params.id && params.id === protocol) {
             if (error !== '') {
-                setAlertSuccess(false);
-                setAlertError(true);
-                setAlertText('Domanda con protocollo N. ' + params.id + ' inesistente.');
+                axios({
+                    method: 'PUT',
+                    url: 'http://localhost:3001/api/applicationsheet',
+                    data: {
+                        user: user,
+                        applicationSheet: applicationSheet
+                    },
+                    headers: {
+                        Authorization: token
+                    }
+                }).then(response => {
+                    
+                        setAlertError(false);
+                        setAlertSuccess(true);
+                        setAlertText('La domanda non era presente ed è stata creata');
+                   
+                })
+                    .catch(err => {
+                        if (err.response.data.exception !== undefined) {
+                            if (err.response.data.exception.match("Duplicate entry")) {
+                                setAlertSuccess(false);
+                                setAlertError(true);
+                                setAlertText("Assicurati che la domanda per questo bando non esista già e riprova.");
+                            }
+                            else {
+                                setAlertSuccess(false);
+                                setAlertError(true);
+                                setAlertText("Assicurati che il bando collegato alla domanda esista e riprova.");    
+                                
+                            }
+                        }
+                    })
+            
             } else {
                 //modify applicationSheet
                 axios({
@@ -205,22 +237,24 @@ const CreateApplication = (props) => {
                         Authorization: token
                     }
                 }).then(response => {
-                    if (response.status === '200') {
+                    
                         setAlertError(false);
                         setAlertSuccess(true);
                         setAlertText('Domanda modificata con successo');
-                    }
+                    
                 }).catch(err => {
                     if (err.response !== undefined) {
                         setAlertSuccess(false);
                         setAlertError(true);
                         setAlertText(err.response.data.error);
+                        
                     }
                 })
             }
         } else if (params.id && params.id !== protocol && protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) !== null) {
 
             if (error !== '' && protocol === params.id) {
+              
                 setAlertSuccess(false);
                 setAlertError(true);
                 setAlertText('Domanda con protocollo N. ' + params.id + ' inesistente.');
@@ -244,11 +278,11 @@ const CreateApplication = (props) => {
                     Authorization: token
                 }
             }).then(response => {
-                if (response.status === '200') {
+                
                     setAlertError(false);
                     setAlertSuccess(true);
                     setAlertText('Domanda creata con successo');
-                }
+               
             })
                 .catch(err => {
                     if (err.response.data.exception !== undefined) {
