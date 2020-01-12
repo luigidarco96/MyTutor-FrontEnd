@@ -195,7 +195,8 @@ export class SignUpStudent extends Component {
             }
             axios.post('http://localhost:3001/api/auth/registerStudent', { student: user })
                 .then(response => {
-                    if (response.data.status === '200') {
+                    console.log(response)
+                    if (response.status == '200') {
                         if (isLogin) {
                             localStorage.removeItem('status');
                             localStorage.removeItem('token');
@@ -206,6 +207,7 @@ export class SignUpStudent extends Component {
                         localStorage.setItem('token', response.data.token);
                         localStorage.setItem('user', JSON.stringify(response.data.student));
                         let user = JSON.parse(localStorage.getItem('user'));
+                        console.log(user)
                         switch (user.role) {
 
                             case 'DDI': window.location.replace("http://localhost:3000/ddi/notices");
