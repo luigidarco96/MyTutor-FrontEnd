@@ -160,9 +160,8 @@ export default class TypedNotices extends Component {
                 );
 
                 // Take the target element
-                let deletedNotice = this.props.notices[noticeIndex];
                 this.setState({
-                  selectedNotice: deletedNotice,
+                  selectedNotice: element,
                   operationToConfirm: 'Elimina bando',
                   error: true
                 });
@@ -773,6 +772,7 @@ export default class TypedNotices extends Component {
         alertError:false
       });
     };
+    console.log(deletedNotice)
     // Retrieve from localStorage the user token
     let token = localStorage.getItem('token');
 
