@@ -208,12 +208,7 @@ export default class TypedAssignments extends Component {
           el = this.state.selectedAssignment;
         }
       })
-      let td = document.getElementById(this.state.selectedAssignment.id);
-      td.style.color = 'red';
-      this.setState({
-        assignments: this.state.assignments
-      })
-
+     
       closeConfirm();
       
     })
@@ -290,16 +285,12 @@ rejectAssignment(){
         el = this.state.selectedAssignment;
       }
     })
-    let td = document.getElementById(this.state.selectedAssignment.id);
-    td.style.color = 'red';
-    this.setState({
-      assignments: this.state.assignments
-    })
-
+   
     closeConfirm();
     
   })
   .catch(error=>{
+    console.log(error);
     this.setState({
       alertError: true,
       alertText: 'Impossibile effettuare operazione controllare che la procedura sia stata eseguita correttamente'

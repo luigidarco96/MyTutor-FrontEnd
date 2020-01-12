@@ -102,9 +102,10 @@ class Candidature extends Component {
         return (
           <Button
             style={{ border: '1px solid #274F77' }}
-            className='buttonHover'
+            className='btn-colore-blue'
+            
             bsStyle='primary'
-            bsSize='xs'
+            
             onClick={() => {
               const headers = {
                 Authorization: localStorage.getItem('token')
@@ -142,9 +143,9 @@ class Candidature extends Component {
           <Button
             disabled={true}
             style={{ border: '1px solid #274F77' }}
-            className='buttonHover'
+            className='btn-color-blue'
             bsStyle='primary'
-            bsSize='xs'
+            
             onClick={() => {
               const headers = {
                 Authorization: localStorage.getItem('token')
@@ -185,9 +186,9 @@ class Candidature extends Component {
         return (
           <Button
             style={{ border: '1px solid #274F77' }}
-            className='buttonHover'
+            className='btn-color-blue'
             bsStyle='primary'
-            bsSize='xs'
+            
             onClick={() => {
               const headers = {
                 Authorization: localStorage.getItem('token')
@@ -235,9 +236,9 @@ class Candidature extends Component {
           <Button
             disabled={true}
             style={{ border: '1px solid #274F77' }}
-            className='buttonHover'
+            className='btn-color-blue'
             bsStyle='primary'
-            bsSize='xs'
+            
             onClick=''
           >
             Rifiuta candidatura
@@ -304,7 +305,7 @@ class Candidature extends Component {
                         <tr>
                           {header.map((prop, key) => {
                             return (
-                              <th key={key}>
+                              <th  style={{paddingLeft:'70px'}} key={key}>
                                 {prop}
                               </th>
                             );
@@ -317,16 +318,16 @@ class Candidature extends Component {
                             return (
                               <tr key={element.last_edit}>
                                 <td>{element.student.email}</td>
-                                <td style={{ paddingLeft: '35px' }}>
+                                <td style={{position:'relative', left:'50px'}}>
                                   {element.notice_protocol}
                                 </td>
-                                <td style={{ paddingLeft: '50px' }}>
+                                <td style={{position:'relative', left:'50px'}}>
                                   {element.last_edit.split('T')[0]}
                                 </td>
-                                <td style={{ paddingLeft: '40px' }}>
+                                <td style={{position:'relative', left:'63px'}}>
                                   {statusCandidature(element.state)}
                                 </td>
-                                <td>{downoladDocuments(element)}</td>
+                                <td style={{position:'relative', left:'15px'}}>{downoladDocuments(element)}</td>
                                 <td>{rejectCandidature(element)}</td>
                               </tr>
                             );

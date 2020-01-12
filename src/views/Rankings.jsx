@@ -65,14 +65,14 @@ class Rankings extends Component {
                                                                 //Controllare i campi da inserire nella tabella
                                                             }
                                                             <td style={{ paddingLeft: '27px', paddingRight: '0px' }}> {element.protocol} </td>
-                                                            <td style={{ paddingLeft: '0px' }}> {StateNoticeDictionary[element.state]} </td>
+                                                            <td style={{ paddingLeft: '0px', position:'relative', right:'14px'}}> {StateNoticeDictionary[element.state]} </td>
                                                             <td style={{ paddingLeft: '42px' }}>
 
                                                                 <Button
-                                                                    style={{ border: '1px solid #274F77' }}
-                                                                    className='buttonHover'
+                                                                    style={{  border: '1px solid #274F77' ,position:'relative',right:'18px'}}
+                                                                    className='btn-color-blue'
                                                                     bsStyle="primary"
-                                                                    bsSize="xs"
+                                                                    
                                                                     onClick={() => { window.open('http://localhost:3000/ddi/uploadRanking/' + element.protocol, '_blank') }}
 
 
@@ -82,12 +82,13 @@ class Rankings extends Component {
 
 
                                                             </td>
-                                                            <td style={{ paddingLeft: '42px' }}>
+                                                            <td style={{ paddingLeft: '0px' }}>
                                                                 <Button
-                                                                    style={{ border: '1px solid #274F77' }}
-                                                                    className='buttonHover'
+                                                                    style={{  border: '1px solid #274F77' ,position:'relative',left:'20px'}}
+                                                                    
+                                                                    className = 'btn-color-blue'
                                                                     bsStyle="primary"
-                                                                    bsSize="xs"
+                                                                    
                                                                     onClick={() => {
                                                                         const headers = {
                                                                             'Authorization': localStorage.getItem('token'),
