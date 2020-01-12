@@ -555,7 +555,6 @@ export default class TypedNotices extends Component {
     };
 
     element.state = 'Accepted';
-    element.deadline = element.deadline.split('T')[0];
     const headers = {
       Authorization: localStorage.getItem('token')
     };
@@ -598,7 +597,6 @@ export default class TypedNotices extends Component {
     };
 
     element.state = 'Draft';
-    element.deadline = element.deadline.split('T')[0];
     const headers = {
       Authorization: localStorage.getItem('token')
     };
@@ -644,7 +642,6 @@ export default class TypedNotices extends Component {
       Authorization: localStorage.getItem('token')
     };
     element.state = 'In Acceptance';
-    element.deadline = element.deadline.split('T')[0];
     
     axios
       .patch(
@@ -689,7 +686,6 @@ export default class TypedNotices extends Component {
       Authorization: localStorage.getItem('token')
     };
     element.state = 'In Approval';
-    element.deadline = element.deadline.split('T')[0];
    
     axios
       .patch(
@@ -733,8 +729,7 @@ export default class TypedNotices extends Component {
       Authorization: localStorage.getItem('token')
     };
     element.state = 'Published';
-    element.deadline = element.deadline.split('T')[0];
-
+    
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -814,7 +809,6 @@ export default class TypedNotices extends Component {
       Authorization: localStorage.getItem('token')
     };
     element.state = 'Waiting for Graded List';
-    element.deadline = element.deadline.split('T')[0];
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -902,7 +896,6 @@ export default class TypedNotices extends Component {
         text: '' + document.getElementById('comment').value
       };
       element.state = 'Draft';
-      element.deadline = element.deadline.split('T')[0];
       axios
         .put(
           'http://localhost:3001/api/comment',
