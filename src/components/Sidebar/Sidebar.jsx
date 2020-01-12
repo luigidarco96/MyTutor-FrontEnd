@@ -52,21 +52,16 @@ class Sidebar extends Component {
         data-image= "/assets/images/logo_unisa.png"
       >
         <div className="sidebar-background" style={sidebarBackground} />
-        <div className="logo">
+        <div className="logo" style={{height:'78px'}}>
           <a
-            href=""
-            className="simple-text logo-mini"
+            href="http://localhost:3000/home"
+           // className="simple-text logo-mini"
+           
           >
-            <div className="logo-img">
-              <img src="/assets/images/logo_progetto_tutorato_light.png" alt="logo_image" />
+            <div className="logo-img" > 
+              <img style={{position:'absolute',left:'20px',top:'20px',height:'40px'}} src="/assets/images/logo_MyTutor.png" alt="logo_image" />
             </div>
           </a> 
-          <a
-            href=""
-            className="logo-text"
-          >
-            MYTUTOR
-          </a>
         </div>
         <div className="sidebar-wrapper">
           <ul className="nav">
