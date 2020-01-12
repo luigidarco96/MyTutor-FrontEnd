@@ -154,11 +154,7 @@ export default class TypedNotices extends Component {
                 e.stopPropagation();
                 e.preventDefault();
 
-                // Take the notice's protocol and element index
-                let noticeIndex = Number(
-                  e.target.parentElement.parentElement.children[0].innerHTML
-                );
-
+                
                 // Take the target element
                 this.setState({
                   selectedNotice: element,
