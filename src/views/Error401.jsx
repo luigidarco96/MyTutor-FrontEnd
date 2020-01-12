@@ -55,10 +55,10 @@ class Error401 extends Component{
                             Accesso non autorizzato<br/>
                             <ul>
                                 <li>
-                                <span style={{fontSize:'large',color:'black'}}>Effettuare il <a style={{cursor:'pointer'}} onClick={logout}>logout</a> e connettersi con un altro account</span>
+                                <span style={{fontSize:'large',color:'black'}}>Effettuare il <div href='' style={{cursor:'pointer'}} onClick={logout}>logout</div> e connettersi con un altro account</span>
                                 </li>
                                 <li>
-                                <span style={{fontSize:'large',color:'black'}}>Accedi nuovamente alla pagina dei <a style={{cursor:'pointer'}} onClick={()=>{window.location.replace('http://localhost:3000/'+user.role[0].toLowerCase()+user.role.slice(1)+'/notices')}}>bandi</a></span>
+                                <span style={{fontSize:'large',color:'black'}}>Accedi nuovamente alla pagina dei <div  style={{cursor:'pointer'}} onClick={()=>{window.location.replace('http://localhost:3000/'+user.role[0].toLowerCase()+user.role.slice(1)+'/notices')}}>bandi</div></span>
                                 </li>
                             </ul> 
                         </p>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Navbar, Nav, NavDropdown, MenuItem } from "react-bootstrap";
+import { Navbar, Nav} from "react-bootstrap";
 import Button from "components/CustomButton/CustomButton";
 
 export class GuestNavbar extends Component {

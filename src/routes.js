@@ -22,7 +22,6 @@ import Candidature from './views/Candidature';
 import Rankings from './views/Rankings';
 import Users from './views/Users';
 import Assignmets from './views/Assignments';
-import Tasks from './views/Tasks';
 import ManageNotice from './views/ManageNotice';
 import DraftNotice from './views/DraftNotice';
 import UpdateCandidatura from './views/UpdateCandidatura';

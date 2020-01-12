@@ -49,7 +49,7 @@ class Header extends Component {
       <Navbar className="custom-navbar" fluid>
         <Navbar.Header>
           <Navbar.Brand>
-            <a href="">{this.props.brandText}</a>
+            <span>{this.props.brandText}</span>
           </Navbar.Brand>
           <Navbar.Toggle onClick={this.mobileSidebarToggle} />
         </Navbar.Header>

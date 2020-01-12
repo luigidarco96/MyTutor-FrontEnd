@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useState } from "react";
+import React, {useCallback} from "react";
 import { useDropzone } from "react-dropzone";
 import Card from "../Card/Card";
 import Button from "components/CustomButton/CustomButton";
@@ -6,12 +6,7 @@ import axios from "axios";
 
 const Upload = props => {
 
-  const changeTextInUpload= () => {
-    let element=document.getElementById('textUpload');
-    let childElement= element.childNodes;
-    childElement.innerHTML('<i class-name="pe-7s-cloud-upload"></i>')
-
-  }
+  
   //Update of the candidatures.
   const updateCandidature = () => {
 
@@ -20,15 +15,16 @@ const Upload = props => {
     let last_edit = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
     let documents = [];
 
-    acceptedFiles.map(acceptedFile => {
-      function getBase64(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = error => reject(error);
-        });
-      }
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+    acceptedFiles.forEach(acceptedFile => {
+     
       let document;
       getBase64(acceptedFile)
         .then(result => {
@@ -145,15 +141,16 @@ const Upload = props => {
     const headers = {
       'Authorization': localStorage.getItem('token'),
     }
-    acceptedFiles.map(acceptedFile => {
-      function getBase64(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = error => reject(error);
-        });
-      }
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+    acceptedFiles.forEach(acceptedFile => {
+      
       let rankingPdf;
       getBase64(acceptedFile)
         .then(result => {
@@ -234,15 +231,17 @@ const Upload = props => {
     const headers = {
       'Authorization': localStorage.getItem('token'),
     }
-    acceptedFiles.map(acceptedFile => {
-      function getBase64(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-          reader.onload = () => resolve(reader.result);
-          reader.onerror = error => reject(error);
-        });
-      }
+  
+    function getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
+    }
+ 
+    acceptedFiles.forEach(acceptedFile => {
       let noticePdf;
       getBase64(acceptedFile)
         .then(result => {
@@ -317,14 +316,13 @@ const Upload = props => {
   const maxSize = 1048576;
 
   const onDrop = useCallback(acceptedFiles => {
-    acceptedFiles.map((acceptedFile) => { })
+    acceptedFiles.map((acceptedFile) => { return ''})
   }, []);
 
   const {
     isDragActive,
     getRootProps,
     getInputProps,
-    isDragReject,
     acceptedFiles,
     rejectedFiles
   } = useDropzone({

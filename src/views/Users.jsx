@@ -1,5 +1,5 @@
 
-import React, { useState, Component} from 'react';
+import React, { useState} from 'react';
 import "bootstrap/dist/css/bootstrap.min.css"
 import { StudentList } from '../components/Users/StudentList';
 import Card from "components/Card/Card.jsx";

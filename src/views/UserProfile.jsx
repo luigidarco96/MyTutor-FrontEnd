@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
-import { Collapse, Toast, ToastHeader, ToastBody } from 'reactstrap';
+import { Collapse, Toast} from 'reactstrap';
 import {
   Glyphicon,
   FormControl,
-  ControlLabel,
   Col,
   Row,
-  Grid,
-  Alert
+  Grid
 } from 'react-bootstrap';
 import Card from '../components/Card/Card';
 import CustomButton from '../components/CustomButton/CustomButton';

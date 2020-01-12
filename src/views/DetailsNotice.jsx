@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import NoticeInformation from '../components/NoticeInformation/NoticeInformation';
 import Upload from '../components/UploadDocuments/Upload';
 import { Col, Row, Grid } from 'react-bootstrap';

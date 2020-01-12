@@ -44,7 +44,7 @@ export const isLogin = path => {
   path = path.Path.split('/')[1];
   if (token != null && dictionaryPath['' + path] === user.role) {
     return true;
-  } else if (token != null && dictionaryPath['' + path] != user.role) {
+  } else if (token !== null && dictionaryPath['' + path] !== user.role) {
     return 'Not Authorized';
   } else return false;
 };
@@ -74,6 +74,8 @@ export const login = (userEmail, userPassword) => {
           break;
         case 'Teaching Office':
           window.location.replace('http://localhost:3000/admin/notices');
+          break;
+        default:
           break;
       }
     })

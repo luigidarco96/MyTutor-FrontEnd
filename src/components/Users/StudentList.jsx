@@ -22,10 +22,7 @@ export class StudentList extends Component {
     search: false
   };
 
-  constructor(props) {
-    super(props);
-  }
-
+ 
   handleSearch(e) {
     const { students } = this.state;
 
@@ -134,7 +131,7 @@ export class StudentList extends Component {
             .then(blob => {
               this.setState({
                 students: students.filter(
-                  el => el.email != this.state.selectedStudent.email
+                  el => el.email !== this.state.selectedStudent.email
                 )
               });
             });

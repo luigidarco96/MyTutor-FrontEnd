@@ -20,7 +20,7 @@ const Regex = [
         cognomeMatch: false
     },
     {
-        emailRegex: RegExp(/^[a-z]\.{0,1}[a-z]*\@unisa.it$/),
+        emailRegex: RegExp(/^[a-z]\.{0,1}[a-z]*@unisa.it$/),
         emailMatch: false
     },
     {
@@ -62,13 +62,12 @@ export class SignUpProfessor extends Component {
             confirmEmail,
             confirmPass,
             errors,
-            modal,
             modalContent
         } = this.state;
 
         function validateForm() {
-            let confirmPassw = confirmPass == password ? true : false;
-            let confirmEm = confirmEmail == email ? true : false;
+            let confirmPassw = confirmPass === password ? true : false;
+            let confirmEm = confirmEmail === email ? true : false;
             let last = true;
             Regex.forEach((element) => {
                 Object.keys(element).forEach((key, value) => {
@@ -106,36 +105,36 @@ export class SignUpProfessor extends Component {
                     }
                     break;
                 case 'email':
-                    if (value.match(Regex[2].emailRegex) == null) {
+                    if (value.match(Regex[2].emailRegex) === null) {
                         errors.email = "l'email deve essere del tipo m.rossi@unisa.it o mario@unisa.it"
                         Regex[2].emailMatch = false;
                     } else {
                         errors.email = ""
                         Regex[2].emailMatch = true;
                     }
-                    if (value == confirmEmail)
+                    if (value === confirmEmail)
                         errors.confirmEmail = ''
                     break;
                 case 'password':
-                    if (value.match(Regex[3].passRegex) == null) {
+                    if (value.match(Regex[3].passRegex) === null) {
                         errors.password = "la password deve contenere una maiuscola e un numero e almeno 8 caratteri"
                         Regex[3].passwordMatch = false;
                     } else {
                         errors.password = ""
                         Regex[3].passwordMatch = true;
                     }
-                    if (value == confirmPass)
+                    if (value === confirmPass)
                         errors.confirmPass = ''
                     break;
                 case 'confirmPass':
-                    if (password != value) {
+                    if (password !== value) {
                         errors.confirmPass = 'La password non corrisponde'
                     } else {
                         errors.confirmPass = ''
                     }
                     break;
                 case 'confirmEmail':
-                    if (email != value) {
+                    if (email !== value) {
                         errors.confirmEmail = "L'email non corrisponde"
                     } else {
                         errors.confirmEmail = ''
@@ -160,12 +159,12 @@ export class SignUpProfessor extends Component {
             }
             axios.post('http://localhost:3001/api/auth/registerProfessor', { professor: user })
                 .then(response => {
-                    if (response.status == '200' && response.data.status == true) {
+                    if (response.status === '200' && response.data.status === true) {
                         setModalSuccess('Ti è stata inviata una mail di verifica al tuo indirizzo email. Controllala per confermare la tua registrazione.')
                     }
                 })
                 .catch(err => {
-                    if (err.response != undefined)
+                    if (err.response !== undefined)
                         setModalError(err.response.data.error)
                 })
         }

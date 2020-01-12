@@ -3,7 +3,6 @@ import '../../assets/css/global.css';
 
 import axios from 'axios';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import CustomButton from '../CustomButton/CustomButton';
 import {
   Form,

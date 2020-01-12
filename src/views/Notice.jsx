@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, Grid, Row, Col } from 'react-bootstrap';
+import { Tabs, Tab} from 'react-bootstrap';
 import DetailNotice from './DetailsNotice'
 import Rating from './Rating'
 import Card from 'components/Card/Card.jsx';
@@ -42,7 +42,7 @@ export default class Notice extends Component {
                 },
                 method: 'GET'
             }).then(res => {
-                let closed = res.data.notices[0].state == 'Expired' ? true:false
+                let closed = res.data.notices[0].state === 'Expired' ? true:false
                 this.setState({
                     isClosed: closed
                 })
@@ -56,7 +56,7 @@ export default class Notice extends Component {
             return (
                 <div className='content' style={{ height: '30vw', overflowY: 'scroll' }}>
                     <Card
-                        title={selectedTab == 'bando' ? 'Visualizza Bando' : 'Visualizza Tabella Valutazioni'}
+                        title={selectedTab === 'bando' ? 'Visualizza Bando' : 'Visualizza Tabella Valutazioni'}
                         ctTableFullWidth
                         ctTableResponsive
                         content={

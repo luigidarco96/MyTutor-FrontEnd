@@ -15,7 +15,6 @@ const headers = {
 
 
 
-const user = JSON.parse(localStorage.getItem('user'));
 
 class Valutation extends Component {
     state = {
@@ -31,15 +30,11 @@ class Valutation extends Component {
         alertText: ''
     }
 
-    constructor(props) {
-        super(props);
-       
-    }
+    
 
     componentDidMount() {
         //Take the notice protocol from the params.
-        const noticeProtocol = this.props.match.params.id;
-
+       
         //Set the header of the table.
         this.setState({
             header: ['Nome', 'Cognome', 'Matricola', 'Punteggio', 'Id Assegno', 'Azione']
@@ -174,10 +169,10 @@ class Valutation extends Component {
             
             this.setState({
                 valutations:this.state.valutations.filter(val=>
-                    val.assignment_id != this.state.selectedAssignment.id
+                    val.assignment_id !== this.state.selectedAssignment.id
                 ),
                 assignments: this.state.assignments.filter(ass=>
-                    ass.id != this.state.selectedAssignment.assignment_id
+                    ass.id !== this.state.selectedAssignment.assignment_id
                 )
                 
             })
@@ -210,10 +205,10 @@ class Valutation extends Component {
            
             this.setState({
                 valutations:this.state.valutations.filter(val=>
-                    val.assignment_id != this.state.selectedAssignment.id
+                    val.assignment_id !== this.state.selectedAssignment.id
                 ),
                 assignments: this.state.assignments.filter(ass=>
-                    ass.id != this.state.selectedAssignment.assignment_id
+                    ass.id !== this.state.selectedAssignment.assignment_id
                 )
                 
            
@@ -237,6 +232,8 @@ class Valutation extends Component {
                 break;
             case 'Invia richiesta':
                 this.sendRequest();
+                break;
+            default:
                 break;
         }
     }

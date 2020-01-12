@@ -155,13 +155,11 @@ export default class TypedNotices extends Component {
                 e.preventDefault();
 
                 // Take the notice's protocol and element index
-                let id = e.target.parentElement.parentElement.id;
                 let noticeIndex = Number(
                   e.target.parentElement.parentElement.children[0].innerHTML
                 );
 
                 // Take the target element
-                let notices = new Array(this.props.notices);
                 let deletedNotice = this.props.notices[noticeIndex];
                 this.setState({
                   selectedNotice: deletedNotice,
@@ -226,10 +224,7 @@ export default class TypedNotices extends Component {
   //Operation on accepted notices.
   acceptedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
-    const headers = {
-      Authorization: localStorage.getItem('token')
-    };
-
+  
     if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
@@ -294,10 +289,7 @@ export default class TypedNotices extends Component {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (Boolean(user) && user.role === 'Teaching Office') {
-      const headers = {
-        Authorization: localStorage.getItem('token')
-      };
-      let showButton;
+    let showButton;
       disabled.forEach(el => {
         if (el.protocol === element.protocol) showButton = el.bool;
       });
@@ -875,6 +867,8 @@ export default class TypedNotices extends Component {
         break;
       case 'Inoltra graduatoria':
         this.sendRankingToDDI(this.state.selectedNotice);
+        break;
+      default:
         break;
     }
   }

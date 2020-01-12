@@ -15,19 +15,13 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { Component, useReducer } from "react";
+import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
-import NotificationSystem from "react-notification-system";
 
-import HomeNavbar from "components/Navbars/HomeNavbar";
 import Footer from "components/Footer/Footer";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
-
-import { style } from "variables/Variables.jsx";
 
 import routes from "routes.js";
 
-import image from "assets/img/sidebar-3.jpg";
 import GuestNavbar from "../components/Navbars/GuestNavbar";
 class Home extends Component {
   constructor(props) {

@@ -1,7 +1,6 @@
-import React, { Component, useState } from 'react';
+import React, { Component} from 'react';
 import { Grid, Row, Col, Glyphicon, FormControl } from 'react-bootstrap';
 import Axios from 'axios';
-import Fuse from 'fuse.js';
 
 import Card from 'components/Card/Card.jsx';
 import UsersTabs from '../components/UsersTabs/UsersTabs';
@@ -29,20 +28,7 @@ class Notices extends Component {
   }
 
   handleSearch(e) {
-    const { notices } = this.state;
-
-    var options = {
-      shouldSort: true,
-      threshold: 0,
-      location: 0,
-      distance: 100,
-      maxPatternLength: 32,
-      minMatchCharLength: 1,
-      keys: ['protocol', 'description']
-    };
-    var fuse = new Fuse(notices, options); // "list" is the item array
-    var result = fuse.search(e.target.value);
-
+    
   
   }
 
@@ -92,7 +78,6 @@ class Notices extends Component {
   }
 
   componentDidMount() {
-    let user = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
 
     if (Boolean(token)) {
@@ -110,7 +95,7 @@ class Notices extends Component {
           });
         })
         .catch(error => {
-          if (error.response.status == 401) {
+          if (error.response.status === 401) {
             window.location = '/signin';
           }
         });

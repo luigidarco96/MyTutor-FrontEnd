@@ -41,9 +41,6 @@ export default class TypedAssignments extends Component {
 
   assignedOperation(element) {
     let user = JSON.parse(localStorage.getItem("user"));
-    const headers = {
-      Authorization: localStorage.getItem("token")
-    };
     if (Boolean(user) && user.role === "Teaching Office") {
       return (
         <div>
@@ -88,9 +85,6 @@ export default class TypedAssignments extends Component {
 
   closedOperation(element) {
     let user = JSON.parse(localStorage.getItem("user"));
-    const headers = {
-      Authorization: localStorage.getItem("token")
-    };
     if (Boolean(user) && user.role === "Teaching Office") {
       return (
         <div>
@@ -120,10 +114,7 @@ export default class TypedAssignments extends Component {
 
   requestOperation(element){
     const user = JSON.parse(localStorage.getItem('user'));
-    const headers = {
-      'Authorization' : localStorage.getItem('token')
-    }
-    if(user.role=='Student'){
+    if(user.role==='Student'){
         
         return(
           <div>
@@ -210,8 +201,10 @@ export default class TypedAssignments extends Component {
       })
 
       this.props.assignments.forEach((el) => {
-        if (el.id == this.state.selectedAssignment.id && el.student == this.state.selectedAssignment.student) {
-          this.state.selectedAssignment.state = 'Booked';
+        if (el.id === this.state.selectedAssignment.id && el.student === this.state.selectedAssignment.student) {
+          this.setState({
+            selectedAssignment:'Booked'
+          });
           el = this.state.selectedAssignment;
         }
       })
@@ -256,7 +249,7 @@ closedAssignment(element) {
         assignments: this.props.assignments
       })
       this.props.assignments.forEach((el) => {
-        if (el.id == element.id && el.student == element.student) {
+        if (el.id === element.id && el.student === element.student) {
           element.state = 'Over';
           el = element;
         }
@@ -290,8 +283,10 @@ rejectAssignment(){
     })
 
     this.props.assignments.forEach((el) => {
-      if (el.id == this.state.selectedAssignment.id && el.student == this.state.selectedAssignment.student) {
-        this.state.selectedAssignment.state = 'Over';
+      if (el.id === this.state.selectedAssignment.id && el.student === this.state.selectedAssignment.student) {
+        this.setState({
+          selectedAssignment:'Over'
+        })
         el = this.state.selectedAssignment;
       }
     })
@@ -321,6 +316,8 @@ rejectAssignment(){
         
       case "Richiesto":
         return this.requestOperation(element);
+      default:
+        return
      // case "Assegnato":
      //   return this.assignedOperation(element);
     }
@@ -333,6 +330,10 @@ rejectAssignment(){
         break;
       case 'Rifiuta':
         this.rejectAssignment();
+        break;
+      default:
+        break;
+        
     }
 
   }

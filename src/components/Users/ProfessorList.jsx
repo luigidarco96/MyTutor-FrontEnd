@@ -10,7 +10,6 @@ import {
   Alert
 } from "react-bootstrap";
 import Button from "../CustomButton/CustomButton";
-import { login, logout } from "../../utils/auth";
 import axios from "axios";
 import Fuse from "fuse.js";
 
@@ -27,10 +26,7 @@ export class ProfessorList extends Component {
     showErrorAlert:false
   };
 
-  constructor(props) {
-    super(props);
-  }
-
+ 
   handleSearch(e) {
     const { professors } = this.state;
 
@@ -107,7 +103,7 @@ export class ProfessorList extends Component {
   render() {
     //Insert email professor verfied.
     const setEmailVerified = emailVerified => {
-      const emailProfessorExp = /^[a-z]*(\.[a-z]*)?\@unisa\.it$/;
+      const emailProfessorExp = /^[a-z]+\.[a-z]+[0-9]*@studenti\.unisa\.it$/;
 
       if (!emailProfessorExp.test(emailVerified)) {
         this.setState({
@@ -162,7 +158,7 @@ export class ProfessorList extends Component {
             .then(blob => {
               this.setState({
                 professors: professors.filter(
-                  el => el.email != this.state.selectedProfessor.email
+                  el => el.email !== this.state.selectedProfessor.email
                 )
               });
             });

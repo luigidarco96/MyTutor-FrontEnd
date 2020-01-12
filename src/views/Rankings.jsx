@@ -3,15 +3,10 @@ import React, { Component } from "react";
 import { Grid, Row, Table, Col, Button } from 'react-bootstrap';
 import Card from 'components/Card/Card.jsx';
 import axios from "axios";
-import Upload from "../components/UploadDocuments/Upload";
 import { StateNoticeDictionary } from "../static/dicts.js"
 
 
 class Rankings extends Component {
-    constructor(props) {
-        super(props);
-    }
-
 
     state = {
         header: [],
@@ -30,7 +25,7 @@ class Rankings extends Component {
         axios
             .post('http://localhost:3001/api/notices/search', { state: 'Waiting for Graded List' }, { headers: headers })
             .then(blob => {
-           
+
                 this.setState({
                     notices: blob.data.notices,
                 })
@@ -38,83 +33,6 @@ class Rankings extends Component {
     }
 
     render() {
-        //Posso riutilizzare i bottoni
-        let downoladDocuments = (element) => {
-            if (element.state === 'In Evaluation') {
-
-                return (
-                    <Button
-                        style={{ border: '1px solid #274F77' }}
-                        className='buttonHover'
-                        bsStyle="primary"
-                        bsSize="xs"
-                        onClick={() => {
-                            const headers = {
-                                'Authorization': localStorage.getItem('token'),
-                            }
-                            const candidature = {
-                                candidature: element,
-
-                            }
-                            //Call servise to downnload documents of a candidature
-                            axios
-                                .post('http://localhost:3001/api/candidatures/all', candidature, { headers: headers, responseType: 'blob' })
-                                .then(blob => {
-                                    const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
-                                    let a = document.createElement('a');
-                                    var url = window.URL.createObjectURL(blob.data);
-                                    a.href = url;
-                                    a.download = fileName;
-                                    a.click();
-                                    window.URL.revokeObjectURL(url);
-                                    a.remove();
-
-                                })
-                        }}
-
-
-                    >
-                        Scarica documenti
-                    </Button>
-                )
-            }
-            else {
-                return (
-                    <Button
-                        disabled={true}
-                        style={{ border: '1px solid #274F77' }}
-                        className='buttonHover'
-                        bsStyle="primary"
-                        bsSize="xs"
-                        onClick={() => {
-                            const headers = {
-                                'Authorization': localStorage.getItem('token'),
-                            }
-                            const candidature = {
-                                candidature: element,
-
-                            }
-                            //Call servise to downnload documents of a candidature
-                            axios
-                                .post('http://localhost:3001/api/candidatures/all', candidature, { headers: headers, responseType: 'blob' })
-                                .then(blob => {
-                                    const fileName = blob.headers['content-disposition'].split(';')[1].trim().split('"')[1];
-                                    let a = document.createElement('a');
-                                    var url = window.URL.createObjectURL(blob.data);
-                                    a.href = url;
-                                    a.download = fileName;
-                                    a.click();
-                                    window.URL.revokeObjectURL(url);
-                                    a.remove();
-
-                                })
-                        }}
-                    >
-                        Scarica documenti
-                    </Button>
-                )
-            }
-        }
         const { header, notices } = this.state;
 
         return (
@@ -148,14 +66,14 @@ class Rankings extends Component {
                                                             }
                                                             <td style={{ paddingLeft: '27px', paddingRight: '0px' }}> {element.protocol} </td>
                                                             <td style={{ paddingLeft: '0px' }}> {StateNoticeDictionary[element.state]} </td>
-                                                            <td style={{paddingLeft:'42px'}}>
+                                                            <td style={{ paddingLeft: '42px' }}>
 
                                                                 <Button
                                                                     style={{ border: '1px solid #274F77' }}
                                                                     className='buttonHover'
                                                                     bsStyle="primary"
                                                                     bsSize="xs"
-                                                                    onClick={()=>{window.open('http://localhost:3000/ddi/uploadRanking/'+element.protocol,'_blank')}}
+                                                                    onClick={() => { window.open('http://localhost:3000/ddi/uploadRanking/' + element.protocol, '_blank') }}
 
 
                                                                 >
@@ -164,7 +82,7 @@ class Rankings extends Component {
 
 
                                                             </td>
-                                                            <td style={{paddingLeft:'42px'}}>
+                                                            <td style={{ paddingLeft: '42px' }}>
                                                                 <Button
                                                                     style={{ border: '1px solid #274F77' }}
                                                                     className='buttonHover'
@@ -173,10 +91,6 @@ class Rankings extends Component {
                                                                     onClick={() => {
                                                                         const headers = {
                                                                             'Authorization': localStorage.getItem('token'),
-                                                                        }
-                                                                        const candidature = {
-                                                                            candidature: element,
-
                                                                         }
                                                                         //Call servise to download graded list
 
@@ -193,13 +107,13 @@ class Rankings extends Component {
                                                                                 a.remove();
 
                                                                             })
-                                                                    
+
                                                                     }}
 
 
                                                                 >
                                                                     Scarica graduatoria
-                    </Button>
+                                                             </Button>
                                                             </td>
 
 

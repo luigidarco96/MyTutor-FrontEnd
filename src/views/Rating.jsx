@@ -59,7 +59,7 @@ export default class Rating extends Component {
             }).then(res => {
                 let ass = res.data.notices[0].assignments
 
-                ass.map(el => {
+                ass.forEach(el => {
                     el.student = []
                 })
 
@@ -72,7 +72,7 @@ export default class Rating extends Component {
                 .then(res => {
                     let assignments = res.data.notices[0].assignments
 
-                    assignments.map(el => {
+                    assignments.forEach(el => {
                         el.student = []
                     })
 
@@ -81,10 +81,10 @@ export default class Rating extends Component {
                     });
                 })
         }
-        if (this.state.assignments.length == 0) {
+        if (this.state.assignments.length === 0) {
             let ass = this.state.assignments
             this.handleAddAssignments()
-            ass.map(el => {
+            ass.forEach(el => {
                 el.student = []
             })
         }
@@ -128,7 +128,7 @@ export default class Rating extends Component {
         let students = assignments[i].student;
 
         let val = parseInt(value)
-        if ((name == 'interview_score' || name == 'titles_score') && Number.isInteger(val)) {
+        if ((name === 'interview_score' || name === 'titles_score') && Number.isInteger(val)) {
             let match = value.match(regex[name])
             if (match) {
                 students[index][name] = val;
@@ -146,7 +146,7 @@ export default class Rating extends Component {
         const { assignments } = this.state
         let students = assignments[i].student;
         let index = e.target.id.split('_')[0]
-        if (index == students.length - 1) {
+        if (index === students.length - 1) {
             students.pop()
         } else {
             students.forEach((curr, currIndex) => {
@@ -177,7 +177,7 @@ export default class Rating extends Component {
                 protocol: assignments[0].notice_protocol
             }
         }).then((result) => {
-            if (result.status == '200') {
+            if (result.status === '200') {
                 if (result.data.candidatures && result.data.candidatures.length > 0) {
                     let candidatureList = result.data.candidatures;
                     let ratingList = []
@@ -185,7 +185,7 @@ export default class Rating extends Component {
                         ass.student.forEach(st => {
                             let student = null
                             candidatureList.forEach(candidature => {
-                                if (candidature.student.name == st.name && candidature.student.surname == st.surname) {
+                                if (candidature.student.name === st.name && candidature.student.surname === st.surname) {
                                     student = candidature.student;
                                 }
                             })
@@ -210,7 +210,7 @@ export default class Rating extends Component {
                             Authorization: token
                         }
                     }).then(response => {
-                        if (response.status == '200') {
+                        if (response.status === '200') {
                             this.setModalSuccess('Tabella creata con successo!')
                         }
                     }).catch(err => {
@@ -237,10 +237,10 @@ export default class Rating extends Component {
 
         let valid = true;
 
-        assignments.map((ass, assIndex) => {
+        assignments.forEach((ass, assIndex) => {
             ass.student.map(async (st, stIndex) => {
                 for (let err in st.error) {
-                    if (st.error[err] == '') {
+                    if (st.error[err] === '') {
                         valid = valid && true;
                     } else {
                         valid = valid && false;
@@ -254,7 +254,6 @@ export default class Rating extends Component {
     render() {
         const {
             assignments,
-            modal,
             modalContent } = this.state
         return (
             <div className='content'>
@@ -436,9 +435,8 @@ export default class Rating extends Component {
                                     style={{ marginTop: '20px', borderColor: '#274F77', color: '#274F77' }}
                                     bsStyle='primary'
                                     block={true}
-                                    className='btn-clolor-blue '
-                                    block={true}
-                                    className='create-notice-csbutton pull-right'
+                                    
+                                    className='btn-clolor-blue create-notice-csbutton pull-right'
                                     onClick={e => this.handleAddStudent(e, i)}
                                 >
                                     Aggiungi studente

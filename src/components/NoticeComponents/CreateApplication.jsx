@@ -18,8 +18,6 @@ import axios from 'axios';
 const CreateApplication = (props) => {
     const [protocol, setProtocol] = useState("");
     const [description, setDescription] = useState("");
-    const [modal, setModal] = useState(false);
-    const [modalContent, setModalContent] = useState("");
     const [isMounted, setIsMounted] = useState(false);
     const [error, setError] = useState('');
     const [modalConfirm, setModalConfirm] = useState(false);
@@ -50,10 +48,10 @@ const CreateApplication = (props) => {
                             }
                         })
                         .then(response => {
-                            if (response.status == '200') {
+                            if (response.status === '200') {
                                 setIsMounted(true)
                                 let applicationSheet = response.data.notices[0].application_sheet
-                                if (applicationSheet != null) {
+                                if (applicationSheet !== null) {
                                     setDescription(applicationSheet.documents_to_attach)
                                     setProtocol(applicationSheet.notice_protocol)
                                 } else {
@@ -124,11 +122,11 @@ const CreateApplication = (props) => {
         setModalConfirm(false);
 
         let protocolField = document.getElementById('protocolField').value
-        if (error != '' && protocolField == params.id) {
+        if (error !== '' && protocolField === params.id) {
             setAlertSuccess(false);
             setAlertText('Domanda con protocollo N. ' + params.id + 'inesistente');
             setAlertError(true);
-        } else if (protocolField == params.id && protocolField != '') {
+        } else if (protocolField === params.id && protocolField !== '') {
             let user = JSON.parse(localStorage.getItem('user'));
             let token = localStorage.getItem('token');
 
@@ -143,31 +141,31 @@ const CreateApplication = (props) => {
                     Authorization: token
                 }
             }).then(response => {
-                if (response.status == '200') {
+                if (response.status === '200') {
                     setAlertError(false);
                     setAlertSuccess(true);
                     setAlertText('Domanda eliminata con successo');
                 }
             }).catch(err => {
-                if (err.response != undefined) {
+                if (err.response !== undefined) {
                     setAlertSuccess(false);
                     setAlertError(true);
                     setAlertText('Controlla di aver inserito correttamente il protocollo.');
                 }
             })
-            setModal(true)
-        } else if (protocolField != params.id && protocolField != '' && protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) != null) {
+        
+        } else if (protocolField !== params.id && protocolField !== '' && protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) !== null) {
             setAlertSuccess(false);
             setAlertError(true);
             setAlertText('Attenzione! Hai inserito un nuovo protocollo, se vuoi cancellare un\'altra domanda recati sulla pagina inerente ad esso.');
 
-        } else if (protocolField == '') {
+        } else if (protocolField === '') {
 
             setAlertSuccess(false);
             setAlertError(true);
             setAlertText('Devi inserire il protocollo per poter eliminare una domanda.');
 
-        } else if (protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) == null) {
+        } else if (protocolField.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) === null) {
             setAlertSuccess(false);
             setAlertError(true);
             setAlertText("Protocollo non valido. Rispettare il formato.");
@@ -189,8 +187,8 @@ const CreateApplication = (props) => {
             match: { params }
         } = props;
 
-        if (params.id && params.id == protocol) {
-            if (error != '') {
+        if (params.id && params.id === protocol) {
+            if (error !== '') {
                 setAlertSuccess(false);
                 setAlertError(true);
                 setAlertText('Domanda con protocollo N. ' + params.id + ' inesistente.');
@@ -207,22 +205,22 @@ const CreateApplication = (props) => {
                         Authorization: token
                     }
                 }).then(response => {
-                    if (response.status == '200') {
+                    if (response.status === '200') {
                         setAlertError(false);
                         setAlertSuccess(true);
                         setAlertText('Domanda modificata con successo');
                     }
                 }).catch(err => {
-                    if (err.response != undefined) {
+                    if (err.response !== undefined) {
                         setAlertSuccess(false);
                         setAlertError(true);
                         setAlertText(err.response.data.error);
                     }
                 })
             }
-        } else if (params.id && params.id != protocol && protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) != null) {
+        } else if (params.id && params.id !== protocol && protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) !== null) {
 
-            if (error != '' && protocol == params.id) {
+            if (error !== '' && protocol === params.id) {
                 setAlertSuccess(false);
                 setAlertError(true);
                 setAlertText('Domanda con protocollo N. ' + params.id + ' inesistente.');
@@ -246,14 +244,14 @@ const CreateApplication = (props) => {
                     Authorization: token
                 }
             }).then(response => {
-                if (response.status == '200') {
+                if (response.status === '200') {
                     setAlertError(false);
                     setAlertSuccess(true);
                     setAlertText('Domanda creata con successo');
                 }
             })
                 .catch(err => {
-                    if (err.response.data.exception != undefined) {
+                    if (err.response.data.exception !== undefined) {
                         if (err.response.data.exception.match("Duplicate entry")) {
                             setAlertSuccess(false);
                             setAlertError(true);
@@ -267,7 +265,7 @@ const CreateApplication = (props) => {
                         }
                     }
                 })
-        } else if (protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) == null) {
+        } else if (protocol.match(RegExp(/^Prot. n. [0-9]{1,7}$/)) === null) {
             setAlertSuccess(false);
             setAlertError(true);
             setAlertText("Protocollo non valido. Rispettare il formato.");
@@ -276,18 +274,18 @@ const CreateApplication = (props) => {
     }
 
     const validateForm = () => {
-        if (protocol == '' || description == '') {
+        if (protocol === '' || description === '') {
             setAlertSuccess(false);
             setAlertError(true);
             setAlertText('Controlla di aver compilato tutti i campi.');
             return false;
-        } else if (protocol != '' && description != '') {
+        } else if (protocol !== '' && description !== '') {
             return true;
         }
     }
 
     const handleClose = () => {
-        setModal(false);
+       
         setModalConfirm(false);
     }
 
@@ -330,7 +328,8 @@ const CreateApplication = (props) => {
             case 'Elimina':
                 handleDelete();
                 break;
-
+            default:
+                
         }
     }
 

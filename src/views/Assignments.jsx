@@ -32,7 +32,6 @@ class Assignmets extends Component {
   }
 
   componentDidMount() {
-    let user = JSON.parse(localStorage.getItem("user"));
     let token = localStorage.getItem("token");
 
     if (Boolean(token)) {

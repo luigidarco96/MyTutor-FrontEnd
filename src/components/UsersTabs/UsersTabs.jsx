@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
 
 import { Tabs, Tab, Glyphicon } from 'react-bootstrap';
 
@@ -32,7 +31,7 @@ export default class DefaultTabs extends Component {
     };
   }
   handleTabSelect(e) {
-    const { notices, assignments } = this.props;
+    const { notices } = this.props;
 
     if (
       window.location.pathname.split('/')[2] === 'notices' ||
@@ -64,7 +63,7 @@ export default class DefaultTabs extends Component {
   }
 
   componentWillMount() {
-    const { tabs, notices, assignments } = this.props;
+    const { tabs, notices} = this.props;
     if (
       window.location.pathname.split('/')[2] === 'notices' ||
       window.location.pathname === '/home'

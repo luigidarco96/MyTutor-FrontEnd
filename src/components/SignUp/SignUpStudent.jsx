@@ -8,7 +8,7 @@ import {
     Button,
     Modal
 } from 'react-bootstrap';
-import { isLogin, logout } from "../../utils/auth";
+import { isLogin } from "../../utils/auth";
 import axios from 'axios';
 
 const Regex = [
@@ -21,7 +21,7 @@ const Regex = [
         cognomeMatch: false
     },
     {
-        emailRegex: RegExp(/^[a-z]\.[a-z]+[1-9]*\@studenti.unisa.it$/),
+        emailRegex: RegExp(/^[a-z]+\.[a-z]+[0-9]*@studenti\.unisa\.it$/),
         emailMatch: false
     },
     {
@@ -76,14 +76,13 @@ export class SignUpStudent extends Component {
             matricola,
             confirmEmail,
             confirmPass,
-            modal,
             modalContent,
             errors
         } = this.state;
 
         function validateForm() {
-            let confirmPassw = confirmPass == password ? true : false;
-            let confirmEm = confirmEmail == email ? true : false;
+            let confirmPassw = confirmPass === password ? true : false;
+            let confirmEm = confirmEmail === email ? true : false;
             let last = true;
             Regex.forEach((element) => {
                 Object.keys(element).forEach((key, value) => {
@@ -128,7 +127,7 @@ export class SignUpStudent extends Component {
                         errors.email = ""
                         Regex[2].emailMatch = true;
                     }
-                    if (value == confirmEmail)
+                    if (value === confirmEmail)
                         errors.confirmEmail = ''
                     break;
                 case 'password':
@@ -139,7 +138,7 @@ export class SignUpStudent extends Component {
                         errors.password = ""
                         Regex[3].passwordMatch = true;
                     }
-                    if (value == confirmPass)
+                    if (value === confirmPass)
                         errors.confirmPass = ''
                     break;
                 case 'data':
@@ -152,14 +151,14 @@ export class SignUpStudent extends Component {
                     }
                     break;
                 case 'confirmPass':
-                    if (password != value) {
+                    if (password !== value) {
                         errors.confirmPass = 'La password non corrisponde'
                     } else {
                         errors.confirmPass = ''
                     }
                     break;
                 case 'confirmEmail':
-                    if (email != value) {
+                    if (email !== value) {
                         errors.confirmEmail = "L'email non corrisponde"
                     } else {
                         errors.confirmEmail = ''
@@ -196,7 +195,7 @@ export class SignUpStudent extends Component {
             }
             axios.post('http://localhost:3001/api/auth/registerStudent', { student: user })
                 .then(response => {
-                    if (response.data.status = '200') {
+                    if (response.data.status === '200') {
                         if (isLogin) {
                             localStorage.removeItem('status');
                             localStorage.removeItem('token');
@@ -217,19 +216,18 @@ export class SignUpStudent extends Component {
                                 break;
                             case 'Teaching Office': window.location.replace("http://localhost:3000/admin/notices");
                                 break;
+                            default :
+                                break;
                         }
                     }
                 }).catch(err => {
-                    if (err.response != undefined)
+                    if (err.response !== undefined)
                         setModalError(err.response.data.error)
                 })
 
         }
 
-        const setModalSuccess = (content) => {
-            this.setState({ modalSuccess: !this.state.modalSuccess, modalContent: content })
-        }
-
+       
         const setModalError = (content) => {
             this.setState({ modalError: !this.state.modalError, modalContent: content })
         }
@@ -360,41 +358,6 @@ export class SignUpStudent extends Component {
                     style={{ 'margin': '1.5rem' }}>
                     Registrati
                 </Button>
-                <Modal
-                    style={{
-                        borderRadius: '6px',
-                        overflow: 'hidden',
-                        marginTop: '13%',
-                        left: '10%',
-                        position: 'absolute'
-                    }}
-                    dialogClassName="myClass"
-                    show={this.state.modalSuccess}
-                    onHide={handleClose}
-                    animation={false}
-                >
-                    <Modal.Header style={{ width: '350px' }} closeButton>
-                        <Modal.Title style={{ color: '#274F77' }}>Info</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body
-                     id='modalBodyError'
-                     style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
-                        {modalContent}
-                    </Modal.Body>
-                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
-                        <Button
-                            className='btn-color-blue'
-                            bsStyle='primary'
-                            onClick={handleClose}
-                        >
-                            Chiudi
-                        </Button>
-
-                    </Modal.Footer>
-
-                </Modal>
-
 
                 <Modal
                     style={{

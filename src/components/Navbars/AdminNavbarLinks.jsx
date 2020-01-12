@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import { logout } from "../../utils/auth";
 import Button from "components/CustomButton/CustomButton";
 

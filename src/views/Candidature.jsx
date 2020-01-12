@@ -2,13 +2,9 @@ import React, { Component } from 'react';
 import { Grid, Row, Table, Col, Button } from 'react-bootstrap';
 import Card from 'components/Card/Card.jsx';
 import axios from 'axios';
-import Upload from '../components/UploadDocuments/Upload';
 
 class Candidature extends Component {
-  constructor(props) {
-    super(props);
-  }
-
+ 
   state = {
     header: [],
     candidatures: [],
@@ -257,6 +253,7 @@ class Candidature extends Component {
             <img
               style={{ paddingLeft: '10px', height: '16px' }}
               src='/assets/images/statusCandidatureEditable.png'
+              alt='no_img'
             />
           );
         case 'In Evaluation':
@@ -264,6 +261,7 @@ class Candidature extends Component {
             <img
               style={{ paddingLeft: '10px', height: '16px' }}
               src='/assets/images/statusCandidatureInEvaluation.png'
+              alt= 'no_img'
             />
           );
 
@@ -272,6 +270,7 @@ class Candidature extends Component {
             <img
               style={{ paddingLeft: '10px', height: '16px' }}
               src='/assets/images/statusCandidatureRejected.png'
+              alt= 'no_img'
             />
           );
         case 'In Graded List':
@@ -279,8 +278,11 @@ class Candidature extends Component {
             <img
               style={{ paddingLeft: '10px', height: '16px' }}
               src='/assets/images/statusCandidatureGradList.png'
+              alt= 'no_img'
             />
           );
+        default:
+          return
       }
     };
     const { header, candidatures } = this.state;
@@ -340,6 +342,7 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureRejected.png'
+                alt= 'no_img'
               />
               Candidatura rifiutata
             </div>
@@ -348,13 +351,14 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureEditable.png'
+                alt= 'no_img'
               />
               Candidatura modificabile
             </div>
             <div>
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
-
+                alt= 'no_img'
                 src='/assets/images/statusCandidatureInEvaluation.png'
               />
               Candidatura in valutazione
@@ -363,6 +367,7 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureGradList.png'
+                alt= 'no_img'
               />
               La graduatoria per la candidatura è stata pubblicata
             </div>
@@ -423,6 +428,7 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureRejected.png'
+                alt= 'no_img'
               />
               Candidatura rifiutata
             </div>
@@ -430,20 +436,24 @@ class Candidature extends Component {
             <div>
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
+                alt= 'no_img'
                 src='/assets/images/statusCandidatureEditable.png'
               />
               Candidatura modificabile
             </div>
             <div>
               <img
+              alt= 'no_img'
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureInEvaluation.png'
               />
               Candidatura in valutazione
             </div>
             <div>
+
               <img
-                style={{ paddingLeft: '10px', height: '16px' }}
+              alt= 'no_img'
+              style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureGradList.png'
               />
               La graduatoria per la candidatura è stata pubblicata

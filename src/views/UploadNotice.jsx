@@ -3,10 +3,7 @@ import Upload from '../components/UploadDocuments/Upload';
 
 
 class UploadNotice extends Component{
-    constructor(props){
-        super(props);
-
-    }
+  
     
     render(){
         
