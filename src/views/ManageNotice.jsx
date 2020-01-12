@@ -66,10 +66,10 @@ export default class draftNotice extends Component {
                                 defaultActiveKey={selectedTab}
                                 onSelect={e => this.handleTabSelect(e)}
                                 animation={false}>
-                                <Tab eventKey={'bando'} title={'bando'} key={1}>
+                                <Tab eventKey={'bando'} title={'Bando'} key={1}>
                                     <CreateNotice {...this.props}></CreateNotice>
                                 </Tab>
-                                <Tab eventKey={'domanda'} title={'domanda'} key={2}>
+                                <Tab eventKey={'domanda'} title={'Domanda'} key={2}>
                                     <CreateApplication {...this.props} applicationSheet = {applicationSheet}></CreateApplication>
                                 </Tab>
                             </Tabs>

@@ -3,7 +3,7 @@ import { Tabs, Tab, Grid, Row, Col } from 'react-bootstrap';
 import DetailNotice from './DetailsNotice'
 import Rating from './Rating'
 import Card from 'components/Card/Card.jsx';
-import Axios from 'axios';
+import axios from 'axios';
 
 export default class Notice extends Component {
     constructor(props) {
@@ -11,9 +11,8 @@ export default class Notice extends Component {
         this.state = {
             isLoaded: false,
             selectedTab: 'bando',
-            noticeJSON: {},
-            assignmentsJSON: {},
-            isProfessor: false
+            isProfessor: false,
+            isClosed: false
         };
     }
 
@@ -25,48 +24,35 @@ export default class Notice extends Component {
     }
 
     componentDidMount() {
-        console.info('Notice mounted')
         const {
             match: { params }
         } = this.props;
-
         var user = JSON.parse(localStorage.getItem('user'));
-        if (user)
-            if (user.role == 'Professor') {
-                this.setState({ isProfessor: true })
-            }
+        let token = localStorage.getItem('token')
 
         if (
             user != null &&
-            (user.role === 'Teaching Office' ||
-                user.role === 'DDI' ||
-                user.role === 'Professor')
+            (user.role === 'Professor')
         ) {
-            Axios.get(`http://localhost:3001/api/notices/${params.id}`, {
+            this.setState({ isProfessor: true })
+
+            axios(`http://localhost:3001/api/notices/${params.id}`, {
                 headers: {
-                    Authorization: localStorage.getItem('token')
-                }
-            }).then(blob => {
+                    Authorization: token
+                },
+                method: 'GET'
+            }).then(res => {
+                let closed = res.data.notices[0].state == 'Expired' ? true:false
                 this.setState({
-                    isLoaded: true,
-                    noticeJSON: blob.data.notices[0],
-                    assignmentsJSON: blob.data.notices[0].assignments
-                });
-            });
-        } else {
-            Axios.get(`http://localhost:3001/api/notices/${params.id}`).then(blob => {
-                this.setState({
-                    isLoaded: true,
-                    noticeJSON: blob.data.notices[0],
-                    assignmentsJSON: blob.data.notices[0].assignments
-                });
-            });
+                    isClosed: closed
+                })
+            })
         }
     }
 
     render() {
-        const { selectedTab, noticeJSON, assignmentsJSON, isProfessor } = this.state;
-        if (isProfessor) {
+        const { selectedTab, noticeJSON, isClosed, isProfessor } = this.state;
+        if (isProfessor && isClosed) {
             return (
                 <div className='content' style={{ height: '30vw', overflowY: 'scroll' }}>
                     <Card
@@ -80,11 +66,11 @@ export default class Notice extends Component {
                                     defaultActiveKey={selectedTab}
                                     onSelect={e => this.handleTabSelect(e)}
                                     animation={false}>
-                                    <Tab eventKey={'bando'} title={'bando'} key={1}>
-                                        <DetailNotice {...this.props} noticeJSON={noticeJSON}></DetailNotice>
+                                    <Tab eventKey={'bando'} title={'Bando'} key={1}>
+                                        <DetailNotice {...this.props}></DetailNotice>
                                     </Tab>
                                     <Tab eventKey={'Tabella valutazioni'} title={'Tabella valutazioni'} key={2}>
-                                        <Rating {...this.props} assignmentsJSON={assignmentsJSON}></Rating>
+                                        <Rating {...this.props}></Rating>
                                     </Tab>
                                 </Tabs>
                             </div>

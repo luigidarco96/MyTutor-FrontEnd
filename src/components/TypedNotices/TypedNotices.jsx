@@ -339,7 +339,27 @@ export default class TypedNotices extends Component {
           </CustomButton>
         </td>
       );
-    } else {
+    }
+    else if(Boolean(user) && user.role === 'Professor'){
+     return (
+      <td>
+      <CustomButton
+          bsStyle='primary'
+          className='btn-color-blue pull-right'
+          onClick={e => {
+            e.stopPropagation();
+            e.preventDefault();
+            window.location.replace('http://localhost:3000/professor/detailNotices/'+element.protocol);
+        }}
+      >
+        Compila tabelle valutazioni
+    
+      </CustomButton>
+      </td>
+      )
+    }
+    
+    else {
       return this.publishedOperation();
     }
   }
@@ -420,17 +440,7 @@ export default class TypedNotices extends Component {
             Non accetta
           </CustomButton>
 
-          <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue pull-right'
-            onClick={e => {
-              e.stopPropagation();
-              e.preventDefault();
-              console.log(e.target.parentElement.parentElement.id, 'Da fare!');
-            }}
-          >
-            Compila tabelle valutazioni
-          </CustomButton>
+    
         </td>
       );
     }
