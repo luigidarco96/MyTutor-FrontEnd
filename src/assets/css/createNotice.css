@@ -2,6 +2,23 @@ textarea {
   resize: none;
 }
 
+.protocol-input {
+  margin: 0;
+  display: flex;
+  align-items: center;
+}
+
+.protocol-input > p {
+  margin: 0;
+  padding: 8px 0;
+  flex-basis: 20%;
+}
+
+.protocol-input > input {
+  margin: 0;
+  padding: 8px 12px;
+}
+
 .create-notice-row {
   margin: 10px 0;
   padding: 5px;

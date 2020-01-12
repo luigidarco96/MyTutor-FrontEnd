@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Table, Modal, Alert } from 'react-bootstrap';
 
-import { StateNoticeDictionary } from '../../static/dicts';
+import { StateNoticeDictionary, NoticeType } from '../../static/dicts';
 import CustomButton from '../CustomButton/CustomButton';
 import '../../assets/css/detailNotice.css';
 import axios from 'axios';
@@ -30,8 +30,8 @@ export default class TypedNotices extends Component {
       operationToConfirm: '',
       isLoadedButton: true,
       error: false,
-      alertError:false,
-      alertText:''
+      alertError: false,
+      alertText: ''
     };
   }
 
@@ -62,11 +62,8 @@ export default class TypedNotices extends Component {
                   bool: !blob.data.exists
                 };
                 disabled.push(obj);
-               
               })
-              .catch(error => {
-                
-              });
+              .catch(error => {});
           }
         });
       })
@@ -154,7 +151,6 @@ export default class TypedNotices extends Component {
                 e.stopPropagation();
                 e.preventDefault();
 
-                
                 // Take the target element
                 this.setState({
                   selectedNotice: element,
@@ -219,7 +215,7 @@ export default class TypedNotices extends Component {
   //Operation on accepted notices.
   acceptedOperation(element) {
     let user = JSON.parse(localStorage.getItem('user'));
-  
+
     if (Boolean(user) && user.role === 'Teaching Office') {
       return (
         <td>
@@ -284,7 +280,7 @@ export default class TypedNotices extends Component {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (Boolean(user) && user.role === 'Teaching Office') {
-    let showButton;
+      let showButton;
       disabled.forEach(el => {
         if (el.protocol === element.protocol) showButton = el.bool;
       });
@@ -326,27 +322,26 @@ export default class TypedNotices extends Component {
           </CustomButton>
         </td>
       );
-    }
-    else if(Boolean(user) && user.role === 'Professor'){
-     return (
-      <td>
-      <CustomButton
-          bsStyle='primary'
-          className='btn-color-blue pull-right'
-          onClick={e => {
-            e.stopPropagation();
-            e.preventDefault();
-            window.location.replace('http://localhost:3000/professor/detailNotices/'+element.protocol);
-        }}
-      >
-        Compila tabelle valutazioni
-    
-      </CustomButton>
-      </td>
-      )
-    }
-    
-    else {
+    } else if (Boolean(user) && user.role === 'Professor') {
+      return (
+        <td>
+          <CustomButton
+            bsStyle='primary'
+            className='btn-color-blue pull-right'
+            onClick={e => {
+              e.stopPropagation();
+              e.preventDefault();
+              window.location.replace(
+                'http://localhost:3000/professor/detailNotices/' +
+                  element.protocol
+              );
+            }}
+          >
+            Compila tabelle valutazioni
+          </CustomButton>
+        </td>
+      );
+    } else {
       return this.publishedOperation();
     }
   }
@@ -412,7 +407,7 @@ export default class TypedNotices extends Component {
 
           <CustomButton
             bsStyle='primary'
-            className = 'btn-color-blue pull-right'
+            className='btn-color-blue pull-right'
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -426,8 +421,6 @@ export default class TypedNotices extends Component {
           >
             Non accetta
           </CustomButton>
-
-    
         </td>
       );
     }
@@ -461,7 +454,6 @@ export default class TypedNotices extends Component {
           <CustomButton
             bsStyle='primary'
             className='btn-color-blue pull-right'
-     
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
@@ -545,8 +537,7 @@ export default class TypedNotices extends Component {
       this.setState({
         showConfirm: false,
         error: false,
-        alertError:false
-
+        alertError: false
       });
     };
 
@@ -554,7 +545,7 @@ export default class TypedNotices extends Component {
     const headers = {
       Authorization: localStorage.getItem('token')
     };
-    
+
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -578,9 +569,10 @@ export default class TypedNotices extends Component {
       .catch(error => {
         this.setState({
           alertError: true,
-          alertText: 'Impossibile accetare il bando controllare che la procedura i eseguita correttamente'
-        })
-      })
+          alertText:
+            'Impossibile accetare il bando controllare che la procedura i eseguita correttamente'
+        });
+      });
   }
   //Notice not accepted by professor.
   notAcceptNotice(element) {
@@ -588,7 +580,7 @@ export default class TypedNotices extends Component {
       this.setState({
         showConfirm: false,
         error: false,
-        alertError:false
+        alertError: false
       });
     };
 
@@ -617,12 +609,13 @@ export default class TypedNotices extends Component {
         });
         closeConfirm();
       })
-      .then(error=>{
+      .then(error => {
         this.setState({
           alertError: true,
-          alertText:'Impossibile rifiutare il bando controllare che il bando sia correattamente compilato'
-        })
-      })
+          alertText:
+            'Impossibile rifiutare il bando controllare che il bando sia correattamente compilato'
+        });
+      });
   }
 
   //Send a notice to professor.
@@ -631,14 +624,14 @@ export default class TypedNotices extends Component {
       this.setState({
         showConfirm: false,
         error: false,
-        alertError:false
+        alertError: false
       });
     };
     const headers = {
       Authorization: localStorage.getItem('token')
     };
     element.state = 'In Acceptance';
-    
+
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -661,12 +654,13 @@ export default class TypedNotices extends Component {
         });
         closeConfirm();
       })
-      .catch(error=>{
+      .catch(error => {
         this.setState({
-          alertError:true,
-          alertText:'Impossibile inoltrare bando controllare che sia stato correttamente compilato.'
-        })
-      })
+          alertError: true,
+          alertText:
+            'Impossibile inoltrare bando controllare che sia stato correttamente compilato.'
+        });
+      });
   }
 
   //Send a notice to DDI
@@ -682,7 +676,7 @@ export default class TypedNotices extends Component {
       Authorization: localStorage.getItem('token')
     };
     element.state = 'In Approval';
-   
+
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -705,12 +699,13 @@ export default class TypedNotices extends Component {
         });
         closeConfirm();
       })
-      .catch(error =>{
+      .catch(error => {
         this.setState({
           alertError: true,
-          alertText:'Impossibile inoltrare il bando al ddi controllare che il bando sia correttamente compilato'
-        })
-      })
+          alertText:
+            'Impossibile inoltrare il bando al ddi controllare che il bando sia correttamente compilato'
+        });
+      });
   }
   //Publish a notice
   publishNotice(element) {
@@ -718,14 +713,14 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        alertError:false,
+        alertError: false
       });
     };
     const headers = {
       Authorization: localStorage.getItem('token')
     };
     element.state = 'Published';
-    
+
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -748,22 +743,23 @@ export default class TypedNotices extends Component {
         });
         closeConfirm();
       })
-      .then(error =>{
+      .then(error => {
         this.setState({
           alertError: true,
-          alertText:'Impossibile pubblicare il bando controllare che sia correttamente compilato'
-        })
-      })
+          alertText:
+            'Impossibile pubblicare il bando controllare che sia correttamente compilato'
+        });
+      });
   }
   deleteDraftNotice(deletedNotice) {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
         error: false,
-        alertError:false
+        alertError: false
       });
     };
-    console.log(deletedNotice)
+    console.log(deletedNotice);
     // Retrieve from localStorage the user token
     let token = localStorage.getItem('token');
 
@@ -776,18 +772,19 @@ export default class TypedNotices extends Component {
       headers: {
         Authorization: token
       }
-    }).then(blob => {
-      let error = blob.data.error;
-      window.location.replace('http://localhost:3000/admin/notices');
-      if (error) {
-      }
     })
-    .catch(error=>{
-      this.setState({
-        alertError: true,
-        alertText:'Impossibile eliminare il bando'
+      .then(blob => {
+        let error = blob.data.error;
+        window.location.replace('http://localhost:3000/admin/notices');
+        if (error) {
+        }
       })
-    })
+      .catch(error => {
+        this.setState({
+          alertError: true,
+          alertText: 'Impossibile eliminare il bando'
+        });
+      });
 
     closeConfirm();
   }
@@ -798,7 +795,7 @@ export default class TypedNotices extends Component {
       this.setState({
         showConfirm: false,
         error: false,
-        alertError:false
+        alertError: false
       });
     };
     const headers = {
@@ -830,9 +827,9 @@ export default class TypedNotices extends Component {
       .catch(error => {
         this.setState({
           alertError: true,
-          alertText:'Impossibile inoltrare la graduatoria al ddi '
-        })
-      })
+          alertText: 'Impossibile inoltrare la graduatoria al ddi '
+        });
+      });
   }
   //Select the operation to do when user confirm an operation.
   selectOperation(operation) {
@@ -876,7 +873,7 @@ export default class TypedNotices extends Component {
       this.setState({
         showConfirm: false,
         error: false,
-        alertError:false
+        alertError: false
       });
     };
     //Disapprove notice
@@ -935,8 +932,6 @@ export default class TypedNotices extends Component {
 
     let noticeList = Boolean(acceptingNotice) ? acceptingNotice : notices;
 
-    
-
     return (
       <div>
         <Table key={type} striped bordered hover>
@@ -961,7 +956,7 @@ export default class TypedNotices extends Component {
                   <td>{index}</td>
                   <td>{element.protocol}</td>
                   <td>{element.deadline}</td>
-                  <td>{element.type}</td>
+                  <td>{NoticeType[element.type]}</td>
                   <td>{StateNoticeDictionary[element.state]}</td>
                   {this.displayButtons(type, element)}
                 </tr>
@@ -1064,14 +1059,14 @@ export default class TypedNotices extends Component {
           >
             <span>Confermare l'operazione?</span>
           </Modal.Body>
-          {this.state.alertError?
-            <Alert 
-              bsStyle="danger"
-            >
+          {this.state.alertError ? (
+            <Alert bsStyle='danger'>
               <p>{this.state.alertText}</p>
-             </Alert>
-            :<span></span>}
-          
+            </Alert>
+          ) : (
+            <span></span>
+          )}
+
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <CustomButton
               className='btn-color-blue'

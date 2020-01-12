@@ -37,6 +37,7 @@ export default class CreateNotice extends Component {
       error: null,
       user: {},
       professors: [],
+      editing: false,
       notice: {
         protocol: null,
         referent_professor: null,
@@ -93,6 +94,9 @@ export default class CreateNotice extends Component {
 
     if (params.id) {
       // Change the notice
+
+      notice.protocol = `Prot. n. ${notice.protocol}`;
+
       axios({
         method: 'PATCH',
         url: 'http://localhost:3001/api/notices',
@@ -108,13 +112,11 @@ export default class CreateNotice extends Component {
           window.location = '/notices';
         })
         .catch(error => {
-          this.setState({
-            error: (
-              <Alert bsStyle='danger'>
-                {JSON.stringify(error.response.data)}
-              </Alert>
-            )
-          });
+          if (error) {
+            this.setState({
+              error: <Alert bsStyle='danger'>{error.response.data.error}</Alert>
+            });
+          }
         });
     } else {
       if (!notice.protocol) {
@@ -122,7 +124,41 @@ export default class CreateNotice extends Component {
           error: <Alert bsStyle='danger'>Inserisci il protocollo</Alert>
         });
         return;
+      } else if (notice.protocol.length > 7) {
+        this.setState({
+          error: (
+            <Alert bsStyle='danger'>
+              Il protocollo non può essere più lungo di 7 caratteri.
+            </Alert>
+          )
+        });
+        return;
       }
+
+      let errorAssignCode = false;
+      let regexAssignCode = /^[A-Z]+\/([0-9]{2}|[0-9]{3})$/;
+
+      if (notice.assignments) {
+        notice.assignments.forEach(assignment => {
+          if (!regexAssignCode.test(assignment.code)) {
+            errorAssignCode = true;
+          }
+        });
+
+        if (errorAssignCode) {
+          this.setState({
+            error: (
+              <Alert bsStyle='warning'>
+                Verifica che i codici degli incarici rispettano il formato.
+              </Alert>
+            )
+          });
+          return;
+        }
+      }
+
+      notice.protocol = `Prot. n. ${notice.protocol}`;
+      console.log(notice.protocol);
 
       // Create the notice
       axios({
@@ -140,9 +176,11 @@ export default class CreateNotice extends Component {
           window.location = '/notices';
         })
         .catch(error => {
-          this.setState({
-            error: <Alert bsStyle='danger'>{error.response.data}</Alert>
-          });
+          if (error) {
+            this.setState({
+              error: <Alert bsStyle='danger'>{error.response.data.error}</Alert>
+            });
+          }
         });
     }
   }
@@ -256,6 +294,14 @@ export default class CreateNotice extends Component {
     let value = '' + el.value;
 
     if (el.name === 'protocol') {
+      let regexProtocol = /^\d+$/;
+
+      if (!regexProtocol.test(value.trim()) && value.trim() !== '') {
+        el.style.border = '1px solid red';
+      } else {
+        el.style.border = '';
+      }
+
       if (notice.assignments) {
         notice.assignments.map(element => {
           element.notice_protocol = value;
@@ -272,6 +318,16 @@ export default class CreateNotice extends Component {
         notice.articles.map(element => {
           element.notice_protocol = value;
         });
+      }
+    }
+
+    if (el.name === 'code') {
+      let regexAssignCode = /^[A-Z]+\/([0-9]{2}|[0-9]{3})$/;
+
+      if (!regexAssignCode.test(value.trim())) {
+        el.style.border = '1px solid red';
+      } else {
+        el.style.border = '';
       }
     }
 
@@ -318,13 +374,15 @@ export default class CreateNotice extends Component {
   }
 
   handleMouseEnter(e) {
+    if (this.state.editing && e.target.name === 'protocol') {
+      return;
+    }
     e.target.disabled = false;
   }
 
   handleMouseOut(e) {
     let el = e.target;
     let elClass = el.className;
-
     if (elClass.includes('typing')) {
       return;
     } else {
@@ -357,8 +415,16 @@ export default class CreateNotice extends Component {
             }
           })
           .then(blob => {
+            let notice = blob.data.notices[0];
+
+            notice.protocol = notice.protocol.replace('Prot. n. ', '');
+            if (notice.deadline) {
+              notice.deadline = notice.deadline.split(' ')[0];
+            }
+
             this.setState({
-              notice: blob.data.notices[0],
+              editing: true,
+              notice: notice,
               editNoticeLoaded: true
             });
           });
@@ -410,18 +476,14 @@ export default class CreateNotice extends Component {
             <Row className='create-notice-row'>
               <Col xs={12} md={6}>
                 <ControlLabel>Protocollo</ControlLabel>
-                <OverlayTrigger
-                  trigger='focus'
-                  placement='top'
-                  overlay={
-                    <Tooltip id='overload-top'>
-                      <strong>Esempio:</strong> Prot. n. 0274751
-                    </Tooltip>
-                  }
+                <div
+                  className='protocol-input'
+                  style={{ margin: 0, padding: 0 }}
                 >
+                  <p>Prot. n. </p>
                   <FormControl
                     type='text'
-                    placeholder='Inserisci il protocollo'
+                    placeholder='Inserisci il protocollo (max. 7 numeri)'
                     name='protocol'
                     value={this.state.notice.protocol}
                     onFocus={e => this.handleFocus(e)}
@@ -429,8 +491,9 @@ export default class CreateNotice extends Component {
                     onMouseEnter={e => this.handleMouseEnter(e)}
                     onMouseOut={e => this.handleMouseOut(e)}
                     onChange={e => this.handleChange(e)}
+                    disabled={this.state.editing ? true : false}
                   />
-                </OverlayTrigger>
+                </div>
               </Col>
               <Col xs={12} md={6}>
                 <ControlLabel>Professore</ControlLabel>
@@ -490,17 +553,25 @@ export default class CreateNotice extends Component {
                               />
                             </td>
                             <td>
-                              <FormControl
-                                className={index + '.assignments list'}
-                                name='code'
-                                value={el.code}
-                                type='text'
-                                onFocus={e => this.handleFocus(e)}
-                                onBlur={e => this.handleBlur(e)}
-                                onMouseEnter={e => this.handleMouseEnter(e)}
-                                onMouseOut={e => this.handleMouseOut(e)}
-                                onChange={e => this.handleChange(e)}
-                              />
+                              <OverlayTrigger
+                                overlay={
+                                  <Tooltip>
+                                    Es. <strong>SO/01</strong>
+                                  </Tooltip>
+                                }
+                              >
+                                <FormControl
+                                  className={index + '.assignments list'}
+                                  name='code'
+                                  value={el.code}
+                                  type='text'
+                                  onFocus={e => this.handleFocus(e)}
+                                  onBlur={e => this.handleBlur(e)}
+                                  onMouseEnter={e => this.handleMouseEnter(e)}
+                                  onMouseOut={e => this.handleMouseOut(e)}
+                                  onChange={e => this.handleChange(e)}
+                                />
+                              </OverlayTrigger>
                             </td>
                             <td>
                               <FormControl
@@ -669,7 +740,21 @@ export default class CreateNotice extends Component {
                         return (
                           <tr key={index}>
                             <td className='icon-container'>
-                              <Glyphicon glyph='trash' />
+                              <Glyphicon
+                                glyph='trash'
+                                onMouseLeave={e => {
+                                  e.target.style.color = '#565656';
+                                }}
+                                onMouseOver={e => {
+                                  e.target.style.color = '#274f77';
+                                }}
+                                onClick={event =>
+                                  this.handleEvaluationCriterionDeletion(
+                                    event,
+                                    el
+                                  )
+                                }
+                              />
                             </td>
                             <td>
                               <FormControl
@@ -908,7 +993,18 @@ export default class CreateNotice extends Component {
                         return (
                           <tr key={index}>
                             <td className='icon-container'>
-                              <Glyphicon glyph='trash' />
+                              <Glyphicon
+                                glyph='trash'
+                                onMouseLeave={e => {
+                                  e.target.style.color = '#565656';
+                                }}
+                                onMouseOver={e => {
+                                  e.target.style.color = '#274f77';
+                                }}
+                                onClick={event =>
+                                  this.handleArticleDeletion(event, el)
+                                }
+                              />
                             </td>
                             <td>
                               <FormControl
