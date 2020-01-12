@@ -186,7 +186,7 @@ export default class Rating extends Component {
                         ass.student.forEach(st => {
                             let student = null
                             candidatureList.forEach(candidature => {
-                                if (candidature.student.name === st.name && candidature.student.surname === st.surname) {
+                                if (candidature.student.name == st.name && candidature.student.surname == st.surname) {
                                     student = candidature.student;
                                 }
                             })
@@ -211,14 +211,14 @@ export default class Rating extends Component {
                             Authorization: token
                         }
                     }).then(response => {
-                        if (response.status === '200') {
+                        
                             this.setModalSuccess('Tabella creata con successo!');
                           
-                        }
+                        
                     }).catch(err => {
                         if (err.response.data.error) {
                             this.setModalError(err.response.data.error);
-                                                   }
+                         }
                     })
                 }
                 else {
