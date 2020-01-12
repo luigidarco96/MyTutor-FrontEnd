@@ -30,7 +30,7 @@ export default class Rating extends Component {
         this.setState({ modalSuccess: !this.state.modalSuccess, modalContent: content })
     }
 
-    
+
     setModalError = (content) => {
         this.setState({ modalError: !this.state.modalError, modalContent: content })
     }
@@ -40,17 +40,54 @@ export default class Rating extends Component {
     });
 
     componentDidMount() {
-        setTimeout(() => {
-            const { assignmentsJSON } = this.props;
-            if (assignmentsJSON) {
-                assignmentsJSON.map(el => {
+        const {
+            match: { params }
+        } = this.props;
+
+        var user = JSON.parse(localStorage.getItem('user'));
+        let token = localStorage.getItem('token')
+
+        if (
+            user != null &&
+            (user.role === 'Professor')
+        ) {
+            axios(`http://localhost:3001/api/notices/${params.id}`, {
+                headers: {
+                    Authorization: token
+                },
+                method:'GET'
+            }).then(res => {
+                let ass = res.data.notices[0].assignments
+
+                ass.map(el => {
                     el.student = []
                 })
-                this.setState({ assignments: assignmentsJSON })
-            } if (!assignmentsJSON || assignmentsJSON.length == 0) {
-                this.handleAddAssignments()
-            }
-        }, 1000)
+
+                this.setState({
+                    assignments: ass
+                });
+            })
+        } else {
+            axios(`http://localhost:3001/api/notices/${params.id}`, {method:'GET'})
+                .then(res => {
+                    let assignments = res.data.notices[0].assignments
+
+                    assignments.map(el => {
+                        el.student = []
+                    })
+
+                    this.setState({
+                        assignments: assignments
+                    });
+                })
+        }
+        if (this.state.assignments.length == 0) {
+            let ass = this.state.assignments
+            this.handleAddAssignments()
+            ass.map(el => {
+                el.student = []
+            })
+        }
     }
 
     handleAddAssignments = () => {
@@ -129,7 +166,6 @@ export default class Rating extends Component {
         e.preventDefault()
 
         let token = localStorage.getItem('token');
-        let user = JSON.parse(localStorage.getItem('user'));
 
         axios({
             url: `http://localhost:3001/api/candidatures/`,
@@ -146,7 +182,6 @@ export default class Rating extends Component {
                     let candidatureList = result.data.candidatures;
                     let ratingList = []
                     assignments.forEach(ass => {
-                        console.log(ass)
                         ass.student.forEach(st => {
                             let student = null
                             candidatureList.forEach(candidature => {
@@ -424,7 +459,7 @@ export default class Rating extends Component {
                                     </tbody>
                                 </Table>
                                 <CustomButton
-                                    style={{ marginTop: '20px', borderColor:'#274F77', color:'#274F77'}}
+                                    style={{ marginTop: '20px', borderColor: '#274F77', color: '#274F77' }}
                                     bsStyle='primary'
                                     block={true}
                                     className='btn-clolor-blue '
@@ -445,73 +480,73 @@ export default class Rating extends Component {
                         Conferma
                     </CustomButton>
                     <Modal
-                    style={{
-                        borderRadius: '6px',
-                        overflow: 'hidden',
-                        marginTop: '13%',
-                        left: '10%',
-                        position: 'absolute'
-                    }}
-                    dialogClassName="myClass"
-                    show={this.state.modalSuccess}
-                    onHide={()=>this.handleClose()}
-                    animation={false}
-                >
-                    <Modal.Header style={{ width: '350px' }} closeButton>
-                        <Modal.Title style={{ color: '#274F77' }}>Info</Modal.Title>
-                    </Modal.Header>
+                        style={{
+                            borderRadius: '6px',
+                            overflow: 'hidden',
+                            marginTop: '13%',
+                            left: '10%',
+                            position: 'absolute'
+                        }}
+                        dialogClassName="myClass"
+                        show={this.state.modalSuccess}
+                        onHide={() => this.handleClose()}
+                        animation={false}
+                    >
+                        <Modal.Header style={{ width: '350px' }} closeButton>
+                            <Modal.Title style={{ color: '#274F77' }}>Info</Modal.Title>
+                        </Modal.Header>
 
-                    <Modal.Body
-                     id='modalBodyError'
-                     style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
-                        {modalContent}
-                    </Modal.Body>
-                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
-                        <CustomButton
-                            className='btn-color-blue'
-                            bsStyle='primary'
-                            onClick={()=>this.handleClose()}
-                        >
-                            Chiudi
+                        <Modal.Body
+                            id='modalBodyError'
+                            style={{ width: '350px', padding: '7px', wordBreak: 'break-all' }}>
+                            {modalContent}
+                        </Modal.Body>
+                        <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                            <CustomButton
+                                className='btn-color-blue'
+                                bsStyle='primary'
+                                onClick={() => this.handleClose()}
+                            >
+                                Chiudi
                         </CustomButton>
 
-                    </Modal.Footer>
+                        </Modal.Footer>
 
-                </Modal>
+                    </Modal>
 
 
-                <Modal
-                    style={{
-                        borderRadius: '6px',
-                        overflow: 'hidden',
-                        marginTop: '13%',
-                        left: '10%',
-                        position: 'absolute'
-                    }}
-                    dialogClassName="myClass"
-                    show={this.state.modalError}
-                    onHide={()=>this.handleClose()}
-                    animation={false}
-                >
-                    <Modal.Header style={{ width: '350px' }} closeButton>
-                        <Modal.Title style={{ color: 'red' }}>Errore</Modal.Title>
-                    </Modal.Header>
+                    <Modal
+                        style={{
+                            borderRadius: '6px',
+                            overflow: 'hidden',
+                            marginTop: '13%',
+                            left: '10%',
+                            position: 'absolute'
+                        }}
+                        dialogClassName="myClass"
+                        show={this.state.modalError}
+                        onHide={() => this.handleClose()}
+                        animation={false}
+                    >
+                        <Modal.Header style={{ width: '350px' }} closeButton>
+                            <Modal.Title style={{ color: 'red' }}>Errore</Modal.Title>
+                        </Modal.Header>
 
-                    <Modal.Body id='modalBodyError' style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
-                        {modalContent}
-                    </Modal.Body>
-                    <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
-                        <CustomButton
-                            className='btn-color-blue'
-                            bsStyle='primary'
-                            onClick={()=>this.handleClose()}
-                        >
-                            Chiudi
+                        <Modal.Body id='modalBodyError' style={{ width: '350px', padding: '7px', wordBreak: 'break-all' }}>
+                            {modalContent}
+                        </Modal.Body>
+                        <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                            <CustomButton
+                                className='btn-color-blue'
+                                bsStyle='primary'
+                                onClick={() => this.handleClose()}
+                            >
+                                Chiudi
                         </CustomButton>
 
-                    </Modal.Footer>
+                        </Modal.Footer>
 
-                </Modal>
+                    </Modal>
 
 
 
