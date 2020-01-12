@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { NavItem, Nav, NavDropdown, MenuItem } from 'react-bootstrap';
-import { logout } from '../../utils/auth';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
+import { logout } from "../../utils/auth";
+import Button from "components/CustomButton/CustomButton";
 
 class AdminNavbarLinks extends Component {
   constructor() {
@@ -17,25 +17,22 @@ class AdminNavbarLinks extends Component {
 
     if (hasProfile) {
       return (
-        <MenuItem eventKey={2.1} href='profile'>
-          Visualizza profilo
-        </MenuItem>
+        <Button
+          bsStyle="primary"
+          simple
+          href="profile"
+          style={{ color: "#274F77" }}
+        >
+          Profilo
+        </Button>
       );
     }
   }
 
-  divider() {
-    const { hasProfile } = this.state;
-
-    if (hasProfile) {
-      return <MenuItem divider />;
-    }
-  }
-
   componentDidMount() {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
 
-    if (user && (user.role === 'Student' || user.role === 'Professor')) {
+    if (user && (user.role === "Student" || user.role === "Professor")) {
       this.setState({
         hasProfile: true
       });
@@ -45,22 +42,17 @@ class AdminNavbarLinks extends Component {
   render() {
     return (
       <div>
-        <Nav pullRight>
-          <NavDropdown
-            eventKey={2}
-            title={
-              <span>
-                <i className='pe-7s-user pe-custom-32px' />
-              </span>
-            }
-            id='basic-nav-dropdown-right'
+        <Nav pullRight className="auth_buttons">
+          {this.showProfile()}
+          <Button
+            bsStyle="danger"
+            fill
+            onClick={() => logout()}
+            style={{ color: "white" }}
           >
-            {this.showProfile()}
-            {this.divider()}
-            <MenuItem eventKey={2.5} onClick={logout}>
-              Logout
-            </MenuItem>
-          </NavDropdown>
+            {" "}
+            Logout
+          </Button>
         </Nav>
       </div>
     );
