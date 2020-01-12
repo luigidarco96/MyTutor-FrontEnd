@@ -159,9 +159,9 @@ export class SignUpProfessor extends Component {
             }
             axios.post('http://localhost:3001/api/auth/registerProfessor', { professor: user })
                 .then(response => {
-                    if (response.status == '200' && response.data.status === true) {
+                    
                         setModalSuccess('Ti è stata inviata una mail di verifica al tuo indirizzo email. Controllala per confermare la tua registrazione.')
-                    }
+                    
                 })
                 .catch(err => {
                     if (err.response !== undefined)
