@@ -463,8 +463,8 @@ export default class TypedNotices extends Component {
           </CustomButton>
           <CustomButton
             bsStyle='primary'
-            className='btn-color-blue'
-            pullRight
+            className='btn-color-blue pull-right'
+     
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
@@ -498,7 +498,7 @@ export default class TypedNotices extends Component {
               marginLeft: '27px'
             }}
             bsStyle='primary'
-            className='btn-color-blue'
+            className='btn-color-blue pull-right'
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -558,6 +558,7 @@ export default class TypedNotices extends Component {
     const headers = {
       Authorization: localStorage.getItem('token')
     };
+    
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -577,7 +578,13 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
-      });
+      })
+      .catch(error => {
+        this.setState({
+          alertError: true,
+          alertText: 'Impossibile accetare il bando controllare che la procedura i eseguita correttamente'
+        })
+      })
   }
   //Notice not accepted by professor.
   notAcceptNotice(element) {
@@ -614,7 +621,13 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
-      });
+      })
+      .then(error=>{
+        this.setState({
+          alertError: true,
+          alertText:'Impossibile rifiutare il bando controllare che il bando sia correattamente compilato'
+        })
+      })
   }
 
   //Send a notice to professor.
@@ -676,6 +689,7 @@ export default class TypedNotices extends Component {
     };
     element.state = 'In Approval';
     element.deadline = element.deadline.split('T')[0];
+    console.log(element);
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -697,7 +711,13 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
-      });
+      })
+      .catch(error =>{
+        this.setState({
+          alertError: true,
+          alertText:'Impossibile inoltrare il bando al ddi controllare che il bando sia correttamente compilato'
+        })
+      })
   }
   //Publish a notice
   publishNotice(element) {
@@ -735,7 +755,13 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
-      });
+      })
+      .then(error =>{
+        this.setState({
+          alertError: true,
+          alertText:'Impossibile pubblicare il bando controllare che sia correttamente compilato'
+        })
+      })
   }
   deleteDraftNotice(deletedNotice) {
     const closeConfirm = () => {
@@ -762,7 +788,13 @@ export default class TypedNotices extends Component {
       window.location.replace('http://localhost:3000/admin/notices');
       if (error) {
       }
-    });
+    })
+    .catch(error=>{
+      this.setState({
+        alertError: true,
+        alertText:'Impossibile eliminare il bando'
+      })
+    })
 
     closeConfirm();
   }
@@ -802,7 +834,13 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
-      });
+      })
+      .catch(error => {
+        this.setState({
+          alertError: true,
+          alertText:'Impossibile inoltrare la graduatoria al ddi '
+        })
+      })
   }
   //Select the operation to do when user confirm an operation.
   selectOperation(operation) {

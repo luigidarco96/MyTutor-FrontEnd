@@ -83,9 +83,11 @@ class DetailsNotice extends Component {
                 bsStyle='primary'
                 className='btn-color-blue btn-block'
                 onClick={() => {
+                 
                   const headers = {
                     Authorization: localStorage.getItem('token')
                   };
+                  if(localStorage.getItem('token')){
                   Axios
                     //Call the service to download the notice.
                     .get(
@@ -106,7 +108,31 @@ class DetailsNotice extends Component {
                       a.click();
                       window.URL.revokeObjectURL(url);
                       a.remove();
+                    });}
+                    else{
+                      Axios
+                    //Call the service to download the notice.
+                    .get(
+                      'http://localhost:3001/api/notices/pdf/' +
+                        this.props.match.params.id,
+                      { responseType: 'blob' }
+                    )
+                    .then(blob => {
+                      console.log(blob);
+                      const fileName = blob.headers['content-disposition']
+                        .split(';')[1]
+                        .trim()
+                        .split('"')[1];
+                      let a = document.createElement('a');
+                      var url = window.URL.createObjectURL(blob.data);
+                      a.href = url;
+                      a.download = fileName;
+                      a.click();
+                      window.URL.revokeObjectURL(url);
+                      a.remove();
                     });
+
+                    }
                 }}
                 disabled={this.isDownloadable()}
               >
