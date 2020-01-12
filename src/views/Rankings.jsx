@@ -30,7 +30,7 @@ class Rankings extends Component {
         axios
             .post('http://localhost:3001/api/notices/search', { state: 'Waiting for Graded List' }, { headers: headers })
             .then(blob => {
-                console.log(blob.data);
+           
                 this.setState({
                     notices: blob.data.notices,
                 })

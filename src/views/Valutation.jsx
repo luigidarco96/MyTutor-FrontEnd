@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Table} from 'reactstrap';
-import {Modal} from 'react-bootstrap'
+import {Modal, Alert} from 'react-bootstrap'
 import Card from 'components/Card/Card.jsx';
 import { Grid } from 'react-bootstrap';
 import Axios from 'axios';
@@ -26,7 +26,9 @@ class Valutation extends Component {
         selectedValutation: '',
         selectedAssignment:'',
         showConfirm: false,
-        error: false
+        error: false,
+        alertError: false,
+        alertText: ''
     }
 
     constructor(props) {
@@ -46,8 +48,6 @@ class Valutation extends Component {
         Axios
             .post('http://localhost:3001/api/ratings', { noticeProtocol: this.props.match.params.id }, headers)
             .then(blob => {
-
-                console.log(blob.data);
                 //Set the state valutations to show the table of valutations.
                 this.setState({
                     valutations: blob.data.result
@@ -78,7 +78,6 @@ class Valutation extends Component {
         this.setState({
             showConfirm: true
         })
-        console.log(this.state.showConfirm)
     }
 
     //Return the buttons in the table to do the action.
@@ -165,13 +164,14 @@ class Valutation extends Component {
     assignStudent(){
         const closeConfirm = ()=>{
             this.setState({
-                showConfirm: false
+                showConfirm: false,
+                alertError:false
             })
         }
         Axios
         .post('http://localhost:3001/api/assignments/assign',{assignment:this.state.selectedAssignment},headers)
         .then(blob=>{
-            console.log(blob.data);
+            
             this.setState({
                 valutations:this.state.valutations.filter(val=>
                     val.assignment_id != this.state.selectedAssignment.id
@@ -180,12 +180,14 @@ class Valutation extends Component {
                     ass.id != this.state.selectedAssignment.assignment_id
                 )
                 
-            //TODO compare un modal.
             })
             closeConfirm();
         })
         .catch(error=>{
-        //TODO gestire errore 
+            this.setState({
+                alertError:true,
+                alertText:'Impossibile assegnare incarico a questo studente'
+            })
         })
 
     }
@@ -193,7 +195,8 @@ class Valutation extends Component {
     sendRequest(){
         const closeConfirm = ()=>{
             this.setState({
-                showConfirm : false
+                showConfirm : false,
+                alertError: false
             })
         }
         const objToSend = {
@@ -204,7 +207,7 @@ class Valutation extends Component {
         Axios
         .post('http://localhost:3001/api/assignments/request',objToSend,headers)
         .then(blob=>{
-            console.log(blob.data);
+           
             this.setState({
                 valutations:this.state.valutations.filter(val=>
                     val.assignment_id != this.state.selectedAssignment.id
@@ -213,12 +216,15 @@ class Valutation extends Component {
                     ass.id != this.state.selectedAssignment.assignment_id
                 )
                 
-            //TODO compare un modal.
+           
             })
             closeConfirm();
         })
         .catch(error=>{
-
+            this.setState({
+                alertError: true,
+                alertText: 'Impossibile inviare richiesta a questo studente controllare che la procedura sia stata eseguita correttamente'
+            })
         })
     }
 
@@ -240,7 +246,8 @@ class Valutation extends Component {
         //Function to close popup
         const closeConfirm = ()=>{
             this.setState({
-                showConfirm:false   
+                showConfirm:false,
+                alertError:false
             })
         }
         return (
@@ -325,6 +332,7 @@ class Valutation extends Component {
           >
             <span>Confermare l'operazione?</span>
           </Modal.Body>
+            {this.state.alertError?<Alert bsStyle= 'danger'><p>{this.state.alertText}</p></Alert>:<div></div>}
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <CustomButton
               className='btn-color-blue'

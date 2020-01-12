@@ -51,7 +51,7 @@ class Assignmets extends Component {
           });
         })
         .catch(error => {
-          console.log(error);
+         
           if (error) {
             window.location = "/signin";
           }
@@ -69,7 +69,7 @@ class Assignmets extends Component {
         </div>
       );
     } else {
-      console.log(isLoaded);
+     
       return (
         <div className="content">
           <Grid fluid>

@@ -81,7 +81,7 @@ export default class UserProfile extends Component {
     e.stopPropagation();
     e.preventDefault();
 
-    console.log('Cambia password!');
+   
 
     let user = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
@@ -103,7 +103,7 @@ export default class UserProfile extends Component {
         }
       })
         .then(result => {
-          console.log(result);
+          
           localStorage.removeItem('user');
           localStorage.setItem('user', JSON.stringify(result.data.user));
 

@@ -125,7 +125,7 @@ export class ProfessorList extends Component {
         )
         .then(blob => {
           handleCloseEmail();
-          console.log(blob.data);
+        
         });
     };
 

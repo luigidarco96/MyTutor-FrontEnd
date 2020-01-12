@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Modal } from "react-bootstrap";
+import { Table, Modal, Alert } from "react-bootstrap";
 import { StateAssignmentDictionary } from "../../static/dicts";
 import CustomButton from "../CustomButton/CustomButton";
 import Axios from "axios";
@@ -15,7 +15,9 @@ export default class TypedAssignments extends Component {
       selectedAssignment: "",
       showDetails: false,
       operationToConfirm: "",
-      error:false
+      error:false,
+      alertError: false,
+      alertText: ''
     };
   }
 
@@ -122,7 +124,7 @@ export default class TypedAssignments extends Component {
       'Authorization' : localStorage.getItem('token')
     }
     if(user.role=='Student'){
-        //TODO: inserire logica richieste.
+        
         return(
           <div>
             
@@ -191,6 +193,7 @@ export default class TypedAssignments extends Component {
     const closeConfirm = ()=>{
       this.setState({
         showConfirm: false,
+        alertError:false
       })
     }
 
@@ -201,8 +204,7 @@ export default class TypedAssignments extends Component {
     Axios
     .post('http://localhost:3001/api/assignments/book',{assignment:this.state.selectedAssignment},{headers:headers})
     .then(blob=>{
-      console.log(blob.data);
-      //TODO inserisci modal di successo.
+     
       this.setState({
         assignments: this.props.assignments
       })
@@ -223,8 +225,11 @@ export default class TypedAssignments extends Component {
       
     })
     .catch(error=>{
-      //TODO gestire errore.
-      console.log(error);
+      
+      this.setState({
+        alertError:true,
+        alertText:'Impossibile prenotare la firma per questo incarico'
+      })
     })
   
   }
@@ -242,11 +247,11 @@ closedAssignment(element) {
     'Authorization': localStorage.getItem('token')
   }
   element.note = '' + document.getElementById('comment').value;
-  console.log(element);
+  
   Axios
     .post('http://localhost:3001/api/assignments/close', { assignment: element }, { headers: headers })
     .then(blob => {
-      console.log(blob.data);
+      
       this.setState({
         assignments: this.props.assignments
       })
@@ -272,7 +277,8 @@ rejectAssignment(){
   const closeConfirm = ()=>{
     this.setState({
       showConfirm: false,
-      error:false
+      error:false,
+      alertError:false
     })
   }
 
@@ -299,7 +305,10 @@ rejectAssignment(){
     
   })
   .catch(error=>{
-    //TODO errorr modal
+    this.setState({
+      alertError: true,
+      alertText: 'Impossibile effettuare operazione controllare che la procedura sia stata eseguita correttamente'
+    })
   })
 }
   displayButtons(type, element) {
@@ -347,7 +356,8 @@ rejectAssignment(){
 
     const closeConfirm = () =>{
       this.setState({
-        showConfirm : false
+        showConfirm : false,
+        alertError: false
       })
     }
 
@@ -520,6 +530,7 @@ rejectAssignment(){
           >
             <span>Confermare l'operazione?</span>
           </Modal.Body>
+          {this.state.alertError?<Alert bsStyle='danger'><p>{this.state.alertText}</p></Alert>:<div></div>}
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <CustomButton
               className='btn-color-blue'

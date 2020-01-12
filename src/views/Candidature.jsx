@@ -23,7 +23,7 @@ class Candidature extends Component {
 
     let id = params.id;
     let pathRegex = /admin\/candidatures\/*/;
-    console.log(params.id);
+   
     if (window.location.pathname === '/admin/candidatures' || pathRegex.test(window.location.pathname)) {
       this.setState({
         header: [
@@ -59,7 +59,7 @@ class Candidature extends Component {
         headers: headers
       })
       .then(blob => {
-        console.log(blob.data);
+    
         this.setState({
           candidatures: blob.data.candidatures
         });
@@ -196,7 +196,7 @@ class Candidature extends Component {
               const headers = {
                 Authorization: localStorage.getItem('token')
               };
-              console.log(element);
+             
               const candidature = {
                 student: element.student,
                 notice_protocol: element.notice_protocol,
@@ -211,7 +211,7 @@ class Candidature extends Component {
                   { headers: headers }
                 )
                 .then(blob => {
-                  console.log(blob.data);
+                
                   let newCandidatures = [];
                   let i = 0;
                   this.state.candidatures.forEach(el => {
@@ -224,7 +224,7 @@ class Candidature extends Component {
                       newCandidatures[i++] = el;
                     }
                   });
-                  console.log(newCandidatures);
+               
                   this.setState({
                     candidatures: newCandidatures
                   });
@@ -285,7 +285,7 @@ class Candidature extends Component {
     };
     const { header, candidatures } = this.state;
     let pathRegex = /admin\/candidatures\/*/;
-    console.log(pathRegex.test(window.location.pathname))
+    
     if (window.location.pathname === '/admin/candidatures'  || pathRegex.test(window.location.pathname)) {
       return (
         <div className='content'>

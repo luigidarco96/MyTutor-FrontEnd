@@ -69,7 +69,7 @@ class Admin extends Component {
     const pathnameView = this.props.location.pathname.split('/')[2];
     let list = routes[pathnameRoule];
     for (let i = 0; i < list.length; i++) {
-      console.log(list[i]);
+    
       if (list[i].path.split('/')[1] === pathnameView) return list[i].name;
     }
   };

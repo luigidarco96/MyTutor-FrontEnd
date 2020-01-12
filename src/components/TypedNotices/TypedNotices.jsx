@@ -62,10 +62,10 @@ export default class TypedNotices extends Component {
                   bool: !blob.data.exists
                 };
                 disabled.push(obj);
-                console.log(disabled);
+               
               })
               .catch(error => {
-                //TODO: inserire modal errore.
+                
               });
           }
         });
@@ -654,7 +654,7 @@ export default class TypedNotices extends Component {
     };
     element.state = 'In Acceptance';
     element.deadline = element.deadline.split('T')[0];
-    console.log(element);
+    
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -699,7 +699,7 @@ export default class TypedNotices extends Component {
     };
     element.state = 'In Approval';
     element.deadline = element.deadline.split('T')[0];
-    console.log(element);
+   
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -952,7 +952,7 @@ export default class TypedNotices extends Component {
 
     let noticeList = Boolean(acceptingNotice) ? acceptingNotice : notices;
 
-    //console.log(noticeList);
+    
 
     return (
       <div>

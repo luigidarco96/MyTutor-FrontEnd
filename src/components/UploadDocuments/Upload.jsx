@@ -41,7 +41,7 @@ const Upload = props => {
           documents.push(document);
         })
         .catch(error => {
-          console.log(error);
+          
         })
 
 
@@ -165,7 +165,7 @@ const Upload = props => {
           axios
           .put('http://localhost:3001/api/notices/grades/pdf/'+props.notice_protocol,rankingPdf,{headers:headers})
           .then(blob=>{
-            console.log(blob);
+         
             axios
             .get('http://localhost:3001/api/notices/'+props.notice_protocol,{headers:headers})
             .then(blob=>{
@@ -219,7 +219,7 @@ const Upload = props => {
           })
         })
         .catch(error => {
-          console.log(error);
+         
          
         })
 
@@ -252,7 +252,7 @@ const Upload = props => {
           axios
           .put('http://localhost:3001/api/notices/pdf/'+props.notice_protocol,noticePdf,{headers:headers})
           .then(blob=>{
-            console.log(blob);
+           
             axios
             .get('http://localhost:3001/api/notices/'+props.notice_protocol,{headers:headers})
             .then(blob=>{
@@ -306,7 +306,7 @@ const Upload = props => {
           })
         })
         .catch(error => {
-          console.log(error);
+          
          
         })
 
@@ -317,7 +317,7 @@ const Upload = props => {
   const maxSize = 1048576;
 
   const onDrop = useCallback(acceptedFiles => {
-    acceptedFiles.map((acceptedFile) => { console.log(acceptedFile) })
+    acceptedFiles.map((acceptedFile) => { })
   }, []);
 
   const {

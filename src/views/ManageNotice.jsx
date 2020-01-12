@@ -38,7 +38,7 @@ export default class draftNotice extends Component {
                             this.setState({applicationSheet : response.data.notices[0].application_sheet});
                         }
                     }).catch(err => {
-                        console.log(err)
+                      
                     })
             }
         }

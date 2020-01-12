@@ -96,7 +96,7 @@ class DetailsNotice extends Component {
                       { headers: headers, responseType: 'blob' }
                     )
                     .then(blob => {
-                      console.log(blob);
+                    
                       const fileName = blob.headers['content-disposition']
                         .split(';')[1]
                         .trim()
@@ -118,7 +118,7 @@ class DetailsNotice extends Component {
                       { responseType: 'blob' }
                     )
                     .then(blob => {
-                      console.log(blob);
+                  
                       const fileName = blob.headers['content-disposition']
                         .split(';')[1]
                         .trim()

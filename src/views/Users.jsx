@@ -14,7 +14,7 @@ const Users = (props) => {
     const [activeTab, setActiveTab] = useState('1');
     
     const toggle = tab => {
-        console.log("FUNZIONA")
+        
         if (activeTab !== tab) {
             setActiveTab(tab);
         }

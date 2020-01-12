@@ -43,8 +43,7 @@ class Notices extends Component {
     var fuse = new Fuse(notices, options); // "list" is the item array
     var result = fuse.search(e.target.value);
 
-    console.log(e.target.value);
-    console.log(result);
+  
   }
 
   handleDifferentUsers(pathname, notices) {

@@ -199,7 +199,7 @@ export default class Rating extends Component {
                             }
                         })
                     })
-                    console.log(ratingList)
+                    
                     axios({
                         url: 'http://localhost:3001/api/ratings',
                         method: 'PUT',
@@ -229,33 +229,7 @@ export default class Rating extends Component {
         })
 
 
-        /* Promise.all(studentList)
-             .then((ratingList) => {
-                 console.log(promiseList)
-                 /*axios({
-                     url: 'http://localhost:3001/api/ratings',
-                     method: 'PUT',
-                     data: {
-                         ratingList: ratingList
-                     },
-                     headers: {
-                         Authorization: token
-                     }
-                 }).then(response => {
-                     if (response.status == '200') {
-                         this.setModal('Tabella creata con successo!')
-                     }
-                 }).catch(err => {
-                     if (err.response.data.error) {
-                         this.setModal(err.response.data.error)
-                     }
-                 })
-             })
-             .catch((err) => {
-                 if (err) {
-                     this.setModal(err.message)
-                 }
-             })*/
+      
     }
 
     validateForm = () => {

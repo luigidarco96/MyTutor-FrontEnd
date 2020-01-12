@@ -24,7 +24,7 @@ export const tokenExpired = () => {
       }
     })
     .catch(error => {
-      console.log(error.response);
+      
       if (error.response) {
         if (error.response.data.status === 401) {
           isExpired = !error.response.data.status;
