@@ -61,6 +61,7 @@ export class GuestNavbar extends Component {
         </Navbar.Header>
 
         <Nav pullRight className="auth_buttons">
+          <span style={{position:'relative',top:'5px',right:'5px'}}>
           <Button
             bsStyle="primary"
             simple
@@ -76,6 +77,7 @@ export class GuestNavbar extends Component {
           >
             Registrati
           </Button>
+          </span>
         </Nav>
       </Navbar>
     );

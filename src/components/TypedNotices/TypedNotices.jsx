@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Modal } from 'react-bootstrap';
+import { Table, Modal, Alert } from 'react-bootstrap';
 
 import { StateNoticeDictionary } from '../../static/dicts';
 import CustomButton from '../CustomButton/CustomButton';
@@ -29,7 +29,9 @@ export default class TypedNotices extends Component {
       selectedComment: '',
       operationToConfirm: '',
       isLoadedButton: true,
-      error: false
+      error: false,
+      alertError:false,
+      alertText:''
     };
   }
 
@@ -403,6 +405,7 @@ export default class TypedNotices extends Component {
 
           <CustomButton
             bsStyle='primary'
+            className = 'btn-color-blue pull-right'
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -419,7 +422,7 @@ export default class TypedNotices extends Component {
 
           <CustomButton
             bsStyle='primary'
-            pullRight
+            className='btn-color-blue pull-right'
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
@@ -544,7 +547,9 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        error: false
+        error: false,
+        alertError:false
+
       });
     };
 
@@ -579,7 +584,8 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        error: false
+        error: false,
+        alertError:false
       });
     };
 
@@ -616,7 +622,8 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        error: false
+        error: false,
+        alertError:false
       });
     };
     const headers = {
@@ -624,6 +631,7 @@ export default class TypedNotices extends Component {
     };
     element.state = 'In Acceptance';
     element.deadline = element.deadline.split('T')[0];
+    console.log(element);
     axios
       .patch(
         'http://localhost:3001/api/notices/state',
@@ -645,7 +653,13 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
-      });
+      })
+      .catch(error=>{
+        this.setState({
+          alertError:true,
+          alertText:'Impossibile inoltrare bando controllare che sia stato correttamente compilato.'
+        })
+      })
   }
 
   //Send a notice to DDI
@@ -653,7 +667,8 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        error: false
+        error: false,
+        alertError: false
       });
     };
     const headers = {
@@ -689,7 +704,8 @@ export default class TypedNotices extends Component {
     //Close the modal to confrim an operation
     const closeConfirm = () => {
       this.setState({
-        showConfirm: false
+        showConfirm: false,
+        alertError:false,
       });
     };
     const headers = {
@@ -725,7 +741,8 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        error: false
+        error: false,
+        alertError:false
       });
     };
     // Retrieve from localStorage the user token
@@ -755,7 +772,8 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        error: false
+        error: false,
+        alertError:false
       });
     };
     const headers = {
@@ -825,7 +843,8 @@ export default class TypedNotices extends Component {
     const closeConfirm = () => {
       this.setState({
         showConfirm: false,
-        error: false
+        error: false,
+        alertError:false
       });
     };
     //Disapprove notice
@@ -1014,6 +1033,14 @@ export default class TypedNotices extends Component {
           >
             <span>Confermare l'operazione?</span>
           </Modal.Body>
+          {this.state.alertError?
+            <Alert 
+              bsStyle="danger"
+            >
+              <p>{this.state.alertText}</p>
+             </Alert>
+            :<span></span>}
+          
           <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
             <CustomButton
               className='btn-color-blue'
