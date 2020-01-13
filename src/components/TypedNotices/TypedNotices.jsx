@@ -78,9 +78,8 @@ export default class TypedNotices extends Component {
 
   getDetailNotice = e => {
     let { pathname } = this.props;
-    let path = 'http://localhost:3000/';
-    path = path.concat(pathname + '/detailNotices/' + e.protocol);
-    window.location.replace(path);
+    this.props.history.push('/detailNotices/' + e.protocol)
+    
   };
   //Operation on draft notices.
   draftOperation(element) {
@@ -139,7 +138,7 @@ export default class TypedNotices extends Component {
                 let id = e.target.parentElement.parentElement.parentElement.id;
 
                 // Redirect to the modifications page
-                window.location = `manageNotice/${id}`;
+                this.props.history.push(`manageNotice/${id}`);
               }}
             >
               Modifica
@@ -296,8 +295,8 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace(
-                'http://localhost:3000/admin/candidatures/' + element.protocol
+              this.props.history.push(
+                '/candidatures/' + element.protocol
               );
             }}
           >
@@ -331,8 +330,8 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace(
-                'http://localhost:3000/professor/detailNotices/' +
+              this.props.history.push(
+                '/professor/detailNotices/' +
                   element.protocol
               );
             }}
@@ -365,8 +364,8 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.location.replace(
-                'http://localhost:3000/admin/valutations/' + element.protocol
+              this.props.history.push(
+                '/valutations/' + element.protocol
               );
             }}
           >
@@ -492,10 +491,8 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              window.open(
-                'http://localhost:3000/ddi/uploadNotice/' + element.protocol,
-                '_blank'
-              );
+              this.props.history.push(
+                '/uploadNotice/' + element.protocol)
             }}
           >
             Carica bando
@@ -608,6 +605,7 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
+        window.location.reload();
       })
       .then(error => {
         this.setState({
@@ -653,6 +651,8 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
+        window.location.reload();
+
       })
       .catch(error => {
         this.setState({
@@ -698,6 +698,7 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
+        window.location.reload();
       })
       .catch(error => {
         this.setState({
@@ -742,6 +743,7 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
+        window.location.reload();
       })
       .then(error => {
         this.setState({
@@ -751,6 +753,7 @@ export default class TypedNotices extends Component {
         });
       });
   }
+
   deleteDraftNotice(deletedNotice) {
     const closeConfirm = () => {
       this.setState({
@@ -775,7 +778,7 @@ export default class TypedNotices extends Component {
     })
       .then(blob => {
         let error = blob.data.error;
-        window.location.replace('http://localhost:3000/admin/notices');
+        this.props.history.push('/notices');
         if (error) {
         }
       })
@@ -787,6 +790,7 @@ export default class TypedNotices extends Component {
       });
 
     closeConfirm();
+    window.location.reload();
   }
 
   //Send a ranking to DDI
@@ -823,6 +827,7 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
+        window.location.reload();
       })
       .catch(error => {
         this.setState({

@@ -131,7 +131,6 @@ class Admin extends Component {
             </Route>
             {this.getRoutes(routes)}
           </Switch>
-          <Footer />
         </div>
       </div>
     );
