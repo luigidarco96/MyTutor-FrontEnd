@@ -31,7 +31,7 @@ const Users = (props) => {
                     <Col md="2"></Col>
                     <div style={{width: '-webkit-fill-available',marginLeft:'30px', marginTop:'30px'}}>
                         <Card
-                            title=''
+                            title='Lista utenti'
                             content={
                                 <div> 
                                     <Nav tabs>
