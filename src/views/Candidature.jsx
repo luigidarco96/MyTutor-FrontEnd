@@ -69,10 +69,8 @@ class Candidature extends Component {
         return (
           <Button
             onClick={() => {
-              window.open(
-                'http://localhost:3000/student/modificaCandidatura/' +
-                  element.notice_protocol,
-                '_blank'
+              this.props.history.push('/student/modificaCandidatura/' +
+                  element.notice_protocol
               );
             }}
             style={{ border: '1px solid #274F77' }}

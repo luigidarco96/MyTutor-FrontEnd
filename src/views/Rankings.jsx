@@ -73,7 +73,7 @@ class Rankings extends Component {
                                                                     className='btn-color-blue'
                                                                     bsStyle="primary"
                                                                     
-                                                                    onClick={() => { window.open('http://localhost:3000/ddi/uploadRanking/' + element.protocol, '_blank') }}
+                                                                    onClick={() => { this.props.history.push('http://localhost:3000/ddi/uploadRanking/' + element.protocol, '_blank') }}
 
 
                                                                 >
