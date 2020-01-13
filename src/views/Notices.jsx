@@ -4,6 +4,7 @@ import Axios from 'axios';
 
 import Card from 'components/Card/Card.jsx';
 import UsersTabs from '../components/UsersTabs/UsersTabs';
+import Suggestion from '../components/Suggestion/Suggestion';
 
 import { UserNoticeLists } from '../static/dicts';
 
@@ -23,27 +24,42 @@ class Notices extends Component {
     this.state = {
       pathname: props.location.pathname.split('/')[1],
       notices: [],
-      isLoaded: false
+      isLoaded: false,
+      results: []
     };
   }
 
-  handleSearch(e) {}
+  handleSearch(e) {
+    let token = localStorage.getItem('token')
+    Axios(`http://localhost:3001/api/notices/search`, {
+      headers: {
+        Authorization: token
+      },
+      method: 'POST'
+    }).then(res => {
+      let notices = res.data.notices;
+      this.setState({
+        results:notices
+      })
+    })
+  }
 
   handleDifferentUsers(pathname, notices) {
     let user = JSON.parse(localStorage.getItem('user'));
     if (user !== null) {
       return (
         <div className='container-fluid'>
-          <div className='search-group'>
+          <form className='search-group' onSubmit={this.handleSearch}>
             <Glyphicon glyph='search' />
             <FormControl
               className='search-bar'
               type='text'
               name='search'
               placeholder='Cerca bando...'
-              onChange={e => this.handleSearch(e)}
+              onChange={this.handleSearch}
             />
-          </div>
+            <Suggestion results={this.state.results} />
+          </form>
           <UsersTabs
             pathname={pathname}
             notices={notices}

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-import { Tabs, Tab, Glyphicon } from 'react-bootstrap';
+import { Tabs, Tab, Glyphicon, Button } from 'react-bootstrap';
 
 import TypedNotices from '../TypedNotices/TypedNotices';
 import {
@@ -119,7 +119,7 @@ export default class DefaultTabs extends Component {
               return (
                 <Tab eventKey={tab} title={tab} key={index} name={tab}>
                   <div className='link'>
-                    <Link to='draftNotice'>
+                    <Link className="btn btn-success" to='draftNotice'>
                       <Glyphicon glyph='plus' />
                       Crea bando
                     </Link>

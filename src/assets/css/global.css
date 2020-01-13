@@ -75,35 +75,9 @@ table.table {
   margin: 10px 0 0 0;
 }
 
-.link {
-  margin-bottom: 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  float: left;
-  color: #274f77;
-  font-size: 1.6em;
-  font-weight: 400;
-  opacity: 0.5;
-
-  transition-property: opacity;
-  transition-timing-function: ease-in-out;
-  transition-delay: 50ms;
-  transition-duration: 100ms;
-}
-
 .link .glyphicon,
 .link > a {
   padding: 5px;
-}
-
-.link:hover {
-  opacity: 1;
-
-  transition-property: opacity;
-  transition-timing-function: ease-in-out;
-  transition-delay: 50ms;
-  transition-duration: 100ms;
 }
 
 .search-group {
