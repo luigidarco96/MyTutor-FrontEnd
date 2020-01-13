@@ -23,10 +23,11 @@ export class ProfessorList extends Component {
     selectedProfessor: "",
     professorsSearch: [],
     search: false,
-    showErrorAlert:false
+    showErrorAlert: false,
+    alertErrorText: ''
   };
 
- 
+
   handleSearch(e) {
     const { professors } = this.state;
 
@@ -47,6 +48,8 @@ export class ProfessorList extends Component {
         search: false
       });
     } else {
+      if(result.length===0)
+        
       this.setState({
         professorsSearch: result,
         search: true
@@ -104,11 +107,12 @@ export class ProfessorList extends Component {
     //Insert email professor verfied.
     const setEmailVerified = emailVerified => {
       const emailProfessorExp = /^[a-z]+\.[a-z]+[0-9]*@unisa\.it$/;
-      
+
       if (!emailProfessorExp.test(emailVerified)) {
-       
-        this.setState({
-          showErrorAlert: true
+
+        return this.setState({
+          showErrorAlert: true,
+          alertErrorText: 'L\'email non rispetta il formato @unisa.it'
         })
       }
       const headers = {
@@ -122,8 +126,14 @@ export class ProfessorList extends Component {
         )
         .then(blob => {
           handleCloseEmail();
-        
-        });
+
+        })
+        .catch(error => {
+          this.setState({
+            showErrorAlert: true,
+            alertErrorText: error.response.data.error
+          })
+        })
     };
 
     //Delete professor selected.
@@ -151,7 +161,7 @@ export class ProfessorList extends Component {
           axios
             .delete(
               "http://localhost:3001/api/users/" +
-                this.state.selectedProfessor.email,
+              this.state.selectedProfessor.email,
               {
                 headers: headers
               }
@@ -257,110 +267,110 @@ export class ProfessorList extends Component {
                 </Table>
               </Col>
             </Row>
-        {/* Modal to confirm operation */}
-        <Modal
-          style={{
-            borderRadius: '6px',
-            overflow: 'hidden',
-            marginTop: '13%',
-            left: '10%',
-            position: 'absolute'
-          }}
-          dialogClassName="myClass"
-          show={this.state.show}
-          onHide={handleClose}
-          animation={false}
-        >
-          <Modal.Header style={{ width: '350px' }} closeButton>
-            <Modal.Title style={{ color: '#274F77', fontSize:'25px',fontWeight:'20px' }}>
-            Elimina studente
+            {/* Modal to confirm operation */}
+            <Modal
+              style={{
+                borderRadius: '6px',
+                overflow: 'hidden',
+                marginTop: '13%',
+                left: '10%',
+                position: 'absolute'
+              }}
+              dialogClassName="myClass"
+              show={this.state.show}
+              onHide={handleClose}
+              animation={false}
+            >
+              <Modal.Header style={{ width: '350px' }} closeButton>
+                <Modal.Title style={{ color: '#274F77', fontSize: '25px', fontWeight: '20px' }}>
+                  Elimina studente
             </Modal.Title>
-          </Modal.Header>
-          <Modal.Body
-            style={{ width: '350px', padding: '7px',fontSize:'15px'}}
-          >
-            
-            <span style={{paddingLeft:'12px'}}>Confermare l'operazione?</span>
-          </Modal.Body>
-          <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
-            <Button
-              className='btn-color-blue'
-              bsStyle='primary'
+              </Modal.Header>
+              <Modal.Body
+                style={{ width: '350px', padding: '7px', fontSize: '15px' }}
+              >
 
-              onClick={handleClose}
-            >
-              Annulla
+                <span style={{ paddingLeft: '12px' }}>Confermare l'operazione?</span>
+              </Modal.Body>
+              <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+                <Button
+                  className='btn-color-blue'
+                  bsStyle='primary'
+
+                  onClick={handleClose}
+                >
+                  Annulla
             </Button>
-            <Button
-              className=''
-              bsStyle='danger'
-              onClick={deleteProfessor}
-            >
-              Conferma
+                <Button
+                  className=''
+                  bsStyle='danger'
+                  onClick={deleteProfessor}
+                >
+                  Conferma
             </Button>
-          </Modal.Footer>
-        </Modal>
-                
-        {/* Modal to insert comment */}
-        <Modal
-          style={{
-            borderRadius: '6px',
-            overflow: 'hidden',
-            marginTop: '13%',
-            left: '10%',
-            position: 'absolute'
-          }}
-          dialogClassName="myClass"
-          show={this.state.showInsertEmail}
-          onHide={handleCloseEmail}
-          animation={false}
-        >
-          <Modal.Header style={{ width: '350px' }} closeButton>
-            <Modal.Title style={{ color: '#274F77' }}>
-              Inserire un'email
+              </Modal.Footer>
+            </Modal>
+
+            {/* Modal to insert comment */}
+            <Modal
+              style={{
+                borderRadius: '6px',
+                overflow: 'hidden',
+                marginTop: '13%',
+                left: '10%',
+                position: 'absolute'
+              }}
+              dialogClassName="myClass"
+              show={this.state.showInsertEmail}
+              onHide={handleCloseEmail}
+              animation={false}
+            >
+              <Modal.Header style={{ width: '350px' }} closeButton>
+                <Modal.Title style={{ color: '#274F77' }}>
+                  Inserire un'email
             </Modal.Title>
-          </Modal.Header>
-          <Modal.Body style={{ width: '350px', padding: '7px' }}>
-          <input
+              </Modal.Header>
+              <Modal.Body style={{ width: '350px', padding: '7px' }}>
+                <input
                   id="emailText"
                   type="text"
                   style={inputTextStyle}
-            >
+                >
 
-            </input>
-            {
-            this.state.showErrorAlert?
-            <Alert 
-              bsStyle="danger"
-            >
-              <p>Email non valida</p>
-             </Alert>
-             :
-              <div></div>
+                </input>
+                {
+                  this.state.showErrorAlert ?
+                    <Alert
+                      bsStyle="danger"
+                    >
+                      <p>{this.state.alertErrorText}</p>
+                    </Alert>
+                    :
+                    <div></div>
 
-            }
-          </Modal.Body>
-          <Modal.Footer style={{ width: '350px' }}>
-            <Button
-              bsStyle='primary'
-              
-              className='btn-color-blue'
-              onClick={handleCloseEmail}
-            >
-              Annulla
+                }
+              </Modal.Body>
+              <Modal.Footer style={{ width: '350px' }}>
+                <Button
+                  bsStyle='primary'
+
+                  className='btn-color-blue'
+                  onClick={handleCloseEmail}
+                >
+                  Annulla
             </Button>
-            <Button
-              bsStyle='success'
-              onClick={() => {
-                setEmailVerified(
-                  document.getElementById("emailText").value
-                );
-              }}
-            >
-              Inserisci email
+                <Button
+                  bsStyle='success'
+                  onClick={() => {
+                    setEmailVerified(
+                      document.getElementById("emailText").value
+                    );
+                  }}
+                >
+                  Inserisci email
             </Button>
-          </Modal.Footer>
-        </Modal>
+              </Modal.Footer>
+            </Modal>
           </Grid>
         </div>
       );
