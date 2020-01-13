@@ -5,6 +5,7 @@ import Axios from 'axios';
 import Card from 'components/Card/Card.jsx';
 import UsersTabs from '../components/UsersTabs/UsersTabs';
 import Suggestion from '../components/Suggestion/Suggestion';
+import '../assets/css/suggestions.css'
 
 import { UserNoticeLists } from '../static/dicts';
 
@@ -29,19 +30,25 @@ class Notices extends Component {
     };
   }
 
-  handleSearch(e) {
-    let token = localStorage.getItem('token')
-    Axios(`http://localhost:3001/api/notices/search`, {
-      headers: {
-        Authorization: token
-      },
-      method: 'POST'
-    }).then(res => {
-      let notices = res.data.notices;
-      this.setState({
-        results:notices
+  handleSearch = (e) => {
+    if (e.target.value != '') {
+      let token = localStorage.getItem('token')
+      Axios(`http://localhost:3001/api/notices/${e.target.value}`, {
+        headers: {
+          Authorization: token
+        },
+        method: 'GET'
+      }).then(res => {
+        let notices = res.data.notices;
+        this.setState({
+          results: notices
+        })
+      }).catch(err => {
+        this.setState({
+          results: []
+        })
       })
-    })
+    }
   }
 
   handleDifferentUsers(pathname, notices) {
@@ -49,16 +56,21 @@ class Notices extends Component {
     if (user !== null) {
       return (
         <div className='container-fluid'>
-          <form className='search-group' onSubmit={this.handleSearch}>
-            <Glyphicon glyph='search' />
-            <FormControl
-              className='search-bar'
-              type='text'
-              name='search'
-              placeholder='Cerca bando...'
-              onChange={this.handleSearch}
-            />
-            <Suggestion results={this.state.results} />
+          <form autoComplete='off' className='search-group'>
+            <div className='search-div'>
+              <Glyphicon glyph='search' />
+              <FormControl
+                className='search-bar'
+                type='text'
+                name='search'
+                placeholder='Cerca bando...'
+                onChange={e => this.handleSearch(e)}
+              />
+              <Suggestion
+                results={this.state.results}
+                pathname={pathname}
+                history={this.props.history} />
+            </div>
           </form>
           <UsersTabs
             pathname={pathname}
