@@ -18,6 +18,13 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 
+const necessary = {
+  color: 'red',
+  padding: '0 5px',
+  fontSize: '13px',
+  fontFamily: '"Times New Roman", serif'
+};
+
 /**
  * View: NoticeManager.jsx
  * If the prop 'notice' is set, this component is used for the notice's editing.
@@ -94,8 +101,11 @@ export default class CreateNotice extends Component {
 
     if (params.id) {
       // Change the notice
-
-      notice.protocol = `Prot. n. ${notice.protocol}`;
+      console.log(/^Prot\. n\. [0-9]+$/.test(notice.protocol));
+      if (!/^Prot\. n\. [0-9]+$/.test(notice.protocol)) {
+        console.log('Sono nel test!');
+        notice.protocol = `Prot. n. ${notice.protocol}`;
+      }
 
       axios({
         method: 'PATCH',
@@ -113,6 +123,7 @@ export default class CreateNotice extends Component {
         })
         .catch(error => {
           if (error) {
+            notice.protocol = notice.protocol.replace('Prot. n. ', '');
             this.setState({
               error: <Alert bsStyle='danger'>{error.response.data.error}</Alert>
             });
@@ -157,8 +168,9 @@ export default class CreateNotice extends Component {
         }
       }
 
-      notice.protocol = `Prot. n. ${notice.protocol}`;
-      console.log(notice.protocol);
+      if (!/^Prot\. n\. [0-9]+$/.test(notice.protocol)) {
+        notice.protocol = `Prot. n. ${notice.protocol}`;
+      }
 
       // Create the notice
       axios({
@@ -177,6 +189,7 @@ export default class CreateNotice extends Component {
         })
         .catch(error => {
           if (error) {
+            notice.protocol = notice.protocol.replace('Prot. n. ', '');
             this.setState({
               error: <Alert bsStyle='danger'>{error.response.data.error}</Alert>
             });
@@ -229,7 +242,7 @@ export default class CreateNotice extends Component {
 
     notice.articles.push({
       id: null,
-      notice_protocol: notice.protocol,
+      notice_protocol: 'Prot. n. ' + notice.protocol,
       text: null,
       initial: null
     });
@@ -249,7 +262,7 @@ export default class CreateNotice extends Component {
     }
 
     notice.evaluation_criteria.push({
-      notice_protocol: notice.protocol,
+      notice_protocol: 'Prot. n. ' + notice.protocol,
       name: null,
       max_score: null
     });
@@ -270,7 +283,7 @@ export default class CreateNotice extends Component {
 
     notice.assignments.push({
       id: null,
-      notice_protocol: notice.protocol,
+      notice_protocol: 'Prot. n. ' + notice.protocol,
       student: null,
       code: null,
       activity_description: null,
@@ -304,19 +317,19 @@ export default class CreateNotice extends Component {
 
       if (notice.assignments) {
         notice.assignments.map(element => {
-          element.notice_protocol = value;
+          element.notice_protocol = 'Prot. n.' + value;
         });
       }
 
       if (notice.evaluation_criteria) {
         notice.evaluation_criteria.map(element => {
-          element.notice_protocol = value;
+          element.notice_protocol = 'Prot. n.' + value;
         });
       }
 
       if (notice.articles) {
         notice.articles.map(element => {
-          element.notice_protocol = value;
+          element.notice_protocol = 'Prot. n.' + value;
         });
       }
     }
@@ -521,6 +534,7 @@ export default class CreateNotice extends Component {
             <Row className='create-notice-row'>
               <Col xs={12} md={12}>
                 <ControlLabel>Incarichi</ControlLabel>
+                <span style={necessary}>Compilare tutti i campi</span>
                 <Table id='assignments' striped bordered responsive>
                   <thead>
                     <tr>
@@ -725,7 +739,7 @@ export default class CreateNotice extends Component {
             <Row className='create-notice-row'>
               <Col xs={12} md={12}>
                 <ControlLabel>Criteri di valutazione</ControlLabel>
-
+                <span style={necessary}>Compilare tutti i campi</span>
                 <Table id='criteria' striped bordered responsive>
                   <thead>
                     <tr>
@@ -979,6 +993,7 @@ export default class CreateNotice extends Component {
             <Row className='create-notice-row'>
               <Col xs={12} md={12}>
                 <ControlLabel>Articoli</ControlLabel>
+                <span style={necessary}>Compilare tutti i campi</span>
                 <Table id='articles' striped bordered responsive>
                   <thead>
                     <tr>
