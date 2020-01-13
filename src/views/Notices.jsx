@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import { Grid, Row, Col, Glyphicon, FormControl } from 'react-bootstrap';
 import Axios from 'axios';
 
@@ -27,10 +27,7 @@ class Notices extends Component {
     };
   }
 
-  handleSearch(e) {
-    
-  
-  }
+  handleSearch(e) {}
 
   handleDifferentUsers(pathname, notices) {
     let user = JSON.parse(localStorage.getItem('user'));
@@ -51,6 +48,7 @@ class Notices extends Component {
             pathname={pathname}
             notices={notices}
             tabs={UserNoticeLists[user.role]}
+            history={this.props.history}
           />
         </div>
       );
@@ -71,6 +69,7 @@ class Notices extends Component {
             pathname={pathname}
             notices={notices}
             tabs={UserNoticeLists['Student']}
+            history={this.props.history}
           />
         </div>
       );

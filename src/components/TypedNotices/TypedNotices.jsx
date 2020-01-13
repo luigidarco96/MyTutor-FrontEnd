@@ -78,8 +78,8 @@ export default class TypedNotices extends Component {
 
   getDetailNotice = e => {
     let { pathname } = this.props;
-    this.props.history.push('/detailNotices/' + e.protocol)
-    
+    console.log(this.props.history.location);
+    this.props.history.push('detailNotices/' + e.protocol);
   };
   //Operation on draft notices.
   draftOperation(element) {
@@ -295,9 +295,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push(
-                '/candidatures/' + element.protocol
-              );
+              this.props.history.push('/candidatures/' + element.protocol);
             }}
           >
             Visualizza candidature
@@ -331,8 +329,7 @@ export default class TypedNotices extends Component {
               e.stopPropagation();
               e.preventDefault();
               this.props.history.push(
-                '/professor/detailNotices/' +
-                  element.protocol
+                '/professor/detailNotices/' + element.protocol
               );
             }}
           >
@@ -364,9 +361,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push(
-                '/valutations/' + element.protocol
-              );
+              this.props.history.push('/valutations/' + element.protocol);
             }}
           >
             Visualizza tabella
@@ -491,8 +486,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push(
-                '/uploadNotice/' + element.protocol)
+              this.props.history.push('/uploadNotice/' + element.protocol);
             }}
           >
             Carica bando
@@ -652,7 +646,6 @@ export default class TypedNotices extends Component {
         });
         closeConfirm();
         window.location.reload();
-
       })
       .catch(error => {
         this.setState({

@@ -53,7 +53,6 @@ export default class DefaultTabs extends Component {
       filteredAssignments = this.props.assignments.filter(assignment => {
         return StateAssignmentDictionary[assignment.state] === e;
       });
-     
 
       this.setState({
         selectedTab: e,
@@ -63,7 +62,7 @@ export default class DefaultTabs extends Component {
   }
 
   componentWillMount() {
-    const { tabs, notices} = this.props;
+    const { tabs, notices } = this.props;
     if (
       window.location.pathname.split('/')[2] === 'notices' ||
       window.location.pathname === '/home'
@@ -129,6 +128,7 @@ export default class DefaultTabs extends Component {
                     pathname={pathname}
                     notices={filteredNotices}
                     type={selectedTab}
+                    history={this.props.history}
                   />
                 </Tab>
               );
@@ -139,6 +139,7 @@ export default class DefaultTabs extends Component {
                   pathname={pathname}
                   notices={filteredNotices}
                   type={selectedTab}
+                  history={this.props.history}
                 />
               </Tab>
             );
@@ -160,6 +161,7 @@ export default class DefaultTabs extends Component {
                   pathname={pathname}
                   assignments={filteredAssignments}
                   type={selectedTab}
+                  history={this.props.history}
                 />
               </Tab>
             );

@@ -119,7 +119,7 @@ export default class CreateNotice extends Component {
         }
       })
         .then(blob => {
-          window.location = '/notices';
+          this.props.history.push('/notices');
         })
         .catch(error => {
           if (error) {
@@ -185,7 +185,7 @@ export default class CreateNotice extends Component {
         }
       })
         .then(blob => {
-          window.location = '/notices';
+          this.props.history.goBack();
         })
         .catch(error => {
           if (error) {

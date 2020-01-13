@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import { Collapse, Toast} from 'reactstrap';
-import {
-  Glyphicon,
-  FormControl,
-  Col,
-  Row,
-  Grid
-} from 'react-bootstrap';
+import { Collapse, Toast, ToastBody, ToastHeader } from 'reactstrap';
+import { Glyphicon, FormControl, Col, Row, Grid, Alert } from 'react-bootstrap';
 import Card from '../components/Card/Card';
 import CustomButton from '../components/CustomButton/CustomButton';
 import { UserRole } from '../static/dicts';
@@ -78,11 +72,21 @@ export default class UserProfile extends Component {
   handleSubmit(e) {
     e.stopPropagation();
     e.preventDefault();
+    let passRegex = RegExp(
+      /^(?=.*\d)(?=.*[A-Z])(?=.*[a-z])[A-Za-z0-9!@#$%]{8,20}$/
+    );
 
-   
+    let value = '' + e.target.value;
 
     let user = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
+
+    if (passRegex.test(value.trim())) {
+      this.setState({
+        error: <Alert bsStyle='danger'>Password inserita non valida.</Alert>
+      });
+      return;
+    }
 
     if (user) {
       if (user.role === 'Student') {
@@ -101,17 +105,16 @@ export default class UserProfile extends Component {
         }
       })
         .then(result => {
-          
           localStorage.removeItem('user');
           localStorage.setItem('user', JSON.stringify(result.data.user));
-
-          window.location = '/notices';
-        })
-        .catch(error => {
           this.setState({
-            error: <Toast></Toast>
+            error: <Alert bsStyle='success'>Modifica avvenuta.</Alert>
           });
-        });
+          setTimeout(() => {
+            window.location.reload();
+          }, 2000);
+        })
+        .catch(error => {});
     }
   }
 
@@ -132,6 +135,7 @@ export default class UserProfile extends Component {
 
   render() {
     let user = JSON.parse(localStorage.getItem('user'));
+    const { error } = this.state;
 
     return (
       <div className='container-fluid content'>
@@ -165,7 +169,7 @@ export default class UserProfile extends Component {
             <Card
               title='Modifica dati'
               content={
-                <form onSubmit={e => this.handleSubmit()}>
+                <form onSubmit={e => this.handleSubmit(e)}>
                   <Grid fluid>
                     <Row>
                       <CustomButton
@@ -218,6 +222,7 @@ export default class UserProfile extends Component {
                       </Collapse>
                     </Row>
                   </Grid>
+                  {error}
                 </form>
               }
             />
