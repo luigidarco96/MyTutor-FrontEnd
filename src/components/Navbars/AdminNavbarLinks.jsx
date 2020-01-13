@@ -45,10 +45,9 @@ class AdminNavbarLinks extends Component {
         <Nav pullRight className="auth_buttons">
           {this.showProfile()}
           <Button
-            bsStyle="danger"
-            fill
+            simple
             onClick={() => logout()}
-            style={{ color: "white" }}
+            style={{ color: "white", background: "#A52F2F" }}
           >
             {" "}
             Logout
