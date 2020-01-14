@@ -1,14 +1,15 @@
 .list-suggestions-item {
     background: white;
-    border: 1px solid #80B6E1;
+    border-bottom: 1px solid #555555b2;
     z-index: 99;
     /*position the autocomplete items to be the same width as the container:*/
     top: 100%;
     left: 0;
     right: 0;
     width: 20rem;
-    margin-left: 5px;
-    margin-top: 0;
+    text-align: center;
+    padding: 4px;
+    height: 25px;
 }
 
 .list-suggestions-item .search-div {
@@ -27,7 +28,15 @@
 }
 
 .list-suggestions {
+    border: 1px solid #555555ab;
     padding: 0;
     margin: 0;
     list-style-type: none;
+    position: absolute;
+    z-index: 99;
+    justify-content: center;
+}
+
+.list-suggestions-item:last-child {
+    border: none;
 }
