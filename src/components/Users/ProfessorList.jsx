@@ -48,8 +48,6 @@ export class ProfessorList extends Component {
         search: false
       });
     } else {
-      if(result.length===0)
-        
       this.setState({
         professorsSearch: result,
         search: true
@@ -283,7 +281,7 @@ export class ProfessorList extends Component {
             >
               <Modal.Header style={{ width: '350px' }} closeButton>
                 <Modal.Title style={{ color: '#274F77', fontSize: '25px', fontWeight: '20px' }}>
-                  Elimina studente
+                  Elimina professore
             </Modal.Title>
               </Modal.Header>
               <Modal.Body

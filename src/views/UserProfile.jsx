@@ -22,6 +22,7 @@ export default class UserProfile extends Component {
       birthDate: '',
       role: '',
       alertSuccess: false,
+      alertErrorUpdateUser: false
 
 
     };
@@ -154,7 +155,9 @@ export default class UserProfile extends Component {
   handleChangeEmail(event) {
     this.setState({ email: event.target.value });
   }
-
+  handleBirthDateChange(event) {
+    this.setState({ birthDate: event.target.value });
+  }
 
   componentDidMount() {
     let user = JSON.parse(localStorage.getItem('user'));
@@ -200,9 +203,20 @@ export default class UserProfile extends Component {
                   <Row className='text-center'>
                     <div class="form-group">
                       <label style={{ float: 'left', paddinLeft: '5px' }}>Cognome</label>
-                      <input type="text" class="form-control" placeholder="Cognome" value={this.state.surname} onChange={(e) => { this.handleChangeSurname(e) }} />
+                      <input id='Cognome' type="text" class="form-control" placeholder="Cognome" value={this.state.surname} onChange={(e) => { this.handleChangeSurname(e) }} />
                     </div>
                   </Row>
+                  {user.role === 'Student' ?
+                    <Row className='text-center'>
+                      <div class="form-group">
+                        <label style={{ float: 'left', paddinLeft: '5px' }}>Data di nascita</label>
+                        <input  id='data' style={{ border: '' }} type="text" class="form-control" placeholder="Data" value={this.state.birthDate.split(' 0')[0]} onChange={(e)=>{this.handleBirthDateChange(e)}} />
+                      </div>
+                    </Row>
+                    :
+                    <div></div>
+                  }
+
                   <Row className='text-center'>
                     <div class="form-group">
                       <label style={{ float: 'left', paddinLeft: '5px' }}>Email</label>
@@ -225,8 +239,15 @@ export default class UserProfile extends Component {
                     :
                     <div></div>
                   }
+                
                   {this.state.alertSuccess?
-                  <Alert bsStyle='success'><p>Modifica eddettuata con successo</p></Alert>  
+                  <Alert bsStyle='success'><p>Modifica effettuata con successo</p></Alert>  
+                  :
+                  <div></div>
+                }
+                
+                {this.state.alertErrorUpdateUser?
+                  <Alert bsStyle='danger'><p>Impossibile effettuare la modifica</p></Alert>  
                   :
                   <div></div>
                 }
@@ -238,7 +259,7 @@ export default class UserProfile extends Component {
 
                       if (user) {
                         if (user.role === 'Student') {
-                          user.birth_date = user.birth_date + ' ';
+                          user.birth_date = this.state.birthDate;
                         }
                         user.name = this.state.name;
                         user.surname = this.state.surname;
@@ -264,7 +285,15 @@ export default class UserProfile extends Component {
                               window.location.reload();
                             }, 2000);
                           })
-                          .catch(error => { });
+                          .catch(error => {
+                            this.setState({
+                              alertErrorUpdateUser : true
+                            })
+                            setTimeout(() => {
+                              window.location.reload();
+                            }, 2000);
+                             
+                           });
                         }
 
                       }
