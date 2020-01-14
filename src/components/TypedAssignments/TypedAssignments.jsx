@@ -227,24 +227,31 @@ export default class TypedAssignments extends Component {
       "http://localhost:3001/api/assignments/close",
       { assignment: element },
       { headers: headers }
-    ).then(blob => {
-      this.setState({
-        assignments: this.props.assignments
+    )
+      .then(blob => {
+        this.setState({
+          assignments: this.props.assignments
+        });
+        this.props.assignments.forEach(el => {
+          if (el.id === element.id && el.student === element.student) {
+            element.state = "Over";
+            el = element;
+          }
+        });
+        let td = document.getElementById(element.id);
+        td.style.color = "red";
+        this.setState({
+          assignments: this.state.assignments
+        });
+        closeModalComment();
+        window.location.reload();
+      })
+      .catch(error => {
+        this.setState({
+          alertError: true,
+          alertText: "Impossibile inviare il commento."
+        });
       });
-      this.props.assignments.forEach(el => {
-        if (el.id === element.id && el.student === element.student) {
-          element.state = "Over";
-          el = element;
-        }
-      });
-      let td = document.getElementById(element.id);
-      td.style.color = "red";
-      this.setState({
-        assignments: this.state.assignments
-      });
-      closeModalComment();
-      window.location.reload();
-    });
   }
 
   rejectAssignment() {
@@ -404,6 +411,14 @@ export default class TypedAssignments extends Component {
               style={{ resize: "none", height: "55px", width: "341px" }}
             ></textarea>
           </Modal.Body>
+          {this.state.alertError ? (
+            <Alert bsStyle="danger">
+              <p>{this.state.alertText}</p>
+            </Alert>
+          ) : (
+            <div></div>
+          )}
+
           <Modal.Footer style={{ width: "350px" }}>
             <CustomButton
               className="btn-color-blue"
