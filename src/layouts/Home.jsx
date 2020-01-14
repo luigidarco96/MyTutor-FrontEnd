@@ -72,7 +72,7 @@ class Home extends Component {
       if (list[i].path.split("/")[1] === pathnameView) return list[i].name;
     }
   };
-
+  /*
   componentDidUpdate(e) {
     if (
       window.innerWidth < 993 &&
@@ -87,7 +87,7 @@ class Home extends Component {
       this.refs.mainPanel.scrollTop = 0;
     }
   }
-
+*/
   render() {
     return (
       <div>

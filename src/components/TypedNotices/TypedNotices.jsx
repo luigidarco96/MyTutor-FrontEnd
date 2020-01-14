@@ -78,8 +78,11 @@ export default class TypedNotices extends Component {
 
   getDetailNotice = e => {
     let { pathname } = this.props;
-    console.log(this.props.history.location);
-    this.props.history.push("detailNotices/" + e.protocol);
+    if (pathname === 'home') {
+      this.props.history.push(pathname + '/detailNotices/' + e.protocol);
+    } else {
+      this.props.history.push('detailNotices/' + e.protocol);
+    }
   };
   //Operation on draft notices.
   draftOperation(element) {

@@ -20,7 +20,9 @@ export default class UserProfile extends Component {
       email: '',
       registrationNumber: '',
       birthDate: '',
-      role: ''
+      role: '',
+      alertSuccess: false,
+
 
     };
   }
@@ -46,7 +48,7 @@ export default class UserProfile extends Component {
     e.preventDefault();
 
     if (!this.state.change) {
-      console.log('1')
+
       e.target.className = e.target.className.replace(
         'btn-color-blue btn-block btn btn-primary',
         'btn-color-red btn btn-block'
@@ -54,7 +56,6 @@ export default class UserProfile extends Component {
 
       e.target.innerHTML = 'Annulla';
     } else {
-      console.log('2')
       e.target.className = e.target.className.replace(
         'btn-color-red btn btn-block',
         'btn-color-blue btn-block btn btn-primary '
@@ -99,7 +100,7 @@ export default class UserProfile extends Component {
 
     if (user) {
       if (user.role === 'Student') {
-        user.birth_date = user.birth_date.split('T')[0] + ' ';
+        user.birth_date = user.birth_date + ' ';
       }
       user.password = this.state.password;
 
@@ -224,11 +225,50 @@ export default class UserProfile extends Component {
                     :
                     <div></div>
                   }
+                  {this.state.alertSuccess?
+                  <Alert bsStyle='success'><p>Modifica eddettuata con successo</p></Alert>  
+                  :
+                  <div></div>
+                }
                   <CustomButton
                     style={{ margin: '0' }}
                     bsStyle='primary'
                     className="btn-color-blue btn-block"
-                    onClick={()=>{/**Implementare chiamata per modificare i dati */}}
+                    onClick={() => {
+
+                      if (user) {
+                        if (user.role === 'Student') {
+                          user.birth_date = user.birth_date + ' ';
+                        }
+                        user.name = this.state.name;
+                        user.surname = this.state.surname;
+                        user.password = null;
+                        console.log(user);
+                        Axios({
+                          method: 'PATCH',
+                          url: 'http://localhost:3001/api/users',
+                          data: {
+                            user: user
+                          },
+                          headers: {
+                            'Authorization': localStorage.getItem('token')
+                          }
+                        })
+                          .then(result => {
+                            localStorage.removeItem('user');
+                            localStorage.setItem('user', JSON.stringify(result.data.user));
+                            this.setState({
+                              alertSuccess: true
+                            })
+                            setTimeout(() => {
+                              window.location.reload();
+                            }, 2000);
+                          })
+                          .catch(error => { });
+                        }
+
+                      }
+                    }
                   >
                     Modifica dati personali
                   </CustomButton>
