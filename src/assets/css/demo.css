@@ -928,6 +928,18 @@ a:hover{
   border-color: #274F77!important;
   color: #274F77 !important; 
  }
+ .btn-color-red {
+  border-color: #993333!important;
+  color: #993333 !important; 
+ }
+
+ 
+ .btn-color-red:active, .btn-color-red.active,
+ .open > .btn-color-red.dropdown-toggle {
+   background-color: #993333 !important;
+   color: white!important;
+   border-color: #993333 !important; }
+
  .btn-primary:active, .btn-primary.active,
  .open > .btn-primary.dropdown-toggle {
    background-color: #274F77 !important;
