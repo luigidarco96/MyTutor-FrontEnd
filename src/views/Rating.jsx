@@ -9,6 +9,8 @@ import {
     Modal
 } from 'react-bootstrap';
 import axios from 'axios';
+import 'react-widgets/dist/css/react-widgets.css';
+import { Combobox } from 'react-widgets'
 const remove = (<Tooltip id="remove_tooltip">Remove</Tooltip>);
 
 export default class Rating extends Component {
@@ -16,6 +18,8 @@ export default class Rating extends Component {
         super(props)
         this.state = {
             assignments: [],
+            candidatedStudents: [],
+            candidatures: [],
             regex: {
                 titles_score: /^[0-9]+$/,
                 interview_score: /^[0-9]+$/
@@ -40,6 +44,8 @@ export default class Rating extends Component {
     });
 
     componentDidMount() {
+        const { assignments } = this.state;
+
         const {
             match: { params }
         } = this.props;
@@ -55,10 +61,9 @@ export default class Rating extends Component {
                 headers: {
                     Authorization: token
                 },
-                method:'GET'
+                method: 'GET'
             }).then(res => {
                 let ass = res.data.notices[0].assignments
-
                 ass.forEach(el => {
                     el.student = []
                 })
@@ -66,20 +71,25 @@ export default class Rating extends Component {
                 this.setState({
                     assignments: ass
                 });
-            })
-        } else {
-            axios(`http://localhost:3001/api/notices/${params.id}`, {method:'GET'})
-                .then(res => {
-                    let assignments = res.data.notices[0].assignments
-
-                    assignments.forEach(el => {
-                        el.student = []
+                axios({
+                    url: `http://localhost:3001/api/candidatures/`,
+                    method: 'GET',
+                    headers: {
+                        Authorization: token
+                    },
+                    params: {
+                        protocol: ass[0].notice_protocol
+                    }
+                }).then((result) => {
+                    this.setState({ candidatures: result.data.candidatures })
+                    let students = []
+                    result.data.candidatures.map(candidature => {
+                        students.push(candidature.student)
                     })
-
-                    this.setState({
-                        assignments: assignments
-                    });
+                    this.setState({ candidatedStudents: students })
+                    console.log(students)
                 })
+            })
         }
         if (this.state.assignments.length === 0) {
             let ass = this.state.assignments
@@ -119,12 +129,17 @@ export default class Rating extends Component {
         this.setState({ assignments: assignments })
     }
 
-    handleChangeStudents = (e, i) => {
+    handleChangeStudents = (e, i, id) => {
         const { assignments, regex } = this.state
 
-        let index = e.target.id.split('_')[0]
-        let value = e.target.value
-        let name = e.target.name
+        let arr = id.split('_')
+        let index = arr[0]
+        let name = arr[1] + '_' + arr[2]
+        let value = 0
+        if (e.target != undefined)
+            value = e.target.value
+        else
+            value = e
         let students = assignments[i].student;
 
         let val = parseInt(value)
@@ -139,14 +154,15 @@ export default class Rating extends Component {
         } else {
             students[index][name] = value;
         }
+
         this.setState({ students: students })
     }
 
-    handleRemoveStudent = (e, i) => {
+    handleRemoveStudent = (e, i, id) => {
         const { assignments } = this.state
         let students = assignments[i].student;
-        let index = e.target.id.split('_')[0]
-        if (index === students.length - 1) {
+        let index = id.split('_')[0]
+        if (index == students.length - 1) {
             students.pop()
         } else {
             students.forEach((curr, currIndex) => {
@@ -156,85 +172,72 @@ export default class Rating extends Component {
             })
             students.pop()
         }
-
+        assignments.student = students;
         this.setState({ assignments: assignments })
     }
 
 
     handleSubmit = (e) => {
-        console.log('ciao')
-        const { assignments } = this.state
+        const { assignments, candidatures } = this.state
         e.preventDefault()
 
         let token = localStorage.getItem('token');
 
-        axios({
-            url: `http://localhost:3001/api/candidatures/`,
-            method: 'GET',
-            headers: {
-                Authorization: token
-            },
-            params: {
-                protocol: assignments[0].notice_protocol
-            }
-        }).then((result) => {
-            
-                if (result.data.candidatures && result.data.candidatures.length > 0) {
-                    let candidatureList = result.data.candidatures;
-                    let ratingList = []
-                    assignments.forEach(ass => {
-                        ass.student.forEach(st => {
-                            let student = null
-                            candidatureList.forEach(candidature => {
-                                if (candidature.student.name == st.name && candidature.student.surname == st.surname) {
-                                    student = candidature.student;
-                                }
-                            })
-                            if (student) {
-                                ratingList.push({
-                                    student: student,
-                                    assignment_id: ass.id,
-                                    titles_score: st.titles_score,
-                                    interview_score: st.interview_score,
-                                })
-                            }
-                        })
-                    })
-                    
-                    axios({
-                        url: 'http://localhost:3001/api/ratings',
-                        method: 'PUT',
-                        data: {
-                            ratingList: ratingList
-                        },
-                        headers: {
-                            Authorization: token
+
+        if (candidatures && candidatures.length > 0) {
+            let candidatureList = candidatures;
+            let ratingList = []
+            assignments.forEach(ass => {
+                ass.student.forEach(st => {
+                    let student = null
+                    candidatureList.forEach(candidature => {
+                        if (candidature.student.name == st.name && candidature.student.surname == st.surname) {
+                            student = candidature.student;
                         }
-                    }).then(response => {
-                        
-                            this.setModalSuccess('Tabella creata con successo!');
-                          
-                        
-                    }).catch(err => {
-                        if (err.response.data.error) {
-                            this.setModalError(err.response.data.error);
-                         }
                     })
+                    if (student) {
+                        ratingList.push({
+                            student: student,
+                            assignment_id: ass.id,
+                            titles_score: st.titles_score,
+                            interview_score: st.interview_score,
+                        })
+                    }
+                })
+            })
+
+            axios({
+                url: 'http://localhost:3001/api/ratings',
+                method: 'PUT',
+                data: {
+                    ratingList: ratingList
+                },
+                headers: {
+                    Authorization: token
                 }
-                else {
-                    this.setModalError('ATTENZIONE! Non sono stati rilevati candidati per questo bando');
-                    
-                    return []
-                }
-            
-        }).catch(err => {
-            this.setModalError(err.response.data.error + 'Riprovare più tardi o controllare i candidati al bando!')
-            
-          
-      })
+            }).then(response => {
+
+                this.setModalSuccess('Tabella creata con successo!');
 
 
-      
+            }).catch(err => {
+                if (err.response.data) {
+                    if (err.response.data.exception && Object.entries(err.response.data.exception).length > 0) {
+                        if (err.response.data.exception.startsWith('Duplicate entry')) {
+                            let array = err.response.data.exception.split("'")
+                            let email = array[1].split('-');
+                            this.setModalError(err.response.data.error + '. Lo studente con email ' + email[0] + ' è già stato valutato');
+                        }
+                    } else {
+                        this.setModalError(err.response.data.error)
+                    }
+                }
+            })
+        } else {
+            this.setModalError('ATTENZIONE! Non sono stati rilevati candidati per questo bando');
+
+            return []
+        }
     }
 
     validateForm = () => {
@@ -259,7 +262,16 @@ export default class Rating extends Component {
     render() {
         const {
             assignments,
-            modalContent } = this.state
+            modalContent,
+            candidatedStudents
+        } = this.state
+
+        var names = []
+        var surnames = []
+        candidatedStudents.forEach(element => {
+            names.push(element.name)
+            surnames.push(element.surname)
+        })
         return (
             <div className='content'>
                 <Form onSubmit={e => this.handleSubmit(e)}>
@@ -346,10 +358,19 @@ export default class Rating extends Component {
                                     </thead>
                                     <tbody>
                                         {el.student.map((obj, index) => {
+                                            console.log(el.student)
                                             return (
                                                 <tr>
                                                     <td>
-                                                        <FormControl
+                                                        <Combobox
+                                                            data={surnames}
+                                                            onFocus={e => this.handleFocus(e)}
+                                                            onBlur={e => this.handleBlur(e)}
+                                                            onMouseEnter={e => this.handleMouseEnter(e)}
+                                                            onMouseOut={e => this.handleMouseOut(e)}
+                                                            onChange={e => this.handleChangeStudents(e, i, index + '_surname')}
+                                                        />
+                                                        {/*<FormControl
                                                             id={index + '_surname'}
                                                             name='surname'
                                                             placeholder='Inserisci il cognome dello studente...'
@@ -359,10 +380,18 @@ export default class Rating extends Component {
                                                             onMouseEnter={e => this.handleMouseEnter(e)}
                                                             onMouseOut={e => this.handleMouseOut(e)}
                                                             onChange={e => this.handleChangeStudents(e, i)}
-                                                        />
+                                                        />*/}
                                                     </td>
                                                     <td>
-                                                        <FormControl
+                                                        <Combobox
+                                                            data={names}
+                                                            onFocus={e => this.handleFocus(e)}
+                                                            onBlur={e => this.handleBlur(e)}
+                                                            onMouseEnter={e => this.handleMouseEnter(e)}
+                                                            onMouseOut={e => this.handleMouseOut(e)}
+                                                            onChange={e => this.handleChangeStudents(e, i, index + '_name')}
+                                                        />
+                                                        {/*<FormControl
                                                             id={index + '_name'}
                                                             name='name'
                                                             placeholder='Inserisci il nome dello studente...'
@@ -372,25 +401,25 @@ export default class Rating extends Component {
                                                             onMouseEnter={e => this.handleMouseEnter(e)}
                                                             onMouseOut={e => this.handleMouseOut(e)}
                                                             onChange={e => this.handleChangeStudents(e, i)}
-                                                        />
+                                                        />*/}
                                                     </td>
                                                     <td>
                                                         <FormControl
-                                                            id={index + '_titles_score'}
-                                                            name='titles_score'
+                                                            value={obj.titles_score}
                                                             placeholder='Inserisci il punteggio...'
                                                             type='number'
                                                             onFocus={e => this.handleFocus(e)}
                                                             onBlur={e => this.handleBlur(e)}
                                                             onMouseEnter={e => this.handleMouseEnter(e)}
                                                             onMouseOut={e => this.handleMouseOut(e)}
-                                                            onChange={e => this.handleChangeStudents(e, i)}
+                                                            onChange={e => this.handleChangeStudents(e, i, index + '_titles_score')}
                                                         />
                                                         {obj.error && obj.error.titles_score.length > 0 &&
                                                             <span style={{ fontSize: '10px', color: 'red' }} className='error'>{obj.error.titles_score}</span>}
                                                     </td>
                                                     <td>
                                                         <FormControl
+                                                            value={obj.interview_score}
                                                             id={index + '_interview_score'}
                                                             name='interview_score'
                                                             placeholder='Inserisci il punteggio...'
@@ -399,7 +428,7 @@ export default class Rating extends Component {
                                                             onBlur={e => this.handleBlur(e)}
                                                             onMouseEnter={e => this.handleMouseEnter(e)}
                                                             onMouseOut={e => this.handleMouseOut(e)}
-                                                            onChange={e => this.handleChangeStudents(e, i)}
+                                                            onChange={e => this.handleChangeStudents(e, i, index + '_interview_score')}
                                                         />
                                                         {obj.error && obj.error.interview_score.length > 0 &&
                                                             <span style={{ fontSize: '10px', color: 'red' }} className='error'>{obj.error.interview_score}</span>}
@@ -425,7 +454,7 @@ export default class Rating extends Component {
                                                                 simple
                                                                 type="button"
                                                                 bsSize="xs"
-                                                                onClick={e => { this.handleRemoveStudent(e, i) }}
+                                                                onClick={e => { this.handleRemoveStudent(e, i, index + '_remove') }}
                                                             >
                                                                 <i className="fa fa-times"></i>
                                                             </CustomButton>
@@ -440,7 +469,7 @@ export default class Rating extends Component {
                                     style={{ marginTop: '20px', borderColor: '#274F77', color: '#274F77' }}
                                     bsStyle='primary'
                                     block={true}
-                                    
+
                                     className='btn-clolor-blue create-notice-csbutton pull-right'
                                     onClick={e => this.handleAddStudent(e, i)}
                                 >
