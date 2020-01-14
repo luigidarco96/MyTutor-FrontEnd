@@ -1,15 +1,21 @@
 import React, { Component } from 'react';
-import { Grid, Row, Table, Col, Button } from 'react-bootstrap';
+import { Grid, Row, Table, Col, Button, Modal, Alert } from 'react-bootstrap';
+
 import Card from 'components/Card/Card.jsx';
 import axios from 'axios';
 
 class Candidature extends Component {
- 
+
   state = {
     header: [],
     candidatures: [],
     protocol: null,
-    show: false
+    show: false,
+    operationToconfirm: '',
+    showConfirm: false,
+    selectedCandidature: '',
+    showAlertError: false,
+    showAlertText: '',
   };
 
   componentDidMount() {
@@ -19,7 +25,7 @@ class Candidature extends Component {
 
     let id = params.id;
     let pathRegex = /admin\/candidatures\/*/;
-   
+
     if (window.location.pathname === '/admin/candidatures' || pathRegex.test(window.location.pathname)) {
       this.setState({
         header: [
@@ -55,28 +61,81 @@ class Candidature extends Component {
         headers: headers
       })
       .then(blob => {
-    
+
         this.setState({
           candidatures: blob.data.candidatures
         });
       });
   }
 
-  render() {
+  deleteCandidature(){
+    const closeConfirm = () =>{
+      this.setState({
+        showConfirm: false,
+        showAlertError: false
+      })
+    }
+    const headers = {
+      Authorization: localStorage.getItem('token')
+    };
    
+    //Call servise to delete a candidature
+    axios
+      .patch(
+        'http://localhost:3001/api/candidatures',
+        { candidature: this.state.selectedCandidature },
+        { headers: headers }
+      )
+      .then(blob => {
+        
+        let newCandidatures = [];
+        let i = 0;
+        this.state.candidatures.forEach(el => {
+          if (
+            this.state.selectedCandidature.student === el.student &&
+            this.state.selectedCandidature.notice_protocol === el.notice_protocol
+          ) {
+            newCandidatures[i++] = blob.data.candidature;
+          } else {
+            newCandidatures[i++] = el;
+          }
+        });
+     
+        this.setState({
+          candidatures: newCandidatures
+        });
+        closeConfirm();
+      })
+      .catch(error=>{
+        this.setState({
+          alertErrorText: error.response.data.error,
+          alertError: true
+        })
+      })
+
+  } 
+   render() {
+    const closeConfirm = () =>{
+      this.setState({
+        showConfirm: false,
+        showAlertError: false
+      })
+    }
+
+
     let updateButton = element => {
       if (element.state === 'Editable')
         return (
           <Button
             onClick={() => {
               this.props.history.push('/student/modificaCandidatura/' +
-                  element.notice_protocol
+                element.notice_protocol
               );
             }}
             style={{ border: '1px solid #274F77' }}
             className='btn-color-blue'
             bsStyle='primary'
-            
+
           >
             Modifica documenti
           </Button>
@@ -101,9 +160,9 @@ class Candidature extends Component {
           <Button
             style={{ border: '1px solid #274F77' }}
             className='btn-colore-blue'
-            
+
             bsStyle='primary'
-            
+
             onClick={() => {
               const headers = {
                 Authorization: localStorage.getItem('token')
@@ -143,7 +202,7 @@ class Candidature extends Component {
             style={{ border: '1px solid #274F77' }}
             className='btn-color-blue'
             bsStyle='primary'
-            
+
             onClick={() => {
               const headers = {
                 Authorization: localStorage.getItem('token')
@@ -186,44 +245,20 @@ class Candidature extends Component {
             style={{ border: '1px solid #274F77' }}
             className='btn-color-blue'
             bsStyle='primary'
-            
+
             onClick={() => {
-              const headers = {
-                Authorization: localStorage.getItem('token')
-              };
-             
+
               const candidature = {
                 student: element.student,
                 notice_protocol: element.notice_protocol,
                 last_edit: element.last_edit,
                 state: 'Rejected'
               };
-              //Call servise to delete a candidature
-              axios
-                .patch(
-                  'http://localhost:3001/api/candidatures',
-                  { candidature: candidature },
-                  { headers: headers }
-                )
-                .then(blob => {
-                
-                  let newCandidatures = [];
-                  let i = 0;
-                  this.state.candidatures.forEach(el => {
-                    if (
-                      candidature.student === el.student &&
-                      candidature.notice_protocol === el.notice_protocol
-                    ) {
-                      newCandidatures[i++] = blob.data.candidature;
-                    } else {
-                      newCandidatures[i++] = el;
-                    }
-                  });
-               
-                  this.setState({
-                    candidatures: newCandidatures
-                  });
-                });
+              this.setState({
+                showConfirm: true,
+                operationToConfirm: 'Rifiuta candidatura',
+                selectedCandidature: candidature
+              })
             }}
           >
             Rifiuta candidatura
@@ -236,7 +271,7 @@ class Candidature extends Component {
             style={{ border: '1px solid #274F77' }}
             className='btn-color-blue'
             bsStyle='primary'
-            
+
             onClick=''
           >
             Rifiuta candidatura
@@ -244,7 +279,7 @@ class Candidature extends Component {
         );
       }
     };
-   
+
     let statusCandidature = status => {
       switch (status) {
         case 'Editable':
@@ -260,7 +295,7 @@ class Candidature extends Component {
             <img
               style={{ paddingLeft: '10px', height: '16px' }}
               src='/assets/images/statusCandidatureInEvaluation.png'
-              alt= 'no_img'
+              alt='no_img'
             />
           );
 
@@ -269,7 +304,7 @@ class Candidature extends Component {
             <img
               style={{ paddingLeft: '10px', height: '16px' }}
               src='/assets/images/statusCandidatureRejected.png'
-              alt= 'no_img'
+              alt='no_img'
             />
           );
         case 'In Graded List':
@@ -277,7 +312,7 @@ class Candidature extends Component {
             <img
               style={{ paddingLeft: '10px', height: '16px' }}
               src='/assets/images/statusCandidatureGradList.png'
-              alt= 'no_img'
+              alt='no_img'
             />
           );
         default:
@@ -286,8 +321,8 @@ class Candidature extends Component {
     };
     const { header, candidatures } = this.state;
     let pathRegex = /admin\/candidatures\/*/;
-    
-    if (window.location.pathname === '/admin/candidatures'  || pathRegex.test(window.location.pathname)) {
+
+    if (window.location.pathname === '/admin/candidatures' || pathRegex.test(window.location.pathname)) {
       return (
         <div className='content'>
           <Grid fluid>
@@ -303,7 +338,7 @@ class Candidature extends Component {
                         <tr>
                           {header.map((prop, key) => {
                             return (
-                              <th  style={{paddingLeft:'70px'}} key={key}>
+                              <th style={{ paddingLeft: '70px' }} key={key}>
                                 {prop}
                               </th>
                             );
@@ -316,16 +351,16 @@ class Candidature extends Component {
                             return (
                               <tr key={element.last_edit}>
                                 <td>{element.student.email}</td>
-                                <td style={{position:'relative', left:'50px'}}>
+                                <td style={{ position: 'relative', left: '50px' }}>
                                   {element.notice_protocol}
                                 </td>
-                                <td style={{position:'relative', left:'50px'}}>
+                                <td style={{ position: 'relative', left: '50px' }}>
                                   {element.last_edit.split('T')[0]}
                                 </td>
-                                <td style={{position:'relative', left:'63px'}}>
+                                <td style={{ position: 'relative', left: '63px' }}>
                                   {statusCandidature(element.state)}
                                 </td>
-                                <td style={{position:'relative', left:'15px'}}>{downoladDocuments(element)}</td>
+                                <td style={{ position: 'relative', left: '15px' }}>{downoladDocuments(element)}</td>
                                 <td>{rejectCandidature(element)}</td>
                               </tr>
                             );
@@ -341,7 +376,7 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureRejected.png'
-                alt= 'no_img'
+                alt='no_img'
               />
               Candidatura rifiutata
             </div>
@@ -350,14 +385,14 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureEditable.png'
-                alt= 'no_img'
+                alt='no_img'
               />
               Candidatura modificabile
             </div>
             <div>
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
-                alt= 'no_img'
+                alt='no_img'
                 src='/assets/images/statusCandidatureInEvaluation.png'
               />
               Candidatura in valutazione
@@ -366,15 +401,69 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureGradList.png'
-                alt= 'no_img'
+                alt='no_img'
               />
               La graduatoria per la candidatura è stata pubblicata
             </div>
           </Grid>
+          <Modal
+            style={{
+              borderRadius: '6px',
+              overflow: 'hidden',
+              marginTop: '13%',
+              left: '10%',
+              position: 'absolute'
+            }}
+            dialogClassName='myClass'
+            show={this.state.showConfirm}
+            onHide={closeConfirm}
+            animation={false}
+          >
+            <Modal.Header style={{ width: '350px' }} closeButton>
+              <Modal.Title style={{ color: '#274F77' }}>
+                {this.state.operationToConfirm}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body
+              style={{
+                width: '350px',
+                padding: '7px 7px 7px 16px',
+                fontSize: '15px'
+              }}
+            >
+              <span>Confermare l'operazione?</span>
+            </Modal.Body>
+            {this.state.alertError ? (
+              <Alert bsStyle='danger'>
+                <p>{this.state.alertText}</p>
+              </Alert>
+            ) : (
+                <span></span>
+              )}
+
+            <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+              <Button
+                className='btn-color-blue'
+                bsStyle='primary'
+                onClick={closeConfirm}
+              >
+                Annulla
+            </Button>
+              <Button
+                bsStyle={this.state.error ? 'danger' : 'success'}
+                onClick={() => {
+                  this.deleteCandidature();
+                }}
+              >
+                Conferma
+            </Button>
+            </Modal.Footer>
+          </Modal>
+
         </div>
       );
-    } 
-    else  {
+    }
+    else {
       return (
         <div className='content'>
           <Grid fluid>
@@ -427,7 +516,7 @@ class Candidature extends Component {
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureRejected.png'
-                alt= 'no_img'
+                alt='no_img'
               />
               Candidatura rifiutata
             </div>
@@ -435,14 +524,14 @@ class Candidature extends Component {
             <div>
               <img
                 style={{ paddingLeft: '10px', height: '16px' }}
-                alt= 'no_img'
+                alt='no_img'
                 src='/assets/images/statusCandidatureEditable.png'
               />
               Candidatura modificabile
             </div>
             <div>
               <img
-              alt= 'no_img'
+                alt='no_img'
                 style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureInEvaluation.png'
               />
@@ -451,8 +540,8 @@ class Candidature extends Component {
             <div>
 
               <img
-              alt= 'no_img'
-              style={{ paddingLeft: '10px', height: '16px' }}
+                alt='no_img'
+                style={{ paddingLeft: '10px', height: '16px' }}
                 src='/assets/images/statusCandidatureGradList.png'
               />
               La graduatoria per la candidatura è stata pubblicata

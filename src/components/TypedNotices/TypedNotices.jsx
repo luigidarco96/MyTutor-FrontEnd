@@ -295,7 +295,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push('/candidatures/' + element.protocol);
+              this.props.history.push('candidatures/' + element.protocol);
             }}
           >
             Visualizza candidature
@@ -486,7 +486,7 @@ export default class TypedNotices extends Component {
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push('/uploadNotice/' + element.protocol);
+              this.props.history.push('uploadNotice/' + element.protocol);
             }}
           >
             Carica bando
@@ -556,6 +556,7 @@ export default class TypedNotices extends Component {
           notices: this.state.notices
         });
         closeConfirm();
+        window.location.reload();
       })
       .catch(error => {
         this.setState({

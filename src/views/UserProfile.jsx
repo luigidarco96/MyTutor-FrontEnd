@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Collapse, Toast, ToastBody, ToastHeader } from 'reactstrap';
-import { Glyphicon, FormControl, Col, Row, Grid, Alert } from 'react-bootstrap';
+import { Glyphicon, FormControl, Col, Row, Grid, Alert, Button } from 'react-bootstrap';
 import Card from '../components/Card/Card';
 import CustomButton from '../components/CustomButton/CustomButton';
 import { UserRole } from '../static/dicts';
@@ -14,7 +14,14 @@ export default class UserProfile extends Component {
       password: '',
       showPassword: 'password',
       change: false,
-      error: null
+      error: null,
+      name: '',
+      surname: '',
+      email: '',
+      registrationNumber: '',
+      birthDate: '',
+      role: ''
+
     };
   }
 
@@ -39,16 +46,18 @@ export default class UserProfile extends Component {
     e.preventDefault();
 
     if (!this.state.change) {
+      console.log('1')
       e.target.className = e.target.className.replace(
-        'btn-primary',
-        'btn-warning'
+        'btn-color-blue btn-block btn btn-primary',
+        'btn-color-red btn btn-block'
       );
 
       e.target.innerHTML = 'Annulla';
     } else {
+      console.log('2')
       e.target.className = e.target.className.replace(
-        'btn-warning',
-        'btn-primary'
+        'btn-color-red btn btn-block',
+        'btn-color-blue btn-block btn btn-primary '
       );
 
       e.target.innerHTML = 'Modifica Password';
@@ -114,7 +123,7 @@ export default class UserProfile extends Component {
             window.location.reload();
           }, 2000);
         })
-        .catch(error => {});
+        .catch(error => { });
     }
   }
 
@@ -133,9 +142,45 @@ export default class UserProfile extends Component {
     }
   }
 
+  handleChangeName(event) {
+    this.setState({ name: event.target.value });
+  }
+
+  handleChangeSurname(event) {
+    this.setState({ surname: event.target.value });
+  }
+
+  handleChangeEmail(event) {
+    this.setState({ email: event.target.value });
+  }
+
+
+  componentDidMount() {
+    let user = JSON.parse(localStorage.getItem('user'));
+    if (user.role === 'Professor')
+      this.setState({
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        role: 'Professore',
+      })
+    else {
+      this.setState({
+        name: user.name,
+        surname: user.surname,
+        email: user.email,
+        role: 'Studente',
+        registrationNumber: user.registration_number,
+        birthDate: user.birth_date
+      })
+    }
+  }
+
   render() {
     let user = JSON.parse(localStorage.getItem('user'));
     const { error } = this.state;
+
+
 
     return (
       <div className='container-fluid content'>
@@ -146,22 +191,50 @@ export default class UserProfile extends Component {
               content={
                 <Grid fluid>
                   <Row className='text-center'>
-                    <h4>Nome</h4>
-                    <p>{user.name}</p>
+                    <div class="form-group">
+                      <label style={{ float: 'left', paddinLeft: '5px' }}>Nome</label>
+                      <input type="text" class="form-control" placeholder="Nome" value={this.state.name} onChange={(e) => { this.handleChangeName(e) }} />
+                    </div>
                   </Row>
                   <Row className='text-center'>
-                    <h4>Cognome</h4>
-                    <p>{user.surname}</p>
+                    <div class="form-group">
+                      <label style={{ float: 'left', paddinLeft: '5px' }}>Cognome</label>
+                      <input type="text" class="form-control" placeholder="Cognome" value={this.state.surname} onChange={(e) => { this.handleChangeSurname(e) }} />
+                    </div>
                   </Row>
                   <Row className='text-center'>
-                    <h4>Email</h4>
-                    <p>{user.email}</p>
+                    <div class="form-group">
+                      <label style={{ float: 'left', paddinLeft: '5px' }}>Email</label>
+                      <input readOnly type="text" class="form-control" placeholder="Email" value={this.state.email} onChange={(e) => { this.handleChangeEmail(e) }} />
+                    </div>
                   </Row>
                   <Row className='text-center'>
-                    <h4>Ruolo</h4>
-                    <p>{UserRole[user.role]}</p>
+                    <div class="form-group">
+                      <label style={{ float: 'left', paddinLeft: '5px' }}>Ruolo</label>
+                      <input readOnly type="text" class="form-control" placeholder="Ruolo" value={this.state.role} onChange={(e) => { this.handleChangeEmail(e) }} />
+                    </div>
                   </Row>
+                  {user.role === 'Student' ?
+                    <Row className='text-center'>
+                      <div class="form-group">
+                        <label style={{ float: 'left', paddinLeft: '5px' }}>Matricola</label>
+                        <input readOnly style={{ border: '' }} type="text" class="form-control" placeholder="Matricola" value={this.state.registrationNumber} />
+                      </div>
+                    </Row>
+                    :
+                    <div></div>
+                  }
+                  <CustomButton
+                    style={{ margin: '0' }}
+                    bsStyle='primary'
+                    className="btn-color-blue btn-block"
+                    onClick={()=>{/**Implementare chiamata per modificare i dati */}}
+                  >
+                    Modifica dati personali
+                  </CustomButton>
+
                 </Grid>
+
               }
             />
           </Col>
@@ -175,8 +248,8 @@ export default class UserProfile extends Component {
                       <CustomButton
                         style={{ margin: '0' }}
                         bsStyle='primary'
-                        block
-                        fill
+                        className="btn-color-blue btn-block"
+
                         onClick={event => this.handlePasswordChange(event)}
                         onMouseOver={event => this.handleHover(event)}
                       >
@@ -213,8 +286,7 @@ export default class UserProfile extends Component {
                         <CustomButton
                           style={{ margin: '10px auto' }}
                           bsStyle='primary'
-                          block
-                          fill
+                          className='btn-color-blue btn-block'
                           type='submit'
                         >
                           Applica modifiche
@@ -230,5 +302,6 @@ export default class UserProfile extends Component {
         </Grid>
       </div>
     );
+
   }
 }
