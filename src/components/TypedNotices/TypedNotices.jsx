@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { Table, Modal, Alert } from 'react-bootstrap';
+import React, { Component } from "react";
+import { Table, Modal, Alert } from "react-bootstrap";
 
-import { StateNoticeDictionary, NoticeType } from '../../static/dicts';
-import CustomButton from '../CustomButton/CustomButton';
-import '../../assets/css/detailNotice.css';
-import axios from 'axios';
+import { StateNoticeDictionary, NoticeType } from "../../static/dicts";
+import CustomButton from "../CustomButton/CustomButton";
+import "../../assets/css/detailNotice.css";
+import axios from "axios";
 
 let disabled = [
   {
-    protocol: '',
+    protocol: "",
     bool: false
   }
 ];
@@ -19,40 +19,40 @@ export default class TypedNotices extends Component {
     this.getDetailNotice = this.getDetailNotice.bind(this);
 
     this.state = {
-      pathname: '',
-      type: '',
-      notices: '',
+      pathname: "",
+      type: "",
+      notices: "",
       show: false,
       showComment: false,
       showConfirm: false,
-      selectedNotice: '',
-      selectedComment: '',
-      operationToConfirm: '',
+      selectedNotice: "",
+      selectedComment: "",
+      operationToConfirm: "",
       isLoadedButton: true,
       error: false,
       alertError: false,
-      alertText: ''
+      alertText: ""
     };
   }
 
   componentDidMount() {
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
     let notices;
     axios
       .post(
-        'http://localhost:3001/api/notices/search',
+        "http://localhost:3001/api/notices/search",
         {},
         { headers: headers }
       )
       .then(blob => {
         notices = blob.data.notices;
         notices.forEach(element => {
-          if (element.state === 'Expired') {
+          if (element.state === "Expired") {
             axios
               .post(
-                'http://localhost:3001/api/ratings/exists',
+                "http://localhost:3001/api/ratings/exists",
                 { noticeProtocol: element.protocol },
                 { headers: headers }
               )
@@ -79,13 +79,13 @@ export default class TypedNotices extends Component {
   getDetailNotice = e => {
     let { pathname } = this.props;
     console.log(this.props.history.location);
-    this.props.history.push('detailNotices/' + e.protocol);
+    this.props.history.push("detailNotices/" + e.protocol);
   };
   //Operation on draft notices.
   draftOperation(element) {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
     //Show the comment of a notice
     const showComment = (e, element) => {
@@ -93,7 +93,7 @@ export default class TypedNotices extends Component {
       e.preventDefault();
       axios
         .post(
-          'http://localhost:3001/api/comment',
+          "http://localhost:3001/api/comment",
           { noticeProtocol: element.protocol },
           { headers: headers }
         )
@@ -106,28 +106,28 @@ export default class TypedNotices extends Component {
           } else {
             this.setState({
               showComment: true,
-              selectedComment: 'Nessun commento disponibile'
+              selectedComment: "Nessun commento disponibile"
             });
           }
         });
     };
-    if (Boolean(user) && user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === "Teaching Office") {
       return (
         <td>
           <div>
             <i
-              className='pe-7s-comment commentHover'
+              className="pe-7s-comment commentHover"
               onClick={e => {
                 showComment(e, element);
               }}
-              style={{ fontSize: '20px' }}
+              style={{ fontSize: "20px" }}
             ></i>
 
             <CustomButton
-              bsStyle='primary'
-              className='btn-color-blue'
+              bsStyle="primary"
+              className="btn-color-blue"
               style={{
-                float: 'right'
+                float: "right"
               }}
               onClick={e => {
                 // Prevent propagation and the default action
@@ -144,7 +144,7 @@ export default class TypedNotices extends Component {
               Modifica
             </CustomButton>
             <CustomButton
-              bsStyle='danger'
+              bsStyle="danger"
               pullRight
               onClick={e => {
                 e.stopPropagation();
@@ -153,7 +153,7 @@ export default class TypedNotices extends Component {
                 // Take the target element
                 this.setState({
                   selectedNotice: element,
-                  operationToConfirm: 'Elimina bando',
+                  operationToConfirm: "Elimina bando",
                   error: true
                 });
                 this.showConfirm();
@@ -163,7 +163,7 @@ export default class TypedNotices extends Component {
             </CustomButton>
 
             <CustomButton
-              bsStyle='success'
+              bsStyle="success"
               pullRight
               onClick={e => {
                 e.stopPropagation();
@@ -171,7 +171,7 @@ export default class TypedNotices extends Component {
 
                 this.setState({
                   selectedNotice: element,
-                  operationToConfirm: 'Inoltra al professore'
+                  operationToConfirm: "Inoltra al professore"
                 });
 
                 this.showConfirm();
@@ -190,10 +190,10 @@ export default class TypedNotices extends Component {
     return (
       <td>
         <CustomButton
-          bsStyle='primary'
-          className='btn-color-blue'
+          bsStyle="primary"
+          className="btn-color-blue"
           style={{
-            float: 'right'
+            float: "right"
           }}
           pullRight
           onClick={e => {
@@ -213,23 +213,23 @@ export default class TypedNotices extends Component {
 
   //Operation on accepted notices.
   acceptedOperation(element) {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
 
-    if (Boolean(user) && user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === "Teaching Office") {
       return (
         <td>
           <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue'
+            bsStyle="primary"
+            className="btn-color-blue"
             style={{
-              float: 'right'
+              float: "right"
             }}
             pullRight
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               this.setState({
-                operationToConfirm: 'Inoltra al DDI',
+                operationToConfirm: "Inoltra al DDI",
                 selectedNotice: element
               });
               this.showConfirm();
@@ -244,16 +244,16 @@ export default class TypedNotices extends Component {
 
   //Operation on approved notices.
   approvedOperation(element) {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
 
-    if (Boolean(user) && user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === "Teaching Office") {
       return (
         <td>
           <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue'
+            bsStyle="primary"
+            className="btn-color-blue"
             style={{
-              float: 'right'
+              float: "right"
             }}
             pullRight
             onClick={e => {
@@ -262,7 +262,7 @@ export default class TypedNotices extends Component {
 
               this.setState({
                 selectedNotice: element,
-                operationToConfirm: 'Pubblica bando'
+                operationToConfirm: "Pubblica bando"
               });
 
               this.showConfirm();
@@ -276,9 +276,9 @@ export default class TypedNotices extends Component {
   }
 
   expiredOperation(element) {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
 
-    if (Boolean(user) && user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === "Teaching Office") {
       let showButton;
       disabled.forEach(el => {
         if (el.protocol === element.protocol) showButton = el.bool;
@@ -286,30 +286,30 @@ export default class TypedNotices extends Component {
       return (
         <td>
           <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue'
+            bsStyle="primary"
+            className="btn-color-blue"
             style={{
-              float: 'right'
+              float: "right"
             }}
             pullRight
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push('candidatures/' + element.protocol);
+              this.props.history.push("candidatures/" + element.protocol);
             }}
           >
             Visualizza candidature
           </CustomButton>
 
           <CustomButton
-            bsStyle='success'
+            bsStyle="success"
             pullRight
             disabled={showButton}
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               this.setState({
-                operationToConfirm: 'Inoltra graduatoria',
+                operationToConfirm: "Inoltra graduatoria",
                 selectedNotice: element
               });
               this.showConfirm();
@@ -319,17 +319,17 @@ export default class TypedNotices extends Component {
           </CustomButton>
         </td>
       );
-    } else if (Boolean(user) && user.role === 'Professor') {
+    } else if (Boolean(user) && user.role === "Professor") {
       return (
         <td>
           <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue pull-right'
+            bsStyle="primary"
+            className="btn-color-blue pull-right"
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               this.props.history.push(
-                '/professor/detailNotices/' + element.protocol
+                "/professor/detailNotices/" + element.protocol
               );
             }}
           >
@@ -347,21 +347,21 @@ export default class TypedNotices extends Component {
   }
 
   closedOperation(element) {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
 
-    if (Boolean(user) && user.role === 'Teaching Office') {
+    if (Boolean(user) && user.role === "Teaching Office") {
       return (
         <td>
           <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue'
+            bsStyle="primary"
+            className="btn-color-blue"
             style={{
-              float: 'right'
+              float: "right"
             }}
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push('/valutations/' + element.protocol);
+              this.props.history.push("valutations/" + element.protocol);
             }}
           >
             Visualizza tabella
@@ -374,24 +374,24 @@ export default class TypedNotices extends Component {
   }
   //Operation to accepting noteces.
   acceptingOperation(element) {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
 
     if (
       Boolean(user) &&
-      user.role === 'Professor' &&
+      user.role === "Professor" &&
       element.referent_professor === user.email
     ) {
       return (
         <td>
           <CustomButton
-            bsStyle='success'
+            bsStyle="success"
             pullRight
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               this.setState({
                 selectedNotice: element,
-                operationToConfirm: 'Accetta'
+                operationToConfirm: "Accetta"
               });
               this.showConfirm();
             }}
@@ -400,15 +400,15 @@ export default class TypedNotices extends Component {
           </CustomButton>
 
           <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue pull-right'
+            bsStyle="primary"
+            className="btn-color-blue pull-right"
             pullRight
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               this.setState({
                 selectedNotice: element,
-                operationToConfirm: 'Non accetta'
+                operationToConfirm: "Non accetta"
               });
               this.showConfirm();
             }}
@@ -421,7 +421,7 @@ export default class TypedNotices extends Component {
   }
   //Operation to approving notices
   approvingOperation(element) {
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
 
     //Show the modal to comment a notice.
     const showModalComment = element => {
@@ -431,11 +431,11 @@ export default class TypedNotices extends Component {
       });
     };
 
-    if (Boolean(user) && user.role === 'DDI') {
+    if (Boolean(user) && user.role === "DDI") {
       return (
         <td>
           <CustomButton
-            bsStyle='danger'
+            bsStyle="danger"
             pullRight
             onClick={e => {
               e.stopPropagation();
@@ -446,25 +446,25 @@ export default class TypedNotices extends Component {
             Non Approvare
           </CustomButton>
           <CustomButton
-            bsStyle='primary'
-            className='btn-color-blue pull-right'
+            bsStyle="primary"
+            className="btn-color-blue pull-right"
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
               const headers = {
-                Authorization: localStorage.getItem('token')
+                Authorization: localStorage.getItem("token")
               };
               axios
                 .get(
-                  'http://localhost:3001/api/notices/pdf/' + element.protocol,
-                  { headers: headers, responseType: 'blob' }
+                  "http://localhost:3001/api/notices/pdf/" + element.protocol,
+                  { headers: headers, responseType: "blob" }
                 )
                 .then(blob => {
-                  const fileName = blob.headers['content-disposition']
-                    .split(';')[1]
+                  const fileName = blob.headers["content-disposition"]
+                    .split(";")[1]
                     .trim()
                     .split('"')[1];
-                  let a = document.createElement('a');
+                  let a = document.createElement("a");
                   var url = window.URL.createObjectURL(blob.data);
                   a.href = url;
                   a.download = fileName;
@@ -478,15 +478,15 @@ export default class TypedNotices extends Component {
           </CustomButton>
           <CustomButton
             style={{
-              marginLeft: '27px'
+              marginLeft: "27px"
             }}
-            bsStyle='primary'
-            className='btn-color-blue pull-right'
+            bsStyle="primary"
+            className="btn-color-blue pull-right"
             pullRight
             onClick={e => {
               e.stopPropagation();
               e.preventDefault();
-              this.props.history.push('uploadNotice/' + element.protocol);
+              this.props.history.push("uploadNotice/" + element.protocol);
             }}
           >
             Carica bando
@@ -499,23 +499,23 @@ export default class TypedNotices extends Component {
   //element is the notice selected
   displayButtons(type, element) {
     switch (type) {
-      case 'Bozza':
+      case "Bozza":
         return this.draftOperation(element);
-      case 'Pubblicato':
+      case "Pubblicato":
         return this.publishedOperation();
-      case 'Accettato':
+      case "Accettato":
         return this.acceptedOperation(element);
-      case 'Approvato':
+      case "Approvato":
         return this.approvedOperation(element);
-      case 'Scaduto':
+      case "Scaduto":
         return this.expiredOperation(element);
-      case 'In attesa della graduatoria':
+      case "In attesa della graduatoria":
         return this.waitingForGradedListOperation(element);
-      case 'Chiuso':
+      case "Chiuso":
         return this.closedOperation(element);
-      case 'In accettazione':
+      case "In accettazione":
         return this.acceptingOperation(element);
-      case 'In Approvazione':
+      case "In Approvazione":
         return this.approvingOperation(element);
       default:
         return <td></td>;
@@ -532,14 +532,14 @@ export default class TypedNotices extends Component {
       });
     };
 
-    element.state = 'Accepted';
+    element.state = "Accepted";
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
 
     axios
       .patch(
-        'http://localhost:3001/api/notices/state',
+        "http://localhost:3001/api/notices/state",
         { notice: element },
         { headers: headers }
       )
@@ -562,7 +562,7 @@ export default class TypedNotices extends Component {
         this.setState({
           alertError: true,
           alertText:
-            'Impossibile accetare il bando controllare che la procedura i eseguita correttamente'
+            "Impossibile accetare il bando controllare che la procedura i eseguita correttamente"
         });
       });
   }
@@ -576,14 +576,14 @@ export default class TypedNotices extends Component {
       });
     };
 
-    element.state = 'Draft';
+    element.state = "Draft";
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
 
     axios
       .patch(
-        'http://localhost:3001/api/notices/state',
+        "http://localhost:3001/api/notices/state",
         { notice: element },
         { headers: headers }
       )
@@ -606,7 +606,7 @@ export default class TypedNotices extends Component {
         this.setState({
           alertError: true,
           alertText:
-            'Impossibile rifiutare il bando controllare che il bando sia correattamente compilato'
+            "Impossibile rifiutare il bando controllare che il bando sia correattamente compilato"
         });
       });
   }
@@ -621,13 +621,13 @@ export default class TypedNotices extends Component {
       });
     };
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
-    element.state = 'In Acceptance';
+    element.state = "In Acceptance";
 
     axios
       .patch(
-        'http://localhost:3001/api/notices/state',
+        "http://localhost:3001/api/notices/state",
         { notice: element },
         { headers: headers }
       )
@@ -652,7 +652,7 @@ export default class TypedNotices extends Component {
         this.setState({
           alertError: true,
           alertText:
-            'Impossibile inoltrare bando controllare che sia stato correttamente compilato.'
+            "Impossibile inoltrare bando controllare che sia stato correttamente compilato."
         });
       });
   }
@@ -667,13 +667,13 @@ export default class TypedNotices extends Component {
       });
     };
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
-    element.state = 'In Approval';
+    element.state = "In Approval";
 
     axios
       .patch(
-        'http://localhost:3001/api/notices/state',
+        "http://localhost:3001/api/notices/state",
         { notice: element },
         { headers: headers }
       )
@@ -698,7 +698,7 @@ export default class TypedNotices extends Component {
         this.setState({
           alertError: true,
           alertText:
-            'Impossibile inoltrare il bando al ddi controllare che il bando sia correttamente compilato'
+            "Impossibile inoltrare il bando al ddi controllare che il bando sia correttamente compilato"
         });
       });
   }
@@ -712,13 +712,13 @@ export default class TypedNotices extends Component {
       });
     };
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
-    element.state = 'Published';
+    element.state = "Published";
 
     axios
       .patch(
-        'http://localhost:3001/api/notices/state',
+        "http://localhost:3001/api/notices/state",
         { notice: element },
         { headers: headers }
       )
@@ -743,7 +743,7 @@ export default class TypedNotices extends Component {
         this.setState({
           alertError: true,
           alertText:
-            'Impossibile pubblicare il bando controllare che sia correttamente compilato'
+            "Impossibile pubblicare il bando controllare che sia correttamente compilato"
         });
       });
   }
@@ -758,10 +758,10 @@ export default class TypedNotices extends Component {
     };
     console.log(deletedNotice);
     // Retrieve from localStorage the user token
-    let token = localStorage.getItem('token');
+    let token = localStorage.getItem("token");
 
     axios({
-      method: 'DELETE',
+      method: "DELETE",
       url: `http://localhost:3001/api/notices/${deletedNotice.protocol}`,
       data: {
         notice: deletedNotice
@@ -772,14 +772,14 @@ export default class TypedNotices extends Component {
     })
       .then(blob => {
         let error = blob.data.error;
-        this.props.history.push('/notices');
+        this.props.history.push("/notices");
         if (error) {
         }
       })
       .catch(error => {
         this.setState({
           alertError: true,
-          alertText: 'Impossibile eliminare il bando'
+          alertText: "Impossibile eliminare il bando"
         });
       });
 
@@ -797,12 +797,12 @@ export default class TypedNotices extends Component {
       });
     };
     const headers = {
-      Authorization: localStorage.getItem('token')
+      Authorization: localStorage.getItem("token")
     };
-    element.state = 'Waiting for Graded List';
+    element.state = "Waiting for Graded List";
     axios
       .patch(
-        'http://localhost:3001/api/notices/state',
+        "http://localhost:3001/api/notices/state",
         { notice: element },
         { headers: headers }
       )
@@ -826,32 +826,32 @@ export default class TypedNotices extends Component {
       .catch(error => {
         this.setState({
           alertError: true,
-          alertText: 'Impossibile inoltrare la graduatoria al ddi '
+          alertText: "Impossibile inoltrare la graduatoria al ddi "
         });
       });
   }
   //Select the operation to do when user confirm an operation.
   selectOperation(operation) {
     switch (operation) {
-      case 'Inoltra al professore':
+      case "Inoltra al professore":
         this.sendToProfessor(this.state.selectedNotice);
         break;
-      case 'Accetta':
+      case "Accetta":
         this.acceptedNotice(this.state.selectedNotice);
         break;
-      case 'Non accetta':
+      case "Non accetta":
         this.notAcceptNotice(this.state.selectedNotice);
         break;
-      case 'Inoltra al DDI':
+      case "Inoltra al DDI":
         this.sendNoticeToDDI(this.state.selectedNotice);
         break;
-      case 'Pubblica bando':
+      case "Pubblica bando":
         this.publishNotice(this.state.selectedNotice);
         break;
-      case 'Elimina bando':
+      case "Elimina bando":
         this.deleteDraftNotice(this.state.selectedNotice);
         break;
-      case 'Inoltra graduatoria':
+      case "Inoltra graduatoria":
         this.sendRankingToDDI(this.state.selectedNotice);
         break;
       default:
@@ -877,27 +877,27 @@ export default class TypedNotices extends Component {
     };
     //Disapprove notice
     const disapproveNotice = element => {
-      let user = JSON.parse(localStorage.getItem('user'));
+      let user = JSON.parse(localStorage.getItem("user"));
 
       const headers = {
-        Authorization: localStorage.getItem('token')
+        Authorization: localStorage.getItem("token")
       };
       let comment = {
         notice: element.protocol,
         author: user,
-        text: '' + document.getElementById('comment').value
+        text: "" + document.getElementById("comment").value
       };
-      element.state = 'Draft';
+      element.state = "Draft";
       axios
         .put(
-          'http://localhost:3001/api/comment',
+          "http://localhost:3001/api/comment",
           { comment: comment },
           { headers: headers }
         )
         .then(blob => {
           axios
             .patch(
-              'http://localhost:3001/api/notices/state',
+              "http://localhost:3001/api/notices/state",
               { notice: element },
               { headers: headers }
             )
@@ -919,9 +919,9 @@ export default class TypedNotices extends Component {
     };
 
     let noticesForProf;
-    let user = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem("user"));
     let acceptingNotice;
-    if (user && this.props.type === 'In accettazione') {
+    if (user && this.props.type === "In accettazione") {
       noticesForProf = this.props.notices.filter(notice => {
         return notice.referent_professor === user.email;
       });
@@ -966,38 +966,38 @@ export default class TypedNotices extends Component {
         {/* Modal to insert comment */}
         <Modal
           style={{
-            borderRadius: '6px',
-            overflow: 'hidden',
-            marginTop: '13%',
-            left: '10%',
-            position: 'absolute'
+            borderRadius: "6px",
+            overflow: "hidden",
+            marginTop: "13%",
+            left: "10%",
+            position: "absolute"
           }}
-          dialogClassName='myClass'
+          dialogClassName="myClass"
           show={this.state.show}
           onHide={closeModalComment}
           animation={false}
         >
-          <Modal.Header style={{ width: '350px' }} closeButton>
-            <Modal.Title style={{ color: '#274F77' }}>
+          <Modal.Header style={{ width: "350px" }} closeButton>
+            <Modal.Title style={{ color: "#274F77" }}>
               Inserire un Commento
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{ width: '350px', padding: '7px' }}>
+          <Modal.Body style={{ width: "350px", padding: "7px" }}>
             <textarea
-              id='comment'
-              style={{ height: '55px', width: '341px', resize: 'none' }}
+              id="comment"
+              style={{ height: "55px", width: "341px", resize: "none" }}
             ></textarea>
           </Modal.Body>
-          <Modal.Footer style={{ width: '350px' }}>
+          <Modal.Footer style={{ width: "350px" }}>
             <CustomButton
-              className='btn-color-blue'
-              bsStyle='primary'
+              className="btn-color-blue"
+              bsStyle="primary"
               onClick={closeModalComment}
             >
               Annulla
             </CustomButton>
             <CustomButton
-              bsStyle='success'
+              bsStyle="success"
               onClick={() => {
                 disapproveNotice(this.state.selectedNotice);
               }}
@@ -1010,22 +1010,22 @@ export default class TypedNotices extends Component {
         {/* Modal to show comment */}
         <Modal
           style={{
-            borderRadius: '6px',
-            overflow: 'hidden',
-            marginTop: '13%',
-            left: '10%',
-            position: 'absolute'
+            borderRadius: "6px",
+            overflow: "hidden",
+            marginTop: "13%",
+            left: "10%",
+            position: "absolute"
           }}
-          dialogClassName='myClass'
+          dialogClassName="myClass"
           show={this.state.showComment}
           onHide={closeModalComment}
           animation={false}
         >
-          <Modal.Header style={{ width: '350px' }} closeButton>
-            <Modal.Title style={{ color: '#274F77' }}>Commento</Modal.Title>
+          <Modal.Header style={{ width: "350px" }} closeButton>
+            <Modal.Title style={{ color: "#274F77" }}>Commento</Modal.Title>
           </Modal.Header>
 
-          <Modal.Body style={{ width: '350px', padding: '7px' }}>
+          <Modal.Body style={{ width: "350px", padding: "7px" }}>
             {this.state.selectedComment}
           </Modal.Body>
         </Modal>
@@ -1033,49 +1033,49 @@ export default class TypedNotices extends Component {
         {/* Modal to confirm operation */}
         <Modal
           style={{
-            borderRadius: '6px',
-            overflow: 'hidden',
-            marginTop: '13%',
-            left: '10%',
-            position: 'absolute'
+            borderRadius: "6px",
+            overflow: "hidden",
+            marginTop: "13%",
+            left: "10%",
+            position: "absolute"
           }}
-          dialogClassName='myClass'
+          dialogClassName="myClass"
           show={this.state.showConfirm}
           onHide={closeConfirm}
           animation={false}
         >
-          <Modal.Header style={{ width: '350px' }} closeButton>
-            <Modal.Title style={{ color: '#274F77' }}>
+          <Modal.Header style={{ width: "350px" }} closeButton>
+            <Modal.Title style={{ color: "#274F77" }}>
               {this.state.operationToConfirm}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body
             style={{
-              width: '350px',
-              padding: '7px 7px 7px 16px',
-              fontSize: '15px'
+              width: "350px",
+              padding: "7px 7px 7px 16px",
+              fontSize: "15px"
             }}
           >
             <span>Confermare l'operazione?</span>
           </Modal.Body>
           {this.state.alertError ? (
-            <Alert bsStyle='danger'>
+            <Alert bsStyle="danger">
               <p>{this.state.alertText}</p>
             </Alert>
           ) : (
             <span></span>
           )}
 
-          <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
+          <Modal.Footer style={{ width: "350px", paddingTop: "20px" }}>
             <CustomButton
-              className='btn-color-blue'
-              bsStyle='primary'
+              className="btn-color-blue"
+              bsStyle="primary"
               onClick={closeConfirm}
             >
               Annulla
             </CustomButton>
             <CustomButton
-              bsStyle={this.state.error ? 'danger' : 'success'}
+              bsStyle={this.state.error ? "danger" : "success"}
               onClick={() => {
                 this.selectOperation(this.state.operationToConfirm);
               }}
