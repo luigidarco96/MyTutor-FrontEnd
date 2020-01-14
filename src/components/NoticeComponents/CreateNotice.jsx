@@ -41,7 +41,7 @@ export default class CreateNotice extends Component {
       token: null,
       editNoticeLoaded: false,
       professorsLoaded: false,
-      error: null,
+      errors: [],
       user: {},
       professors: [],
       editing: false,
@@ -75,6 +75,78 @@ export default class CreateNotice extends Component {
     };
   }
 
+  checkProtocol(protocol) {
+    if (!protocol) {
+      const { errors } = this.state;
+      errors.push(<Alert bsStyle='danger'>Inserisci il protocollo</Alert>);
+      this.setState({ errors });
+    } else if (protocol.length > 7) {
+      const { errors } = this.state;
+      errors.push(
+        <Alert bsStyle='danger'>
+          Il protocollo non può essere più lungo di 7 caratteri.
+        </Alert>
+      );
+      this.setState({ errors });
+    }
+  }
+
+  checkAssignments(assignments) {
+    if (assignments) {
+      const { errors } = this.state;
+      if (assignments.length > 15) {
+        errors.push(
+          <Alert bsStyle='warning'>Numero di incarichi maggiore di 15.</Alert>
+        );
+        this.setState({ errors });
+      }
+
+      let errorAssignCode = false;
+      let regexAssignCode = /^[A-Z]+\/([0-9]{2}|[0-9]{3})$/;
+
+      assignments.forEach(assignment => {
+        if (!regexAssignCode.test(assignment.code)) {
+          errorAssignCode = true;
+        }
+      });
+
+      if (errorAssignCode) {
+        errors.push(
+          <Alert bsStyle='warning'>
+            Verifica che i codici degli incarichi rispettino il formato.
+          </Alert>
+        );
+
+        this.setState({ errors });
+      }
+    }
+  }
+
+  checkEvaluationCriterionLength(evaluation_criteria) {
+    if (evaluation_criteria) {
+      const { errors } = this.state;
+
+      if (evaluation_criteria.length > 6) {
+        errors.push(
+          <Alert bsStyle='warning'>Numero di criteri maggiore di 6.</Alert>
+        );
+      }
+    }
+  }
+
+  checkArticlesLength(articles) {
+    if (articles) {
+      const { errors } = this.state;
+
+      if (articles.length > 20) {
+        errors.push(
+          <Alert bsStyle='warning'>Numero degli articoli maggiore di 20.</Alert>
+        );
+        this.setState({ errors });
+      }
+    }
+  }
+
   handleEditType() {
     const {
       match: { params }
@@ -89,21 +161,29 @@ export default class CreateNotice extends Component {
 
   handleFormSubmit(e) {
     e.preventDefault();
-    const { notice } = this.state;
+
+    const { notice, errors } = this.state;
+    console.clear();
+    console.log(notice);
 
     const {
       match: { params }
     } = this.props;
 
-    this.setState({
-      error: null
-    });
+    errors.splice(0, errors.length);
+    this.setState({ errors });
+
+    this.checkProtocol(notice.protocol);
+    this.checkAssignments(notice.assignments);
+    this.checkEvaluationCriterionLength(notice.evaluation_criteria);
+    this.checkArticlesLength(notice.articles);
 
     if (params.id) {
-      // Change the notice
-      console.log(/^Prot\. n\. [0-9]+$/.test(notice.protocol));
+      if (this.state.errors.length > 0) {
+        return;
+      }
+
       if (!/^Prot\. n\. [0-9]+$/.test(notice.protocol)) {
-        console.log('Sono nel test!');
         notice.protocol = `Prot. n. ${notice.protocol}`;
       }
 
@@ -123,49 +203,19 @@ export default class CreateNotice extends Component {
         })
         .catch(error => {
           if (error) {
+            const { errors } = this.state;
             notice.protocol = notice.protocol.replace('Prot. n. ', '');
+            errors.push(
+              <Alert bsStyle='danger'>{error.response.data.error}</Alert>
+            );
             this.setState({
-              error: <Alert bsStyle='danger'>{error.response.data.error}</Alert>
+              errors
             });
           }
         });
     } else {
-      if (!notice.protocol) {
-        this.setState({
-          error: <Alert bsStyle='danger'>Inserisci il protocollo</Alert>
-        });
+      if (this.state.errors.length > 0) {
         return;
-      } else if (notice.protocol.length > 7) {
-        this.setState({
-          error: (
-            <Alert bsStyle='danger'>
-              Il protocollo non può essere più lungo di 7 caratteri.
-            </Alert>
-          )
-        });
-        return;
-      }
-
-      let errorAssignCode = false;
-      let regexAssignCode = /^[A-Z]+\/([0-9]{2}|[0-9]{3})$/;
-
-      if (notice.assignments) {
-        notice.assignments.forEach(assignment => {
-          if (!regexAssignCode.test(assignment.code)) {
-            errorAssignCode = true;
-          }
-        });
-
-        if (errorAssignCode) {
-          this.setState({
-            error: (
-              <Alert bsStyle='warning'>
-                Verifica che i codici degli incarici rispettano il formato.
-              </Alert>
-            )
-          });
-          return;
-        }
       }
 
       if (!/^Prot\. n\. [0-9]+$/.test(notice.protocol)) {
@@ -189,9 +239,13 @@ export default class CreateNotice extends Component {
         })
         .catch(error => {
           if (error) {
+            const { errors } = this.state;
             notice.protocol = notice.protocol.replace('Prot. n. ', '');
+            errors.push(
+              <Alert bsStyle='danger'>{error.response.data.error}</Alert>
+            );
             this.setState({
-              error: <Alert bsStyle='danger'>{error.response.data.error}</Alert>
+              errors
             });
           }
         });
@@ -478,7 +532,7 @@ export default class CreateNotice extends Component {
       notice: { articles },
       notice: { evaluation_criteria },
       notice: { assignments },
-      error,
+      errors,
       professors
     } = this.state;
 
@@ -548,7 +602,7 @@ export default class CreateNotice extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {assignments &&
+                    {assignments ? (
                       assignments.map((el, index) => {
                         return (
                           <tr key={el.id}>
@@ -619,7 +673,8 @@ export default class CreateNotice extends Component {
                                 name='hourly_cost'
                                 value={el.hourly_cost}
                                 type='number'
-                                step='0.01'
+                                step='0.10'
+                                min='0'
                                 onFocus={e => this.handleFocus(e)}
                                 onBlur={e => this.handleBlur(e)}
                                 onMouseEnter={e => this.handleMouseEnter(e)}
@@ -659,7 +714,12 @@ export default class CreateNotice extends Component {
                             </td>
                           </tr>
                         );
-                      })}
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={7}>Nessun incarico</td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
                 <CustomButton
@@ -668,7 +728,7 @@ export default class CreateNotice extends Component {
                   className='create-notice-csbutton pull-right'
                   onClick={e => this.handleAddAssignment(e)}
                 >
-                  Aggiungi incarico
+                  Aggiungi incarico (max. 15)
                 </CustomButton>
               </Col>
             </Row>
@@ -749,7 +809,7 @@ export default class CreateNotice extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {evaluation_criteria &&
+                    {evaluation_criteria ? (
                       evaluation_criteria.map((el, index) => {
                         return (
                           <tr key={index}>
@@ -798,7 +858,12 @@ export default class CreateNotice extends Component {
                             </td>
                           </tr>
                         );
-                      })}
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={3}>Nessun criterio</td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
                 <CustomButton
@@ -807,7 +872,7 @@ export default class CreateNotice extends Component {
                   className='create-notice-csbutton pull-right'
                   onClick={e => this.handleAddCriteria(e)}
                 >
-                  Aggiungi criterio
+                  Aggiungi criterio (max. 6)
                 </CustomButton>
               </Col>
             </Row>
@@ -981,7 +1046,8 @@ export default class CreateNotice extends Component {
                   placeholder='Fondi'
                   name='notice_funds'
                   value={notice.notice_funds}
-                  step='0.01'
+                  step='0.10'
+                  min='0'
                   onFocus={e => this.handleFocus(e)}
                   onBlur={e => this.handleBlur(e)}
                   onMouseEnter={e => this.handleMouseEnter(e)}
@@ -1003,7 +1069,7 @@ export default class CreateNotice extends Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {articles &&
+                    {articles ? (
                       articles.map((el, index) => {
                         return (
                           <tr key={index}>
@@ -1037,8 +1103,8 @@ export default class CreateNotice extends Component {
                             </td>
                             <td>
                               <FormControl
+                                componentClass='textarea'
                                 className={index + '.articles list'}
-                                type='text'
                                 name='text'
                                 value={el.text}
                                 onFocus={e => this.handleFocus(e)}
@@ -1050,7 +1116,12 @@ export default class CreateNotice extends Component {
                             </td>
                           </tr>
                         );
-                      })}
+                      })
+                    ) : (
+                      <tr>
+                        <td colSpan={3}>Nessun articolo</td>
+                      </tr>
+                    )}
                   </tbody>
                 </Table>
                 <CustomButton
@@ -1059,7 +1130,7 @@ export default class CreateNotice extends Component {
                   className='create-notice-csbutton pull-right'
                   onClick={e => this.handleAddArticle(e)}
                 >
-                  Aggiungi articolo
+                  Aggiungi articolo (max. 20)
                 </CustomButton>
               </Col>
             </Row>
@@ -1076,7 +1147,11 @@ export default class CreateNotice extends Component {
             </Row>
             <Row className='create-notice-row'>
               <Col xs={12} md={12}>
-                {error}
+                {errors
+                  ? errors.map(error => {
+                      return error;
+                    })
+                  : null}
               </Col>
             </Row>
           </FormGroup>
