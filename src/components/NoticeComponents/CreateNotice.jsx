@@ -94,7 +94,7 @@ export default class CreateNotice extends Component {
   checkAssignments(assignments) {
     if (assignments) {
       const { errors } = this.state;
-      if (assignments.length > 15) {
+      if (assignments.length < 1 || assignments.length > 15) {
         errors.push(
           <Alert bsStyle='warning'>Numero di incarichi maggiore di 15.</Alert>
         );
@@ -126,7 +126,7 @@ export default class CreateNotice extends Component {
     if (evaluation_criteria) {
       const { errors } = this.state;
 
-      if (evaluation_criteria.length > 6) {
+      if (evaluation_criteria.length < 1 || evaluation_criteria.length > 6) {
         errors.push(
           <Alert bsStyle='warning'>Numero di criteri maggiore di 6.</Alert>
         );
@@ -138,7 +138,7 @@ export default class CreateNotice extends Component {
     if (articles) {
       const { errors } = this.state;
 
-      if (articles.length > 20) {
+      if (articles.length < 1 || articles.length > 20) {
         errors.push(
           <Alert bsStyle='warning'>Numero degli articoli maggiore di 20.</Alert>
         );
@@ -371,19 +371,19 @@ export default class CreateNotice extends Component {
 
       if (notice.assignments) {
         notice.assignments.map(element => {
-          element.notice_protocol = 'Prot. n.' + value;
+          element.notice_protocol = 'Prot. n. ' + value;
         });
       }
 
       if (notice.evaluation_criteria) {
         notice.evaluation_criteria.map(element => {
-          element.notice_protocol = 'Prot. n.' + value;
+          element.notice_protocol = 'Prot. n. ' + value;
         });
       }
 
       if (notice.articles) {
         notice.articles.map(element => {
-          element.notice_protocol = 'Prot. n.' + value;
+          element.notice_protocol = 'Prot. n. ' + value;
         });
       }
     }
