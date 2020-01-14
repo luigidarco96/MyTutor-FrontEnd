@@ -85,7 +85,9 @@ table.table {
   display: flex;
   flex-direction: row;
   margin: 5px;
+  margin-bottom: 0;
   padding: 5px;
+  padding-bottom: 0;
   width: 30%;
 }
 
