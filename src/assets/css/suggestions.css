@@ -1,26 +1,29 @@
 .list-suggestions-item {
     background: white;
-    border-bottom: 1px solid #555555b2;
+    border-bottom: 1px solid #274f77;
     z-index: 99;
     /*position the autocomplete items to be the same width as the container:*/
     top: 100%;
     left: 0;
     right: 0;
-    width: 20rem;
+    width: 30rem;
     text-align: center;
     padding: 4px;
-    height: 25px;
+    height: 27px;
 }
 
 .list-suggestions-item .search-div {
     padding: 10px;
     cursor: pointer;
     background-color: #fff;
-    border-bottom: 1px solid #d4d4d4;
 }
+
 .search-group {
-    border-radius: 5px;
     margin-bottom: 8px;
+}
+
+.search-bar {
+    width: 30rem;
 }
 
 .list-suggestions-item:hover {
@@ -28,15 +31,20 @@
 }
 
 .list-suggestions {
-    border: 1px solid #555555ab;
+    border: 2px solid #274f77;
     padding: 0;
     margin: 0;
     list-style-type: none;
     position: absolute;
     z-index: 99;
     justify-content: center;
+    border-radius: 3px;
+}
+
+.list-suggestions:empty {
+    border: none;
 }
 
 .list-suggestions-item:last-child {
-    border: none;
+    border-bottom: none;
 }
