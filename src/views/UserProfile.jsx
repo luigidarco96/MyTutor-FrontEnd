@@ -211,7 +211,7 @@ export default class UserProfile extends Component {
                     <Row className='text-center'>
                       <div class="form-group">
                         <label style={{ float: 'left', paddinLeft: '5px' }}>Data di nascita</label>
-                        <input  id='data' style={{ border: '' }} type="text" class="form-control" placeholder="Data" value={this.state.birthDate.split(' 0')[0]} onChange={(e)=>{this.handleBirthDateChange(e)}} />
+                        <input  id='data' style={{ border: '' }} type="date" class="form-control" placeholder="Data" value={this.state.birthDate.split(' 0')[0]} onChange={(e)=>{this.handleBirthDateChange(e)}} />
                       </div>
                     </Row>
                     :

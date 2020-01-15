@@ -913,7 +913,14 @@ export default class TypedNotices extends Component {
                 notices: this.state.notices
               });
               closeModalComment();
-            });
+            })
+            .catch(error=>{
+              element.state = 'In Approval'
+              this.setState({
+                alertError: true,
+                alertText: error.response.data.error
+              })
+            })
         });
     };
 
@@ -989,6 +996,8 @@ export default class TypedNotices extends Component {
               style={{ height: '55px', width: '341px', resize: 'none' }}
             ></textarea>
           </Modal.Body>
+
+        {this.state.alertError?<Alert bsStyle='danger'>{this.state.alertText}</Alert>:<div></div>}
           <Modal.Footer style={{ width: '350px' }}>
             <CustomButton
               className='btn-color-blue'
