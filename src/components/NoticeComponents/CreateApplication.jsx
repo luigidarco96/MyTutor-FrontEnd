@@ -286,6 +286,7 @@ const CreateApplication = (props) => {
 
             })
                 .catch(err => {
+                    console.error(err.response)
                     if (err.response.data) {
                         if (err.response.data.exception && Object.entries(err.response.data.exception).length > 0) {
                             if (err.response.data.exception.startsWith('Duplicate entry')) {
@@ -296,7 +297,7 @@ const CreateApplication = (props) => {
                         } else {
                             setAlertSuccess(false);
                             setAlertError(true);
-                            setAlertText("Assicurati che il bando collegato alla domanda esista e riprova.");
+                            setAlertText(err.response.data.error);
 
                         }
                     }
