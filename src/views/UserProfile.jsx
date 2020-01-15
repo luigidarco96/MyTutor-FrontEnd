@@ -92,9 +92,10 @@ export default class UserProfile extends Component {
     let user = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
 
-    if (passRegex.test(value.trim())) {
+    if (!passRegex.test(this.state.password.trim())) {
+      console.log(value);
       this.setState({
-        error: <Alert bsStyle='danger'>Password inserita non valida.</Alert>
+        error: <Alert bsStyle='danger'>La password deve avere una lunghezza minima di 8 caratteri, almeno una lettera maiuscola e almeno un numero.</Alert>
       });
       return;
     }

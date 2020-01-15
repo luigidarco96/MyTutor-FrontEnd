@@ -291,7 +291,7 @@ class Valutation extends Component {
                                                                 {parseInt(element.interview_score) + parseInt(element.titles_score)}
                                                             </td>
                                                             <td style={{paddingLeft:'45px'}}>
-                                                                {currentAssignment.code}
+                                                                {element.assignment_id}
                                                             </td>
                                                             <td style={{width:'200px'}}>
                                                                 {this.showButtons(element,currentAssignment)}
