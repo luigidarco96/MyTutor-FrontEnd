@@ -144,7 +144,7 @@ export default class Rating extends Component {
             value = e.target.value
         else
             value = e
-        let students = assignments[i].student;f
+        let students = assignments[i].student;
 
         let val = parseInt(value)
         if ((name === 'interview_score' || name === 'titles_score') && Number.isInteger(val)) {
