@@ -402,6 +402,7 @@ const CreateApplication = (props) => {
                             <ControlLabel>Documenti da caricare</ControlLabel>
                             <FormControl
                                 componentClass='textarea'
+                                rows={5}
                                 placeholder='Inserisci quali sono i documenti da caricare'
                                 name='responsible_for_the_procedure'
                                 value={description}
