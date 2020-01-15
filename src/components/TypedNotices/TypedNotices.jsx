@@ -123,7 +123,7 @@ export default class TypedNotices extends Component {
               onClick={e => {
                 showComment(e, element);
               }}
-              style={{ fontSize: '20px' }}
+              style={{ fontSize: '19px' }}
             ></i>
 
             <CustomButton

@@ -58,7 +58,7 @@ class Valutation extends Component {
             .then(blob => {
                 //Set the state to save all the assignments.
                 this.setState({
-                    assignments: blob.data.list
+                    assignments: blob.data.list,
                 });
             })
             .catch(error => {
@@ -276,6 +276,7 @@ class Valutation extends Component {
                 alertError: false
             })
         }
+        let index = 0;
         return (
             <div className='content'>
 
@@ -307,6 +308,7 @@ class Valutation extends Component {
                                                     )[0]
 
 
+
                                                     return (
                                                         <tr key={element.assignment_id}>
                                                             <td >{element.student.name}</td>
@@ -320,7 +322,7 @@ class Valutation extends Component {
                                                                 {parseInt(element.interview_score) + parseInt(element.titles_score)}
                                                             </td>
                                                             <td style={{ paddingLeft: '45px' }}>
-                                                                {element.assignment_id}
+                                                                {this.state.assignments[index++]!=undefined?this.state.assignments[index++].code:''}
                                                             </td>
                                                             <td style={{ width: '200px' }}>
                                                                 {this.showButtons(element, currentAssignment)}
