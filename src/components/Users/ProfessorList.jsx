@@ -104,7 +104,7 @@ export class ProfessorList extends Component {
   render() {
     //Insert email professor verfied.
     const setEmailVerified = emailVerified => {
-      const emailProfessorExp = /^[a-z]+\.[a-z]+[0-9]*@unisa\.it$/;
+      const emailProfessorExp = /^[a-z]+\.?[a-z]+[0-9]*@unisa\.it$/;
 
       if (!emailProfessorExp.test(emailVerified)) {
 
@@ -465,7 +465,7 @@ export class ProfessorList extends Component {
                 </Button>
               </Modal.Footer>
             </Modal>
-            {/* Modal to insert a email */}
+            {/* Modal to insert an email */}
             <Modal
               style={{
                 borderRadius: "6px",
