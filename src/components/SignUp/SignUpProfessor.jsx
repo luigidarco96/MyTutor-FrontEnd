@@ -124,7 +124,7 @@ export class SignUpProfessor extends Component {
                     break;
                 case 'email':
                     if (value.match(Regex[2].emailRegex) === null) {
-                        errors.email = "l'email deve essere del tipo m.rossi@unisa.it o mario@unisa.it"
+                        errors.email = "L'email deve essere del tipo m.rossi@unisa.it o mario@unisa.it"
                         Regex[2].emailMatch = false;
                     } else {
                         errors.email = ""
@@ -135,7 +135,7 @@ export class SignUpProfessor extends Component {
                     break;
                 case 'password':
                     if (value.match(Regex[3].passRegex) === null) {
-                        errors.password = "la password deve contenere una maiuscola e un numero e almeno 8 caratteri"
+                        errors.password = "La password deve contenere una maiuscola e un numero e almeno 8 caratteri"
                         Regex[3].passMatch = false;
                     } else {
                         errors.password = ""

@@ -33,7 +33,7 @@ const Regex = [
         dataMatch: false
     },
     {
-        matricolaRegex: RegExp(/^[0-9A-Za-z‘]*$/),
+        matricolaRegex: RegExp(/^[0-9]{1,10}$/),
         matricolaMatch: false
     }
 ]
@@ -91,29 +91,25 @@ export class SignUpStudent extends Component {
                     }
                 })
             })
-            console.log(Regex)
-            if(nome === '') {
+            if (nome === '') {
                 errors.nome = 'Campo obbligatorio'
             }
-            if(cognome === '') {
+            if (cognome === '') {
                 errors.cognome = 'Campo obbligatorio'
             }
-            if(data === '') {
-                errors.data = 'Campo obbligatorio'
-            }
-            if(email === '') {
+            if (email === '') {
                 errors.email = 'Campo obbligatorio'
             }
-            if(password === '') {
+            if (password === '') {
                 errors.password = 'Campo obbligatorio'
             }
-            if(matricola === '') {
+            if (matricola === '') {
                 errors.matricola = 'Campo obbligatorio'
             }
-            if(confirmEmail === '') {
+            if (confirmEmail === '') {
                 errors.confirmEmail = 'Campo obbligatorio'
             }
-            if(confirmPass === '') {
+            if (confirmPass === '') {
                 errors.confirmPass = 'Campo obbligatorio'
             }
             return last && confirmPassw && confirmEm && nome.length > 0 && cognome.length > 0 && email.length > 0
@@ -146,7 +142,7 @@ export class SignUpStudent extends Component {
                     break;
                 case 'email':
                     if (value.match(Regex[2].emailRegex) == null) {
-                        errors.email = "l'email deve essere del tipo m.rossi@studenti.unisa.it"
+                        errors.email = "L'email deve essere del tipo m.rossi@studenti.unisa.it"
                         Regex[2].emailMatch = false;
                     } else {
                         errors.email = ""
@@ -157,7 +153,7 @@ export class SignUpStudent extends Component {
                     break;
                 case 'password':
                     if (value.match(Regex[3].passRegex) == null) {
-                        errors.password = "la password deve contenere almeno una maiuscola e un numero. Lunghezza minima 8 e massima 20 caratteri e non può contenere caratteri speciali."
+                        errors.password = "La password deve contenere almeno una maiuscola e un numero. Lunghezza minima 8 e massima 20 caratteri e non può contenere caratteri speciali."
                         Regex[3].passMatch = false;
                     } else {
                         errors.password = ""
@@ -167,13 +163,8 @@ export class SignUpStudent extends Component {
                         errors.confirmPass = ''
                     break;
                 case 'data':
-                    if (value.match(Regex[4].dataRegex) == null) {
-                        errors.data = 'Hai inserito un formato non valido'
-                        Regex[4].dataMatch = false;
-                    } else {
-                        errors.data = ''
-                        Regex[4].dataMatch = true;
-                    }
+                    console.log(value)
+                    Regex[4].dataMatch = true;
                     break;
                 case 'confirmPass':
                     if (password !== value) {
@@ -191,7 +182,7 @@ export class SignUpStudent extends Component {
                     break;
                 case 'matricola':
                     if (value.match(Regex[5].matricolaRegex) == null) {
-                        errors.matricola = 'La matricola può contenere solo caratteri alfanumerici'
+                        errors.matricola = 'La matricola può contenere solo caratteri numerici'
                         Regex[5].matricolaMatch = false;
                     } else {
                         errors.matricola = ''
@@ -207,7 +198,6 @@ export class SignUpStudent extends Component {
 
         const handleSubmit = (event) => {
             event.preventDefault();
-
             let user = {
                 name: nome,
                 surname: cognome,
@@ -243,7 +233,7 @@ export class SignUpStudent extends Component {
                                 break;
                             case 'Teaching Office': window.location.replace("http://localhost:3000/admin/notices");
                                 break;
-                            default :
+                            default:
                                 break;
                         }
                     }
@@ -254,7 +244,7 @@ export class SignUpStudent extends Component {
 
         }
 
-       
+
         const setModalError = (content) => {
             this.setState({ modalError: !this.state.modalError, modalContent: content })
         }
@@ -314,7 +304,7 @@ export class SignUpStudent extends Component {
                             value={data}
                             onChange={handleChange}
                             required
-                            type="text"
+                            type="date"
                             placeholder="La tua data di nascita.."
                         />
                         {errors.data.length > 0 &&
@@ -379,8 +369,8 @@ export class SignUpStudent extends Component {
                 </FormGroup>
                 <Button
                     disabled={!validateForm()}
-                    bsStyle = 'primary'
-                    className = 'btn-color-blue pull-right'
+                    bsStyle='primary'
+                    className='btn-color-blue pull-right'
                     type='submit'
                     style={{ 'margin': '1.5rem' }}>
                     Registrati
@@ -403,7 +393,7 @@ export class SignUpStudent extends Component {
                         <Modal.Title style={{ color: 'red' }}>Errore</Modal.Title>
                     </Modal.Header>
 
-                    <Modal.Body id='modalBodyError' style={{ width: '350px', padding: '7px', wordBreak:'break-all'}}>
+                    <Modal.Body id='modalBodyError' style={{ width: '350px', padding: '7px', wordBreak: 'break-all' }}>
                         {modalContent}
                     </Modal.Body>
                     <Modal.Footer style={{ width: '350px', paddingTop: '20px' }}>
