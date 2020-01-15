@@ -22,7 +22,6 @@ import AdminNavbar from 'components/Navbars/AdminNavbar';
 import Footer from 'components/Footer/Footer';
 import Sidebar from 'components/Sidebar/Sidebar';
 
-
 import routes from 'routes.js';
 
 import {
@@ -65,7 +64,6 @@ class Admin extends Component {
     const pathnameView = this.props.location.pathname.split('/')[2];
     let list = routes[pathnameRoule];
     for (let i = 0; i < list.length; i++) {
-    
       if (list[i].path.split('/')[1] === pathnameView) return list[i].name;
     }
   };
@@ -98,7 +96,6 @@ class Admin extends Component {
       case 'admin':
         return adminSidebar;
       default:
-
     }
   };
 
@@ -112,22 +109,16 @@ class Admin extends Component {
           image={this.state.image}
           color={this.state.color}
           hasImage={this.state.hasImage}
-
         />
 
-        <div
-          id='main-panel'
-          className='main-panel'
-          ref='mainPanel'
-          style={{ height: '100%' }}
-        >
+        <div id='main-panel' className='main-panel' ref='mainPanel'>
           <AdminNavbar
             {...this.props}
             brandText={this.getBrandText(this.props.location.pathname)}
           />
           <Switch>
-            <Route exact path={"/" + pathBase}>
-              <Redirect to={"/" + pathBase + "/notices"} />
+            <Route exact path={'/' + pathBase}>
+              <Redirect to={'/' + pathBase + '/notices'} />
             </Route>
             {this.getRoutes(routes)}
           </Switch>

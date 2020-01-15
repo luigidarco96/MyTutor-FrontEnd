@@ -17,8 +17,12 @@ body {
   display: none;
 }
 
+#main-panel {
+  height: 100vh;
+}
+
 #main-panel > .content {
-  height: calc(100vh - 80px - 45px);
+  height: calc(100vh - 80px);
   width: 100%;
   overflow-y: scroll;
   scrollbar-width: none;
