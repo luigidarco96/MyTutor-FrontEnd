@@ -914,14 +914,15 @@ export default class TypedNotices extends Component {
               });
               closeModalComment();
             })
-            .catch(error=>{
-              element.state = 'In Approval'
-              this.setState({
-                alertError: true,
-                alertText: error.response.data.error
-              })
-            })
-        });
+           
+        })
+        .catch(error=>{
+          element.state = 'In Approval'
+          this.setState({
+            alertError: true,
+            alertText: error.response.data.error
+          })
+        })
     };
 
     let noticesForProf;
