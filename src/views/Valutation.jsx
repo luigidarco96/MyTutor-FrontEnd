@@ -32,12 +32,12 @@ class Valutation extends Component {
 
     
 
-    componentDidMount() {
+    componentWillMount() {
         //Take the notice protocol from the params.
        
         //Set the header of the table.
         this.setState({
-            header: ['Nome', 'Cognome', 'Matricola', 'Punteggio', 'Id Assegno', 'Azione']
+            header: ['Nome', 'Cognome', 'Matricola', 'Punteggio', 'Nome Assegno', 'Azione']
         })
         //Call service to take all the valutation from table rating
         Axios
@@ -276,7 +276,8 @@ class Valutation extends Component {
                                                     currentAssignment=this.state.assignments.filter(el=>
                                                         el.id === element.assignment_id
                                                     )[0]
-                                                    
+                                                   
+                                                   
                                                     return (
                                                         <tr key={element.assignment_id}>
                                                             <td >{element.student.name}</td>
@@ -290,7 +291,7 @@ class Valutation extends Component {
                                                                 {parseInt(element.interview_score) + parseInt(element.titles_score)}
                                                             </td>
                                                             <td style={{paddingLeft:'45px'}}>
-                                                                {element.assignment_id}
+                                                                {currentAssignment.code}
                                                             </td>
                                                             <td style={{width:'200px'}}>
                                                                 {this.showButtons(element,currentAssignment)}
