@@ -29,31 +29,31 @@ export const NoticeType = {
 };
 
 export const UserNoticeLists = {
-  Student: ['Pubblicato', 'Chiuso', 'Scaduto', 'In attesa della graduatoria'],
+  Student: ['Pubblicato','Scaduto', 'In attesa della graduatoria','Chiuso'],
   DDI: [
-    'Pubblicato',
-    'Chiuso',
-    'Scaduto',
-    'In attesa della graduatoria',
     'In Approvazione',
-    'Approvato'
+    'In attesa della graduatoria',
+    'Approvato',
+    'Pubblicato',
+    'Scaduto',
+    'Chiuso'
   ],
   Professor: [
+    'In accettazione',
+    'Accettato',
     'Pubblicato',
-    'Chiuso',
     'Scaduto',
     'In attesa della graduatoria',
-    'In accettazione',
-    'Accettato'
+    'Chiuso'
   ],
   'Teaching Office': [
     'Bozza',
-    'Pubblicato',
-    'Chiuso',
-    'Scaduto',
-    'In attesa della graduatoria',
     'Accettato',
-    'Approvato'
+    'Approvato',
+    'Pubblicato',
+    'Scaduto',
+    'In attesa della graduatoria',  
+    'Chiuso'
   ]
 };
 
