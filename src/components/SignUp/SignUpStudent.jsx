@@ -87,10 +87,35 @@ export class SignUpStudent extends Component {
             Regex.forEach((element) => {
                 Object.keys(element).forEach((key, value) => {
                     if (key.endsWith('Match')) {
-                        last = last && value;
+                        last = last && element[key];
                     }
                 })
             })
+            console.log(Regex)
+            if(nome === '') {
+                errors.nome = 'Campo obbligatorio'
+            }
+            if(cognome === '') {
+                errors.cognome = 'Campo obbligatorio'
+            }
+            if(data === '') {
+                errors.data = 'Campo obbligatorio'
+            }
+            if(email === '') {
+                errors.email = 'Campo obbligatorio'
+            }
+            if(password === '') {
+                errors.password = 'Campo obbligatorio'
+            }
+            if(matricola === '') {
+                errors.matricola = 'Campo obbligatorio'
+            }
+            if(confirmEmail === '') {
+                errors.confirmEmail = 'Campo obbligatorio'
+            }
+            if(confirmPass === '') {
+                errors.confirmPass = 'Campo obbligatorio'
+            }
             return last && confirmPassw && confirmEm && nome.length > 0 && cognome.length > 0 && email.length > 0
                 && password.length > 0 && confirmPass.length > 0 && confirmEmail.length > 0 && matricola.length > 0;
         }
@@ -132,18 +157,18 @@ export class SignUpStudent extends Component {
                     break;
                 case 'password':
                     if (value.match(Regex[3].passRegex) == null) {
-                        errors.password = "la password deve contenere una maiuscola e un numero e almeno 8 caratteri"
-                        Regex[3].passwordMatch = false;
+                        errors.password = "la password deve contenere almeno una maiuscola e un numero. Lunghezza minima 8 e massima 20 caratteri e non può contenere caratteri speciali."
+                        Regex[3].passMatch = false;
                     } else {
                         errors.password = ""
-                        Regex[3].passwordMatch = true;
+                        Regex[3].passMatch = true;
                     }
                     if (value === confirmPass)
                         errors.confirmPass = ''
                     break;
                 case 'data':
                     if (value.match(Regex[4].dataRegex) == null) {
-                        errors.data = 'Formato: yyyy-mm-dd'
+                        errors.data = 'Hai inserito un formato non valido'
                         Regex[4].dataMatch = false;
                     } else {
                         errors.data = ''

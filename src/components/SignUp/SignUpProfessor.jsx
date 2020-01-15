@@ -72,10 +72,29 @@ export class SignUpProfessor extends Component {
             Regex.forEach((element) => {
                 Object.keys(element).forEach((key, value) => {
                     if (key.endsWith('Match')) {
-                        last = last && value;
+                        last = last && element[key];
                     }
                 })
             })
+            if(nome === '') {
+                errors.nome = 'Campo obbligatorio'
+            }
+            if(cognome === '') {
+                errors.cognome = 'Campo obbligatorio'
+            }
+            if(email === '') {
+                errors.email = 'Campo obbligatorio'
+            }
+            if(password === '') {
+                errors.password = 'Campo obbligatorio'
+            }
+            if(confirmEmail === '') {
+                errors.confirmEmail = 'Campo obbligatorio'
+            }
+            if(confirmPass === '') {
+                errors.confirmPass = 'Campo obbligatorio'
+            }
+
             return last && confirmPassw && confirmEm && nome.length > 0 && cognome.length > 0 && email.length > 0
                 && password.length > 0 && confirmPass.length > 0 && confirmEmail.length > 0;
         }
@@ -83,7 +102,6 @@ export class SignUpProfessor extends Component {
         const handleChange = (event) => {
             event.preventDefault()
             const { name, value } = event.target
-            let errors = this.state.errors;
 
             switch (name) {
                 case 'nome':
@@ -118,10 +136,10 @@ export class SignUpProfessor extends Component {
                 case 'password':
                     if (value.match(Regex[3].passRegex) === null) {
                         errors.password = "la password deve contenere una maiuscola e un numero e almeno 8 caratteri"
-                        Regex[3].passwordMatch = false;
+                        Regex[3].passMatch = false;
                     } else {
                         errors.password = ""
-                        Regex[3].passwordMatch = true;
+                        Regex[3].passMatch = true;
                     }
                     if (value === confirmPass)
                         errors.confirmPass = ''
