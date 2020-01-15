@@ -562,6 +562,7 @@ export default class TypedNotices extends Component {
         window.location.reload();
       })
       .catch(error => {
+        element.state = 'In Acceptance';
         this.setState({
           alertError: true,
           alertText:
@@ -606,6 +607,7 @@ export default class TypedNotices extends Component {
         window.location.reload();
       })
       .then(error => {
+        element.state = 'In Acceptance'
         this.setState({
           alertError: true,
           alertText:
@@ -635,23 +637,12 @@ export default class TypedNotices extends Component {
         { headers: headers }
       )
       .then(blob => {
-        this.setState({
-          notices: this.props.notices
-        });
-
-        this.state.notices.forEach(el => {
-          if (el.protocol === element.protocol) {
-            el = element;
-          }
-        });
-
-        this.setState({
-          notices: this.state.notices
-        });
-        closeConfirm();
+                closeConfirm();
         window.location.reload();
       })
       .catch(error => {
+        element.state = 'Draft';
+        
         this.setState({
           alertError: true,
           alertText:
@@ -698,6 +689,7 @@ export default class TypedNotices extends Component {
         window.location.reload();
       })
       .catch(error => {
+        element.state = 'Accepted'
         this.setState({
           alertError: true,
           alertText:
@@ -743,6 +735,7 @@ export default class TypedNotices extends Component {
         window.location.reload();
       })
       .then(error => {
+        element.state = 'Approved';
         this.setState({
           alertError: true,
           alertText:
@@ -829,6 +822,7 @@ export default class TypedNotices extends Component {
         window.location.reload();
       })
       .catch(error => {
+        
         this.setState({
           alertError: true,
           alertText: 'Impossibile inoltrare la graduatoria al ddi '
