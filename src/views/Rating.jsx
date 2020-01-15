@@ -87,7 +87,6 @@ export default class Rating extends Component {
                         students.push(candidature.student)
                     })
                     this.setState({ candidatedStudents: students })
-                    console.log(students)
                 })
             })
         }
@@ -145,8 +144,7 @@ export default class Rating extends Component {
             value = e.target.value
         else
             value = e
-        let students = assignments[i].student;
-        console.log(index, value, name)
+        let students = assignments[i].student;f
 
         let val = parseInt(value)
         if ((name === 'interview_score' || name === 'titles_score') && Number.isInteger(val)) {
@@ -364,7 +362,6 @@ export default class Rating extends Component {
                                     </thead>
                                     <tbody>
                                         {el.student.map((obj, index) => {
-                                            console.log(el.student)
                                             return (
                                                 <tr>
                                                     <td>
