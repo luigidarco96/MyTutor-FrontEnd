@@ -134,13 +134,19 @@ export default class Rating extends Component {
 
         let arr = id.split('_')
         let index = arr[0]
-        let name = arr[1] + '_' + arr[2]
+        let name = ''
+        if(arr[2] != undefined) {
+            name = arr[1] + '_' + arr[2]
+        } else {
+            name = arr[1]
+        }
         let value = 0
         if (e.target != undefined)
             value = e.target.value
         else
             value = e
         let students = assignments[i].student;
+        console.log(index, value, name)
 
         let val = parseInt(value)
         if ((name === 'interview_score' || name === 'titles_score') && Number.isInteger(val)) {
@@ -155,7 +161,7 @@ export default class Rating extends Component {
             students[index][name] = value;
         }
 
-        this.setState({ students: students })
+        this.setState({ students: students, assignments:assignments })
     }
 
     handleRemoveStudent = (e, i, id) => {
